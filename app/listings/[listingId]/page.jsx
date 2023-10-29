@@ -61,9 +61,10 @@ const ListingPage = async ({ params }) => {
     (item) => item.id === params.listingId
   );
   // const reservations = await getReservation(params);
-  const reservations = mock_data_2.reservations.find(
+  const reservations = mock_data_2.reservations.filter(
     (item) => item.listingId === params.listingId
   );
+
   const currentUser = await getCurrentUser();
 
   if (!listing) {
