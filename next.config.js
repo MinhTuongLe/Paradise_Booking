@@ -10,6 +10,13 @@ const nextConfig = {
       "res.cloudinary.com",
     ],
   },
+  getInitialProps: async (ctx) => {
+    return { pageProps: {} };
+  },
+
+  getServerSideProps: async () => {
+    return { props: {} };
+  },
 };
 
 module.exports = nextConfig;
