@@ -1,7 +1,6 @@
 import Container from "@/components/Container";
 import Heading from "@/components/Heading";
 import ListingCard from "@/components/listing/ListingCard";
-import { SafeUser, safeListing } from "@/types";
 
 function FavoritesClient({ listings, currentUser }) {
   return (

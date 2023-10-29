@@ -22,6 +22,9 @@ const initialDateRange = {
 };
 
 function ListingClient({ reservations = [], listing, currentUser }) {
+  const emptyImageSrc =
+    "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
+
   const router = useRouter();
   const loginModal = useLoginModel();
 
@@ -42,7 +45,7 @@ function ListingClient({ reservations = [], listing, currentUser }) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useState(listing.price);
-  const [dateRange, setDateRange] = useState < Range > initialDateRange;
+  const [dateRange, setDateRange] = useState(initialDateRange);
 
   const onCreateReservation = useCallback(() => {
     if (!currentUser) {
@@ -56,7 +59,7 @@ function ListingClient({ reservations = [], listing, currentUser }) {
         totalPrice,
         startDate: dateRange.startDate,
         endDate: dateRange.endDate,
-        listingId: listing?.id,
+        listingId: listing.id,
       })
       .then(() => {
         toast.success("Success!");
@@ -69,7 +72,7 @@ function ListingClient({ reservations = [], listing, currentUser }) {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [totalPrice, dateRange, listing?.id, router, currentUser, loginModal]);
+  }, [totalPrice, dateRange, listing.id, router, currentUser, loginModal]);
 
   useEffect(() => {
     if (dateRange.startDate && dateRange.endDate) {
@@ -96,7 +99,7 @@ function ListingClient({ reservations = [], listing, currentUser }) {
         <div className="flex flex-col gap-6">
           <ListingHead
             title={listing.title}
-            imageSrc={listing.imageSrc}
+            imageSrc={listing.imageSrc || emptyImageSrc}
             locationValue={listing.locationValue}
             id={listing.id}
             currentUser={currentUser}

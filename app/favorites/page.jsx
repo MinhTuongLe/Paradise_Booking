@@ -4,10 +4,14 @@ import React from "react";
 import getCurrentUser from "../actions/getCurrentUser";
 import getFavoriteListings from "../actions/getFavoriteListings";
 import FavoritesClient from "./FavoritesClient";
+import { mock_data } from "../../mock-data/listing";
 
 const FavoritePage = async (props) => {
   const currentUser = await getCurrentUser();
-  const listings = await getFavoriteListings();
+  // const listings = await getFavoriteListings();
+  const listings = mock_data.listings.filter((item) =>
+    currentUser.favoriteIds.includes(item.id)
+  );
 
   if (!currentUser) {
     return (
