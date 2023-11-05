@@ -35,49 +35,31 @@ function ChangePasswordClient() {
   return (
     <div className="max-w-[1140px] mx-auto xl:px-20 md:px-10 sm:px-2 px-4">
       <div className="mt-10 grid grid-cols-12 gap-8">
-        <div className="p-8 col-span-12">
+        <div className="p-8 col-span-12 space-y-6">
           <h1 className="text-2xl font-bold my-3">Change Password</h1>
-          <FormItem
+          <Input
             id="currentPassword"
             label="Current Password"
-            children={
-              <Input
-                id="currentPassword"
-                label="Current Password"
-                disabled={isLoading}
-                register={register}
-                errors={errors}
-                required
-              />
-            }
+            disabled={isLoading}
+            register={register}
+            errors={errors}
+            required
           />
-          <FormItem
+          <Input
             id="newPassword"
             label="New Password"
-            children={
-              <Input
-                id="newPassword"
-                label="New Password"
-                disabled={isLoading}
-                register={register}
-                errors={errors}
-                required
-              />
-            }
+            disabled={isLoading}
+            register={register}
+            errors={errors}
+            required
           />
-          <FormItem
+          <Input
             id="confirmedPassword"
             label="Confirmed Password"
-            children={
-              <Input
-                id="confirmedPassword"
-                label="Confirmed Password"
-                disabled={isLoading}
-                register={register}
-                errors={errors}
-                required
-              />
-            }
+            disabled={isLoading}
+            register={register}
+            errors={errors}
+            required
           />
           <div className="grid grid-cols-12 gap-8">
             <div className="col-span-6">

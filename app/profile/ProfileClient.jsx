@@ -59,77 +59,56 @@ function ProfileClient() {
           </div>
         </div>
         <div className="col-span-8">
-          <div className="p-8">
+          <div className="p-8 space-y-6">
             <h1 className="text-2xl font-bold my-3">Profile Settings</h1>
-            <FormItem
+            <Input
               id="name"
               label="Name"
-              children={
-                <Input
-                  id="name"
-                  label="Name"
-                  disabled={isLoading}
-                  register={register}
-                  errors={errors}
-                  required
-                />
-              }
+              disabled={isLoading}
+              register={register}
+              errors={errors}
+              required
             />
-            <FormItem
+            <Input
               id="username"
               label="Username"
-              children={
-                <Input
-                  id="username"
-                  label="Username"
-                  disabled={isLoading}
-                  register={register}
-                  errors={errors}
-                  required
-                />
-              }
+              disabled={isLoading}
+              register={register}
+              errors={errors}
+              required
             />
-            <FormItem
+            <Input
               id="email"
               label="Email"
-              children={
-                <Input
-                  id="email"
-                  label="Email"
-                  disabled={isLoading}
-                  register={register}
-                  errors={errors}
-                  required
-                />
-              }
+              disabled={isLoading}
+              register={register}
+              errors={errors}
+              required
             />
-            <FormItem
+            <Input
               id="phoneNumber"
               label="Phone Number"
-              children={
-                <Input
-                  id="phoneNumber"
-                  label="Phone Number"
-                  disabled={isLoading}
-                  register={register}
-                  errors={errors}
-                  required
-                />
-              }
+              disabled={isLoading}
+              register={register}
+              errors={errors}
+              required
             />
-            <FormItem
+            <Input
+              id="dob"
+              label="Date of Birth"
+              disabled={isLoading}
+              register={register}
+              errors={errors}
+              required
+              type="date"
+            />
+            <Input
               id="address"
               label="Address"
-              children={
-                <Input
-                  id="address"
-                  label="Address"
-                  disabled={isLoading}
-                  register={register}
-                  errors={errors}
-                  required
-                />
-              }
+              disabled={isLoading}
+              register={register}
+              errors={errors}
+              required
             />
             <div className="grid grid-cols-12 gap-8">
               <div className="col-span-6">
