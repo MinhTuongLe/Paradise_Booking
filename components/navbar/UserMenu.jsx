@@ -119,6 +119,10 @@ function UserMenu({ currentUser }) {
                 onClick={() => router.push("/change-password")}
                 label="Change Password"
               />
+              <MenuItem
+                onClick={() => router.push("/notifications")}
+                label="Nofications"
+              />
               <hr />
               <MenuItem onClick={() => signOut()} label="Logout" />
             </>

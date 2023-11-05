@@ -21,7 +21,7 @@ function FooterColumn({ index, data }) {
       }}
       transition={{ duration: 1 }}
       whileInView={{ opacity: 1, x: 0 }}
-      className="space-y-4 text-xs text-gray-800"
+      className="space-y-4 text-xs text-gray-800 cursor-pointer"
     >
       {columnItems}
     </motion.div>
