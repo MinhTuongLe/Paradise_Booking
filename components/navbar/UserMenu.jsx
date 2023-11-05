@@ -63,7 +63,7 @@ function UserMenu({ currentUser }) {
       {isOpen && (
         <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm">
           <div className="flex flex-col cursor-pointer">
-            {currentUser ? (
+            {/* {currentUser ? (
               <>
                 <MenuItem
                   onClick={() => router.push("/trips")}
@@ -90,7 +90,38 @@ function UserMenu({ currentUser }) {
                 <MenuItem onClick={loginModel.onOpen} label="Login" />
                 <MenuItem onClick={registerModel.onOpen} label="Sign up" />
               </>
-            )}
+            )} */}
+            <>
+              <MenuItem onClick={loginModel.onOpen} label="Login" />
+              <MenuItem onClick={registerModel.onOpen} label="Sign up" />
+              <MenuItem
+                onClick={() => router.push("/trips")}
+                label="My trips"
+              />
+              <MenuItem
+                onClick={() => router.push("/favorites")}
+                label="My favorites"
+              />
+              <MenuItem
+                onClick={() => router.push("/reservations")}
+                label="My reservations"
+              />
+              <MenuItem
+                onClick={() => router.push("/properties")}
+                label="My properties"
+              />
+              <MenuItem onClick={onRent} label="Airbnb your home" />
+              <MenuItem
+                onClick={() => router.push("/profile")}
+                label="My profile"
+              />
+              <MenuItem
+                onClick={() => router.push("/change-password")}
+                label="Change Password"
+              />
+              <hr />
+              <MenuItem onClick={() => signOut()} label="Logout" />
+            </>
           </div>
         </div>
       )}

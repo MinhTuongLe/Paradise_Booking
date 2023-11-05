@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import ToastContainerBar from "@/components/ToastContainerBar";
 import LoginModal from "@/components/models/LoginModal";
 import RegisterModal from "@/components/models/RegisterModal";
+import ForgotPasswordModal from "@/components/models/ForgotPasswordModal";
 import RentModal from "@/components/models/RentModal";
 import SearchModal from "@/components/models/SearchModal";
 import Navbar from "@/components/navbar/Navbar";
@@ -31,6 +32,7 @@ export default async function RootLayout({ children }) {
           <SearchModal />
           <RegisterModal />
           <LoginModal />
+          <ForgotPasswordModal />
           <RentModal />
           <Navbar currentUser={currentUser} />
         </ClientOnly>

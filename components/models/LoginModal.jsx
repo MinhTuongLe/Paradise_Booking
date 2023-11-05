@@ -2,6 +2,7 @@
 
 import useLoginModel from "@/hook/useLoginModal";
 import useRegisterModal from "@/hook/useRegisterModal";
+import useForgotPasswordModal from "@/hook/useForgotPasswordModal";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
@@ -19,6 +20,7 @@ function LoginModal({}) {
   const router = useRouter();
   const registerModel = useRegisterModal();
   const loginModel = useLoginModel();
+  const forgotPasswordModel = useForgotPasswordModal();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -56,6 +58,11 @@ function LoginModal({}) {
     registerModel.onOpen();
   }, [loginModel, registerModel]);
 
+  const toggleForgotPasswordModal = useCallback(() => {
+    loginModel.onClose();
+    forgotPasswordModel.onOpen();
+  }, [loginModel, forgotPasswordModel]);
+
   const bodyContent = (
     <div className="flex flex-col gap-4">
       <Heading title="Welcome Back" subtitle="Login to your Account!" center />
@@ -75,6 +82,13 @@ function LoginModal({}) {
         errors={errors}
         required
       />
+      <span
+        onClick={toggleForgotPasswordModal}
+        className="text-neutral-800 cursor-pointer hover:underline text-right "
+      >
+        Forgot password
+      </span>
+      <hr />
     </div>
   );
 
