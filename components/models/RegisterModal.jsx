@@ -57,7 +57,7 @@ function RegisterModal({}) {
   const bodyContent = (
     <div className="flex flex-col gap-4">
       <Heading
-        title="Welcome to Airbnb-Clone"
+        title="Welcome to Paradise"
         subtitle="Create an Account!"
         center
       />

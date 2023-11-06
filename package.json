@@ -1,9 +1,10 @@
 {
-  "name": "airbnb-clone",
+  "name": "paradise-booking-app",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "yarn run open-browser && next dev -p 3000",
+    "open-browser": "start http://localhost:3000",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -27,6 +28,7 @@
     "next-cloudinary": "^4.28.0",
     "query-string": "^8.1.0",
     "react": "18.2.0",
+    "react-country-flag": "^3.1.0",
     "react-date-range": "^1.4.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.43.9",

@@ -45,63 +45,75 @@ function NotificationClient() {
           <div className="space-y-6 max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-[#FF5A5F]">
             <Notification
               id={1}
-              content={"Thông báo từ Lê Minh Tường mới nhất"}
+              content={
+                "Thông báo từ Lê Minh Tường mới nhất Thông báo từ Lê Minh Tường mới nhất Thông báo từ Lê Minh Tường mới nhất Thông báo từ Lê Minh Tường mới nhất Thông báo từ Lê Minh Tường mới nhất Thông báo từ Lê Minh Tường mới nhất Thông báo từ Lê Minh Tường mới nhất "
+              }
               avatar={""}
               date={"11/11/2011"}
+              closeIcon={true}
             />
             <Notification
               id={1}
               content={"Thông báo từ Lê Minh Tường mới nhất"}
               avatar={""}
               date={"11/11/2011"}
+              closeIcon={true}
             />
             <Notification
               id={1}
               content={"Thông báo từ Lê Minh Tường mới nhất"}
               avatar={""}
               date={"11/11/2011"}
+              closeIcon={true}
             />
             <Notification
               id={1}
               content={"Thông báo từ Lê Minh Tường mới nhất"}
               avatar={""}
               date={"11/11/2011"}
+              closeIcon={true}
             />
             <Notification
               id={1}
               content={"Thông báo từ Lê Minh Tường mới nhất"}
               avatar={""}
               date={"11/11/2011"}
+              closeIcon={true}
             />
             <Notification
               id={1}
               content={"Thông báo từ Lê Minh Tường mới nhất"}
               avatar={""}
               date={"11/11/2011"}
+              closeIcon={true}
             />
             <Notification
               id={1}
               content={"Thông báo từ Lê Minh Tường mới nhất"}
               avatar={""}
               date={"11/11/2011"}
+              closeIcon={true}
             />
             <Notification
               id={1}
               content={"Thông báo từ Lê Minh Tường mới nhất"}
               avatar={""}
               date={"11/11/2011"}
+              closeIcon={true}
             />
             <Notification
               id={1}
               content={"Thông báo từ Lê Minh Tường mới nhất"}
               avatar={""}
               date={"11/11/2011"}
+              closeIcon={true}
             />
             <Notification
               id={1}
               content={"Thông báo từ Lê Minh Tường mới nhất"}
               avatar={""}
               date={"11/11/2011"}
+              closeIcon={true}
             />
           </div>
         </div>

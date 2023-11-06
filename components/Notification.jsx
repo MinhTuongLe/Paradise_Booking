@@ -2,7 +2,7 @@ import Image from "next/image";
 import React from "react";
 import { IoMdClose } from "react-icons/io";
 
-function Notification({ id, content, avatar, date }) {
+function Notification({ id, content, avatar, date, closeIcon }) {
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
 
@@ -15,16 +15,18 @@ function Notification({ id, content, avatar, date }) {
         width={56}
         height={56}
       />
-      <div className="flex justify-start items-start flex-col">
-        <span className="text-lg font-bold">{content}</span>
-        <span className="text-md">{date}</span>
+      <div className="block max-w-[70%]">
+        <div className="text-lg font-bold truncate ">{content}</div>
+        <div className="text-md">{date}</div>
       </div>
-      <button
-        className="p-1 border-0 hover:opacity-70 transition absolute right-4"
-        // onClick={}
-      >
-        <IoMdClose size={24} />
-      </button>
+      {closeIcon && (
+        <button
+          className="p-1 border-0 hover:opacity-70 transition absolute right-4"
+          // onClick={}
+        >
+          <IoMdClose size={24} />
+        </button>
+      )}
     </div>
   );
 }
