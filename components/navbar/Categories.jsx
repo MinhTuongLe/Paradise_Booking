@@ -1,7 +1,7 @@
 "use client";
-
+import { useEffect, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { BsSnow } from "react-icons/bs";
+import { BsArrowLeftCircle, BsArrowRightCircle, BsSnow } from "react-icons/bs";
 import { FaSkiing } from "react-icons/fa";
 import {
   GiBarn,
@@ -103,22 +103,69 @@ function Categories({}) {
   const pathname = usePathname();
 
   const isMainPage = pathname === "/";
+  // State to keep track of the scroll position
+  const [scrollPosition, setScrollPosition] = useState(0);
+
+  // Reference to the scrollable container
+  const scrollableContainerRef = useRef(null);
 
   if (!isMainPage) {
     return null;
   }
 
+  // Function to scroll the container left
+  const scrollLeft = () => {
+    if (scrollableContainerRef.current) {
+      const newPosition = scrollPosition - 100; // Adjust the scroll distance as needed
+      scrollableContainerRef.current.scrollTo({
+        left: newPosition,
+        behavior: "smooth",
+      });
+      setScrollPosition(newPosition);
+    }
+  };
+
+  // Function to scroll the container right
+  const scrollRight = () => {
+    if (scrollableContainerRef.current) {
+      const newPosition = scrollPosition + 100; // Adjust the scroll distance as needed
+      scrollableContainerRef.current.scrollTo({
+        left: newPosition,
+        behavior: "smooth",
+      });
+      setScrollPosition(newPosition);
+    }
+  };
+
   return (
     <Container>
-      <div className="pt-4 flex flex-row items-center justify-between overflow-x-auto">
-        {categories.map((items, index) => (
-          <CategoryBox
-            key={index}
-            icon={items.icon}
-            label={items.label}
-            selected={category === items.label}
-          />
-        ))}
+      <div className="pt-4 flex flex-row items-center justify-between w-[600px] relative">
+        <button
+          className="absolute left-0 top-0 h-full p-2 mr-4"
+          onClick={scrollLeft}
+        >
+          <BsArrowLeftCircle />
+        </button>
+        <div
+          ref={scrollableContainerRef}
+          className="overflow-x-auto w-full scrollbar-none"
+          style={{ display: "flex", flexDirection: "row" }}
+        >
+          {categories.map((items, index) => (
+            <CategoryBox
+              key={index}
+              icon={items.icon}
+              label={items.label}
+              selected={category === items.label}
+            />
+          ))}
+        </div>
+        <button
+          className="absolute right-0 top-0 h-full p-2 ml-4"
+          onClick={scrollRight}
+        >
+          <BsArrowRightCircle />
+        </button>
       </div>
     </Container>
   );
