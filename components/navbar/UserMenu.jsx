@@ -5,7 +5,6 @@ import useRegisterModal from "@/hook/useRegisterModal";
 import useRentModal from "@/hook/useRentModal";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import ReactCountryFlag from "react-country-flag";
 import Notification from "@/components/Notification";
 
 import { signOut } from "next-auth/react";
@@ -13,10 +12,7 @@ import { useCallback, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import Avatar from "../Avatar";
 import MenuItem from "./MenuItem";
-import { GrLanguage } from "react-icons/gr";
-import LanguageChoice from "@/components/LanguageChoice";
 import { IoNotifications } from "react-icons/io5";
-import Heading from "../Heading";
 
 function UserMenu({ currentUser }) {
   const router = useRouter();
@@ -25,6 +21,7 @@ function UserMenu({ currentUser }) {
   const rentModel = useRentModal();
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenNotification, setIsOpenNotification] = useState(false);
+  const [language, setLanguage] = useState("vi");
 
   const toggleOpen = useCallback(() => {
     setIsOpen((value) => !value);
@@ -48,30 +45,44 @@ function UserMenu({ currentUser }) {
     rentModel.onOpen();
   }, [currentUser, loginModel, rentModel]);
 
+  const handleChangeLanguage = () => {
+    if (language === "en") setLanguage("vi");
+    else setLanguage("en");
+  };
+
   return (
     <div className="relative">
-      <div className="flex flex-row items-center gap-4">
+      <div className="flex flex-row items-center gap-6">
         <div
-          className="hidden md:block text-sm font-semibold py-3 px-4 rounded-full hover:bg-neutral-100 transition cursor-pointer"
+          className="hidden md:block text-sm font-semibold py-3 rounded-full hover:bg-neutral-100 transition cursor-pointer"
           onClick={onRent}
         >
           Paradise your Home
         </div>
         <div
           // onClick={}
-          className="p-4 flex flex-row items-center gap-3 cursor-pointer transition relative"
+          className="flex flex-row items-center gap-3 cursor-pointer transition relative"
         >
-          <GrLanguage size={20} />
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" value="" class="sr-only peer" />
+            <div
+              class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-red-300 dark:peer-focus:bg-rose-500 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-rose-500"
+              onClick={handleChangeLanguage}
+            ></div>
+            <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+              {language.toUpperCase()}
+            </span>
+          </label>
         </div>
         <div
           onClick={toggleNotification}
-          className="p-4 flex flex-row items-center gap-3 cursor-pointer transition relative"
+          className="flex flex-row items-center gap-3 cursor-pointer transition relative"
         >
           <IoNotifications size={20} />
         </div>
         <div
           onClick={toggleOpen}
-          className="p-4 md:py-1 md:px-2 border-[1px] flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md transition"
+          className="md:py-1 md:px-2 border-[1px] flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md transition"
         >
           <AiOutlineMenu />
           <div className="hidden md:block">
