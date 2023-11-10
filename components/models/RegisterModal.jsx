@@ -35,8 +35,16 @@ function RegisterModal({}) {
   const onSubmit = (data) => {
     setIsLoading(true);
 
+    if (data.password !== data.confirmPassword) {
+      toast.error("Password and Confirm Password do not match");
+      setIsLoading(false);
+      return;
+    }
+
+    const { confirmPassword, ...formData } = data;
+
     axios
-      .post("/api/register", data)
+      .post("/api/register", formData)
       .then(() => {
         toast.success("Success!");
         loginModel.onOpen();
@@ -84,6 +92,16 @@ function RegisterModal({}) {
         register={register}
         errors={errors}
         required
+        type="password"
+      />
+      <Input
+        id="confirmPassword"
+        label="Confirm Password"
+        disabled={isLoading}
+        register={register}
+        errors={errors}
+        required
+        type="password"
       />
     </div>
   );

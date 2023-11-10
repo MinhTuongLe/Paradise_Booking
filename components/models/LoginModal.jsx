@@ -81,6 +81,7 @@ function LoginModal({}) {
         register={register}
         errors={errors}
         required
+        type="password"
       />
       <span
         onClick={toggleForgotPasswordModal}
