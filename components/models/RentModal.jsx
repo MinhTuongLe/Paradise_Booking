@@ -267,6 +267,7 @@ function RentModal({}) {
       secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
       onClose={rentModel.onClose}
       body={bodyContent}
+      reset={reset}
     />
   );
 }

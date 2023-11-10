@@ -1,7 +1,7 @@
 "use client";
 
 import useLoginModel from "@/hook/useLoginModal";
-import useRegisterModal from "../../hook/useRegisterModal";
+import useFiltersModal from "../../hook/useFiltersModal";
 import axios from "axios";
 import { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
@@ -15,8 +15,8 @@ import Heading from "../Heading";
 import Input from "../inputs/Input";
 import Modal from "./Modal";
 
-function RegisterModal({}) {
-  const registerModel = useRegisterModal();
+function FiltersModal({}) {
+  const filtersModal = useFiltersModal();
   const loginModel = useLoginModel();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -30,7 +30,6 @@ function RegisterModal({}) {
       name: "",
       email: "",
       password: "",
-      confirmPassword: "",
     },
   });
 
@@ -50,7 +49,7 @@ function RegisterModal({}) {
       .then(() => {
         toast.success("Success!");
         loginModel.onOpen();
-        registerModel.onClose();
+        filtersModal.onClose();
       })
       .catch((err) => toast.error("Something Went Wrong"))
       .finally(() => {
@@ -61,8 +60,8 @@ function RegisterModal({}) {
 
   const toggle = useCallback(() => {
     loginModel.onOpen();
-    registerModel.onClose();
-  }, [loginModel, registerModel]);
+    filtersModal.onClose();
+  }, [loginModel, filtersModal]);
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
@@ -141,10 +140,10 @@ function RegisterModal({}) {
   return (
     <Modal
       disabled={isLoading}
-      isOpen={registerModel.isOpen}
+      isOpen={filtersModal.isOpen}
       title="Register"
       actionLabel="Continue"
-      onClose={registerModel.onClose}
+      onClose={filtersModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
       footer={footerContent}
@@ -153,4 +152,4 @@ function RegisterModal({}) {
   );
 }
 
-export default RegisterModal;
+export default FiltersModal;

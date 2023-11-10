@@ -10,14 +10,6 @@ const nextConfig = {
       "res.cloudinary.com",
     ],
   },
-  // // turn off ssr mode
-  // getInitialProps: async (ctx) => {
-  //   return { pageProps: {} };
-  // },
-
-  // getServerSideProps: async () => {
-  //   return { props: {} };
-  // },
 };
 
 module.exports = nextConfig;

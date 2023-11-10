@@ -6,6 +6,7 @@ import RegisterModal from "@/components/models/RegisterModal";
 import ForgotPasswordModal from "@/components/models/ForgotPasswordModal";
 import RentModal from "@/components/models/RentModal";
 import SearchModal from "@/components/models/SearchModal";
+import FiltersModal from "@/components/models/FiltersModal";
 import Navbar from "@/components/navbar/Navbar";
 import { Nunito } from "next/font/google";
 import "../styles/globals.css";
@@ -33,6 +34,7 @@ export default async function RootLayout({ children }) {
           <RegisterModal />
           <LoginModal />
           <ForgotPasswordModal />
+          <FiltersModal />
           <RentModal />
           <Navbar currentUser={currentUser} />
         </ClientOnly>

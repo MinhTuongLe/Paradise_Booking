@@ -18,6 +18,8 @@ import { MdOutlineVilla } from "react-icons/md";
 import { TbBeach, TbMountain, TbPool } from "react-icons/tb";
 import CategoryBox from "../CategoryBox";
 import Container from "../Container";
+import { BiFilterAlt } from "react-icons/bi";
+import useFiltersModal from "../../hook/useFiltersModal";
 
 export const categories = [
   {
@@ -101,6 +103,7 @@ function Categories({}) {
   const params = useSearchParams();
   const category = params?.get("category");
   const pathname = usePathname();
+  const filtersModal = useFiltersModal();
 
   const isMainPage = pathname === "/";
   // State to keep track of the scroll position
@@ -139,32 +142,38 @@ function Categories({}) {
 
   return (
     <Container>
-      <div className="pt-4 flex flex-row items-center justify-between w-[600px] relative">
-        <button
-          className="absolute left-0 top-0 h-full p-2 mr-4"
-          onClick={scrollLeft}
-        >
-          <BsArrowLeftCircle />
-        </button>
-        <div
-          ref={scrollableContainerRef}
-          className="overflow-x-auto w-full scrollbar-none"
-          style={{ display: "flex", flexDirection: "row" }}
-        >
-          {categories.map((items, index) => (
-            <CategoryBox
-              key={index}
-              icon={items.icon}
-              label={items.label}
-              selected={category === items.label}
-            />
-          ))}
+      <div className="flex flex-row items-center justify-between">
+        <div className="pt-4 flex flex-row items-center justify-between w-[600px] relative">
+          <button
+            className="absolute left-0 top-0 h-full p-2 mr-4"
+            onClick={scrollLeft}
+          >
+            <BsArrowLeftCircle />
+          </button>
+          <div
+            ref={scrollableContainerRef}
+            className="overflow-x-auto w-full scrollbar-none"
+            style={{ display: "flex", flexDirection: "row" }}
+          >
+            {categories.map((items, index) => (
+              <CategoryBox
+                key={index}
+                icon={items.icon}
+                label={items.label}
+                selected={category === items.label}
+              />
+            ))}
+          </div>
+          <button
+            className="absolute right-0 top-0 h-full p-2 ml-4"
+            onClick={scrollRight}
+          >
+            <BsArrowRightCircle />
+          </button>
         </div>
-        <button
-          className="absolute right-0 top-0 h-full p-2 ml-4"
-          onClick={scrollRight}
-        >
-          <BsArrowRightCircle />
+        <button className="flex flex-row" onClick={filtersModal.onOpen}>
+          <BiFilterAlt />
+          <span>Filters</span>
         </button>
       </div>
     </Container>

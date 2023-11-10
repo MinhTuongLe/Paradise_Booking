@@ -26,6 +26,7 @@ function LoginModal({}) {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -63,8 +64,14 @@ function LoginModal({}) {
     forgotPasswordModel.onOpen();
   }, [loginModel, forgotPasswordModel]);
 
+  const onKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSubmit(onSubmit)();
+    }
+  };
+
   const bodyContent = (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4" onKeyPress={onKeyPress}>
       <Heading title="Welcome Back" subtitle="Login to your Account!" center />
       <Input
         id="email"
@@ -132,6 +139,7 @@ function LoginModal({}) {
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
       footer={footerContent}
+      reset={reset}
     />
   );
 }

@@ -25,6 +25,7 @@ function ForgotPasswordModal({}) {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -97,6 +98,7 @@ function ForgotPasswordModal({}) {
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
       footer={footerContent}
+      reset={reset}
     />
   );
 }

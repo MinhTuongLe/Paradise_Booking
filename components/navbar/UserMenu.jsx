@@ -131,12 +131,30 @@ function UserMenu({ currentUser }) {
                   label="Change Password"
                 />
                 <hr />
-                <MenuItem onClick={() => signOut()} label="Logout" />
+                <MenuItem
+                  onClick={() => {
+                    signOut();
+                    if (isOpen) toggleOpen();
+                  }}
+                  label="Logout"
+                />
               </>
             ) : (
               <>
-                <MenuItem onClick={loginModel.onOpen} label="Login" />
-                <MenuItem onClick={registerModel.onOpen} label="Sign up" />
+                <MenuItem
+                  onClick={() => {
+                    loginModel.onOpen();
+                    if (isOpen) toggleOpen();
+                  }}
+                  label="Login"
+                />
+                <MenuItem
+                  onClick={() => {
+                    registerModel.onOpen();
+                    if (isOpen) toggleOpen();
+                  }}
+                  label="Sign up"
+                />
               </>
             )}
           </div>
