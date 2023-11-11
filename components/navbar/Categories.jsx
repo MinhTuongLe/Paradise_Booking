@@ -143,7 +143,7 @@ function Categories({}) {
   return (
     <Container>
       <div className="flex flex-row items-center justify-between">
-        <div className="pt-4 flex flex-row items-center justify-between w-[600px] relative">
+        <div className="pt-4 flex flex-row items-center justify-between w-[992px] relative">
           <button
             className="absolute left-0 top-0 h-full p-2 mr-4"
             onClick={scrollLeft}
@@ -152,7 +152,7 @@ function Categories({}) {
           </button>
           <div
             ref={scrollableContainerRef}
-            className="overflow-x-auto w-full scrollbar-none"
+            className="overflow-x-auto w-full scrollbar-none gap-6"
             style={{ display: "flex", flexDirection: "row" }}
           >
             {categories.map((items, index) => (
@@ -171,9 +171,12 @@ function Categories({}) {
             <BsArrowRightCircle />
           </button>
         </div>
-        <button className="flex flex-row" onClick={filtersModal.onOpen}>
-          <BiFilterAlt />
-          <span>Filters</span>
+        <button
+          className="flex flex-row border border-solid border-gray-300 rounded-lg px-[16px] py-[8px] transition duration-300 hover:shadow-lg"
+          onClick={filtersModal.onOpen}
+        >
+          <BiFilterAlt className="text-xl h-[24px]" />
+          <span className="text-base font-medium ml-[8px]">Filters</span>
         </button>
       </div>
     </Container>
