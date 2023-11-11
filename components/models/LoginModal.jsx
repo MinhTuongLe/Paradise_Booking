@@ -71,7 +71,7 @@ function LoginModal({}) {
   };
 
   const bodyContent = (
-    <div className="flex flex-col gap-4" onKeyPress={onKeyPress}>
+    <div className="flex flex-col gap-4" onKeyDown={onKeyPress}>
       <Heading title="Welcome Back" subtitle="Login to your Account!" center />
       <Input
         id="email"

@@ -53,13 +53,19 @@ function ForgotPasswordModal({}) {
     // });
   };
 
+  const onKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSubmit(onSubmit)();
+    }
+  };
+
   const toggle = useCallback(() => {
     forgotPasswordModel.onClose();
     loginModel.onOpen();
   }, [forgotPasswordModel, loginModel]);
 
   const bodyContent = (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4" onKeyDown={onKeyPress}>
       <Heading title="Welcome Back" subtitle="Reset your password!" center />
       <Input
         id="email"

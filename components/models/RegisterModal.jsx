@@ -48,15 +48,12 @@ function RegisterModal({}) {
     axios
       .post("/api/register", formData)
       .then(() => {
-        toast.success("Success!");
+        setIsLoading(false);
+        toast.success("Register Successfully");
         loginModel.onOpen();
         registerModel.onClose();
       })
-      .catch((err) => toast.error("Something Went Wrong"))
-      .finally(() => {
-        setIsLoading(false);
-        toast.success("Register Successfully");
-      });
+      .catch((err) => toast.error("Something Went Wrong"));
   };
 
   const toggle = useCallback(() => {
@@ -64,8 +61,14 @@ function RegisterModal({}) {
     registerModel.onClose();
   }, [loginModel, registerModel]);
 
+  const onKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSubmit(onSubmit)();
+    }
+  };
+
   const bodyContent = (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4" onKeyDown={onKeyPress}>
       <Heading
         title="Welcome to Paradise"
         subtitle="Create an Account!"
