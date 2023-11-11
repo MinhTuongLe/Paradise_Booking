@@ -59,6 +59,7 @@ function ProfileClient() {
           <textarea
             className="resize-none border border-solid p-8 rounded-[24px] w-full focus:outline-none"
             rows={5}
+            placeholder="Add your bio here ..."
           ></textarea>
         </div>
         <div className="col-span-8">
