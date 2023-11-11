@@ -23,6 +23,7 @@ function ProfileClient() {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -30,7 +31,7 @@ function ProfileClient() {
       name: "",
       avatar: "",
       address: "",
-      phone: "",
+      phoneNumber: "",
       dob: "",
       email: "",
     },
@@ -40,7 +41,7 @@ function ProfileClient() {
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
 
   return (
-    <div className="max-w-[1400px] mx-auto xl:px-20 md:px-10 sm:px-2 px-4">
+    <div className="max-w-[1200px] mx-auto px-4">
       <div className="mt-10 grid grid-cols-12 gap-8">
         <div className="col-span-4">
           <div className="p-8 rounded-[24px] flex flex-col items-center justify-center shadow-2xl">
@@ -54,9 +55,11 @@ function ProfileClient() {
             <h1 className="text-2xl font-bold my-3">Le Minh Tuong</h1>
             <span className="text-xl">User</span>
           </div>
-          <div className="border border-solid p-8 rounded-[24px] flex flex-col items-center justify-center mt-[32px]">
-            Something in here
-          </div>
+          <h1 className="text-xl font-bold my-3 mt-[32px]">Your Bio</h1>
+          <textarea
+            className="resize-none border border-solid p-8 rounded-[24px] w-full focus:outline-none"
+            rows={5}
+          ></textarea>
         </div>
         <div className="col-span-8">
           <div className="p-8 space-y-6">
@@ -84,6 +87,7 @@ function ProfileClient() {
               register={register}
               errors={errors}
               required
+              type="email"
             />
             <Input
               id="phoneNumber"
@@ -112,11 +116,7 @@ function ProfileClient() {
             />
             <div className="grid grid-cols-12 gap-8">
               <div className="col-span-6">
-                <Button
-                  outline
-                  label="Cancel"
-                  onClick={() => console.log("Cancel")}
-                />
+                <Button outline label="Cancel" onClick={() => reset()} />
               </div>
               <div className="col-span-6">
                 <Button

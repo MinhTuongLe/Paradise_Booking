@@ -142,7 +142,7 @@ function Categories({}) {
 
   return (
     <Container>
-      <div className="flex flex-row items-center justify-between">
+      <div className="flex flex-row items-center justify-between z-10 bg-white">
         <div className="pt-4 flex flex-row items-center justify-between w-[992px] relative">
           <button
             className="absolute left-0 top-0 h-full p-2 mr-4"
