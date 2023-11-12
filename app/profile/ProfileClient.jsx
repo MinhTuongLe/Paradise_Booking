@@ -14,6 +14,7 @@ import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Button from "@/components/Button";
+import ImageUpload from "@/components/inputs/ImageUpload";
 
 function ProfileClient() {
   const router = useRouter();
@@ -24,6 +25,8 @@ function ProfileClient() {
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -36,21 +39,42 @@ function ProfileClient() {
       email: "",
     },
   });
-
+  const imageSrc = watch("avatar");
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
+
+  const setCustomValue = (id, value) => {
+    setValue(id, value, {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    });
+  };
 
   return (
     <div className="max-w-[1200px] mx-auto px-4">
       <div className="mt-10 grid grid-cols-12 gap-8">
         <div className="col-span-4">
           <div className="p-8 rounded-[24px] flex flex-col items-center justify-center shadow-2xl">
-            <Image
+            {/* <Image
               width={120}
               height={120}
               src={emptyImageSrc}
               alt="Avatar"
               className="rounded-full h-[120px] w-[120px]"
+            /> */}
+            {/* <div className="flex flex-col items-center justify-start">
+              <button
+                className="flex space-x-4 items-center justify-center px-4 py-2 border-[1px] rounded-[20px] hover:shadow-2xl translate-y-[-50%] bg-white"
+                >
+                <AiOutlineCamera />
+                <span>{imageSrc ? "Update" : "Add"}</span>
+              </button>
+            </div> */}
+            <ImageUpload
+              onChange={(value) => setCustomValue("avatar", value)}
+              value={imageSrc ? imageSrc : emptyImageSrc}
+              circle={true}
             />
             <h1 className="text-2xl font-bold my-3">Le Minh Tuong</h1>
             <span className="text-xl">User</span>

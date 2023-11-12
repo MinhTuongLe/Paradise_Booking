@@ -65,7 +65,10 @@ function ListingCard({
         delay: 0.5,
         ease: [0, 0.71, 0.2, 1.01],
       }}
-      onClick={() => router.push(`/listings/${data.id}`)}
+      onClick={() => {
+        window.open(`/listings/${data.id}`, "_blank");
+        // router.push(`/listings/${data.id}`)
+      }}
       className="col-span-1 cursor-pointer group"
     >
       <div className="flex flex-col gap-2 w-full">
