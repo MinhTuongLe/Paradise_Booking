@@ -2,7 +2,6 @@ import ClientOnly from "@/components/ClientOnly";
 import EmptyState from "@/components/EmptyState";
 import React from "react";
 import getCurrentUser from "../actions/getCurrentUser";
-import getReservation from "../actions/getReservations";
 import ReservationsClient from "./ReservationsClient";
 import { mock_data } from "../../mock-data/listing";
 import { mock_data_2 } from "../../mock-data/reservation";

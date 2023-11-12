@@ -189,6 +189,7 @@ function SearchModal({}) {
       title="Filters"
       actionLabel="Search"
       body={bodyContent}
+      reset={undefined}
     />
   );
 }

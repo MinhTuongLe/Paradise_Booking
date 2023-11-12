@@ -95,7 +95,7 @@ function ListingClient({ reservations = [], listing, currentUser }) {
 
   return (
     <Container>
-      <div className="max-w-screen-lg mx-auto">
+      <div className="w-full mx-auto mt-4">
         <div className="flex flex-col">
           <ListingHead
             title={listing.title}

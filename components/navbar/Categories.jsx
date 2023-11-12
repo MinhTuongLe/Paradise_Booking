@@ -106,33 +106,27 @@ function Categories({}) {
   const filtersModal = useFiltersModal();
 
   const isMainPage = pathname === "/";
-  // State to keep track of the scroll position
   const [scrollPosition, setScrollPosition] = useState(0);
 
-  // Reference to the scrollable container
   const scrollableContainerRef = useRef(null);
 
   if (!isMainPage) {
     return null;
   }
 
-  // Function to scroll the container left
-  const scrollLeft = () => {
+  const scroll = (direction) => {
     if (scrollableContainerRef.current) {
-      const newPosition = scrollPosition - 100; // Adjust the scroll distance as needed
-      scrollableContainerRef.current.scrollTo({
-        left: newPosition,
-        behavior: "smooth",
-      });
-      setScrollPosition(newPosition);
-    }
-  };
-
-  // Function to scroll the container right
-  const scrollRight = () => {
-    if (scrollableContainerRef.current) {
-      const newPosition = scrollPosition + 100; // Adjust the scroll distance as needed
-      scrollableContainerRef.current.scrollTo({
+      const container = scrollableContainerRef.current;
+      const containerWidth = container.clientWidth;
+      const containerScrollWidth = container.scrollWidth;
+      const newPosition =
+        direction === "left"
+          ? Math.max(scrollPosition - containerWidth, 0)
+          : Math.min(
+              scrollPosition + containerWidth,
+              containerScrollWidth - containerWidth
+            );
+      container.scrollTo({
         left: newPosition,
         behavior: "smooth",
       });
@@ -142,13 +136,13 @@ function Categories({}) {
 
   return (
     <Container>
-      <div className="flex flex-row items-center justify-between z-10 bg-white">
+      <div className="flex flex-row items-center justify-center z-10 bg-white gap-16">
         <div className="pt-4 flex flex-row items-center justify-between w-[992px] relative">
           <button
-            className="absolute left-0 top-0 h-full p-2 mr-4"
-            onClick={scrollLeft}
+            className="absolute left-0 top-0 h-full p-2 mr-4 translate-x-[-100%]"
+            onClick={() => scroll("left")}
           >
-            <BsArrowLeftCircle />
+            <BsArrowLeftCircle size={24} />
           </button>
           <div
             ref={scrollableContainerRef}
@@ -165,10 +159,10 @@ function Categories({}) {
             ))}
           </div>
           <button
-            className="absolute right-0 top-0 h-full p-2 ml-4"
-            onClick={scrollRight}
+            className="absolute right-0 top-0 h-full p-2 ml-4 translate-x-[100%]"
+            onClick={() => scroll("right")}
           >
-            <BsArrowRightCircle />
+            <BsArrowRightCircle size={24} />
           </button>
         </div>
         <button

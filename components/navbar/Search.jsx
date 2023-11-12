@@ -9,8 +9,8 @@ import { BiSearch } from "react-icons/bi";
 
 function Search({}) {
   const searchModel = useSearchModal();
-  const params = useSearchParams();
   const { getByValue } = useCountries();
+  const params = useSearchParams();
 
   const locationValue = params?.get("locationValue");
   const startDate = params?.get("startDate");

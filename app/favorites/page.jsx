@@ -2,7 +2,6 @@ import ClientOnly from "@/components/ClientOnly";
 import EmptyState from "@/components/EmptyState";
 import React from "react";
 import getCurrentUser from "../actions/getCurrentUser";
-import getFavoriteListings from "../actions/getFavoriteListings";
 import FavoritesClient from "./FavoritesClient";
 import { mock_data } from "../../mock-data/listing";
 

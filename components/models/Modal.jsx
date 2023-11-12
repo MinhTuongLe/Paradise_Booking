@@ -27,7 +27,7 @@ function Modal({
     if (disabled) {
       return;
     }
-    reset();
+    if (reset) reset();
     setShowModal(false);
     setTimeout(() => {
       onClose();
