@@ -14,6 +14,7 @@ import Button from "../Button";
 import Heading from "../Heading";
 import Input from "../inputs/Input";
 import Modal from "./Modal";
+import { BiDollar } from "react-icons/bi";
 
 function FiltersModal({}) {
   const filtersModal = useFiltersModal();
@@ -66,83 +67,172 @@ function FiltersModal({}) {
   const bodyContent = (
     <div className="flex flex-col gap-4">
       <Heading
-        title="Welcome to Paradise"
-        subtitle="Create an Account!"
-        center
+        title="Place type"
+        subtitle="Find rooms, houses or any type of accommodation."
       />
-      <Input
-        id="email"
-        label="Email Address"
-        disabled={isLoading}
-        register={register}
-        errors={errors}
-        required
-      />
-      <Input
-        id="name"
-        label="User Name"
-        disabled={isLoading}
-        register={register}
-        errors={errors}
-        required
-      />
-      <Input
-        id="password"
-        label="Password"
-        disabled={isLoading}
-        register={register}
-        errors={errors}
-        required
-        type="password"
-      />
-      <Input
-        id="confirmPassword"
-        label="Confirm Password"
-        disabled={isLoading}
-        register={register}
-        errors={errors}
-        required
-        type="password"
-      />
+      <div className="flex justify-center items-center border-b-[1px] pb-6">
+        <div className="border-[1px] w-2/3 py-2 rounded-full shadow-sm hover:shadow-md transition cursor-pointer">
+          <div className="flex flex-row items-center justify-between w-full">
+            <div className="text-sm font-semibold px-6 w-1/3 text-center">
+              Any type
+            </div>
+            <div className="hidden sm:block text-losm font-semibold px-6 border-x-[1px] flex-1 text-center w-1/3">
+              Room
+            </div>
+            <div className="text-sm font-semibold px-6 w-1/3 text-center">
+              House
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <Heading title="Price range" subtitle="Price per night." />
+      <div className="flex justify-center items-center">
+        <div className="w-full relative">
+          <BiDollar
+            size={24}
+            className="
+            text-neutral-700
+            absolute
+            top-5
+            left-2
+          "
+          />
+          <input
+            placeholder=""
+            type="text"
+            className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition disabled:opacity-70 disabled:cursor-not-allowed pl-9
+        }`}
+          />
+
+          <label
+            className={`absolute text-md duration-150 transform -translate-y-3 top-5 z-10 origin-[0] left-9 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 text-zinc-400`}
+          >
+            Min price
+          </label>
+        </div>
+        <span className="border-b-[1px] w-10 mx-4"></span>
+        <div className="w-full relative">
+          <BiDollar
+            size={24}
+            className="
+            text-neutral-700
+            absolute
+            top-5
+            left-2
+          "
+          />
+          <input
+            placeholder=""
+            type="text"
+            className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition disabled:opacity-70 disabled:cursor-not-allowed pl-9
+        }`}
+          />
+          <label
+            className={`absolute text-md duration-150 transform -translate-y-3 top-5 z-10 origin-[0] left-9 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 text-zinc-400`}
+          >
+            Max price
+          </label>
+        </div>
+      </div>
+
+      {/* <Heading title="Rooms" />
+      <div className="flex flex-col border-b-[1px] pb-6 space-y-3">
+        <div className="flex flex-col items-start justify-start">
+          <div className="font-light text-neutral-500 mb-1">Bedroom</div>
+          <div className="flex justify-start items-start space-x-6">
+            <button className="px-4 py-2 rounded-full border-[1px] w-[64px]">
+              Any
+            </button>
+            <button className="px-4 py-2 rounded-full border-[1px] w-[64px]">
+              1
+            </button>
+            <button className="px-4 py-2 rounded-full border-[1px] w-[64px]">
+              2
+            </button>
+            <button className="px-4 py-2 rounded-full border-[1px] w-[64px]">
+              3
+            </button>
+            <button className="px-4 py-2 rounded-full border-[1px] w-[64px]">
+              4
+            </button>
+            <button className="px-4 py-2 rounded-full border-[1px] w-[64px]">
+              5+
+            </button>
+          </div>
+        </div>
+        <div className="flex flex-col items-start justify-start">
+          <div className="font-light text-neutral-500 mb-1">Bed</div>
+          <div className="flex justify-start items-start space-x-6">
+            <button className="px-4 py-2 rounded-full border-[1px] w-[64px]">
+              Any
+            </button>
+            <button className="px-4 py-2 rounded-full border-[1px] w-[64px]">
+              1
+            </button>
+            <button className="px-4 py-2 rounded-full border-[1px] w-[64px]">
+              2
+            </button>
+            <button className="px-4 py-2 rounded-full border-[1px] w-[64px]">
+              3
+            </button>
+            <button className="px-4 py-2 rounded-full border-[1px] w-[64px]">
+              4
+            </button>
+            <button className="px-4 py-2 rounded-full border-[1px] w-[64px]">
+              5+
+            </button>
+          </div>
+        </div>
+        <div className="flex flex-col items-start justify-start">
+          <div className="font-light text-neutral-500 mb-1">Bathroom</div>
+          <div className="flex justify-start items-start space-x-6">
+            <button className="px-4 py-2 rounded-full border-[1px] w-[64px]">
+              Any
+            </button>
+            <button className="px-4 py-2 rounded-full border-[1px] w-[64px]">
+              1
+            </button>
+            <button className="px-4 py-2 rounded-full border-[1px] w-[64px]">
+              2
+            </button>
+            <button className="px-4 py-2 rounded-full border-[1px] w-[64px]">
+              3
+            </button>
+            <button className="px-4 py-2 rounded-full border-[1px] w-[64px]">
+              4
+            </button>
+            <button className="px-4 py-2 rounded-full border-[1px] w-[64px]">
+              5+
+            </button>
+          </div>
+        </div>
+      </div> */}
     </div>
   );
 
   const footerContent = (
-    <div className="flex flex-col gap-4 mt-3">
+    <>
       <hr />
-      <Button
-        outline
-        label="Continue with Google"
-        icon={FcGoogle}
-        onClick={() => signIn("google")}
-      />
-      <Button
-        outline
-        label="Continue with Facebook"
-        icon={AiFillFacebook}
-        onClick={() => signIn("facebook")}
-        isColor
-      />
-      <div className="text-neutral-500 text-center mt-4 font-light">
-        <div>
-          Already have an account?{" "}
-          <span
-            onClick={toggle}
-            className="text-neutral-800 cursor-pointer hover:underline"
-          >
-            Log in
-          </span>
-        </div>
+      <div className="flex flex-row gap-4">
+        <Button
+          outline
+          label="Remove all"
+          // onClick={() => signIn("google")}
+        />
+        <Button
+          label={`Display ${7} Result(s)`}
+          // onClick={() => signIn("facebook")}
+        />
       </div>
-    </div>
+    </>
   );
 
   return (
     <Modal
       disabled={isLoading}
       isOpen={filtersModal.isOpen}
-      title="Register"
-      actionLabel="Continue"
+      title="Filters"
       onClose={filtersModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
