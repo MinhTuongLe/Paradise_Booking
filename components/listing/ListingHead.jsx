@@ -48,7 +48,7 @@ function ListingHead({ title, locationValue, imageSrc, id, currentUser }) {
             delay: 0.5,
             ease: [0, 0.71, 0.2, 1.01],
           }}
-          className="col-span-6 w-full h-[50vh] overflow-hidden rounded-xl relative"
+          className="col-span-6 w-full h-[60vh] overflow-hidden rounded-xl relative"
         >
           <Image
             src={imageSrc}
@@ -134,8 +134,8 @@ function ListingHead({ title, locationValue, imageSrc, id, currentUser }) {
             </div>
           </div>
         </motion.div>
-        <div className="col-span-6 h-[50vh]">
-          <div className="grid grid-rows-2 h-[50vh] gap-4">
+        <div className="col-span-6 h-[60vh]">
+          <div className="grid grid-rows-2 h-[60vh] gap-4">
             <div className="row-span-1">
               <div className="grid grid-cols-12 gap-4 w-full h-full">
                 <motion.div
