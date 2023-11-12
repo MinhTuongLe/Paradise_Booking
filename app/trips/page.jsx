@@ -54,6 +54,8 @@ import { mock_data_2 } from "../../mock-data/reservation";
 //   ],
 // };
 
+export const dynamic = "force-dynamic";
+
 const TripsPage = async (props) => {
   const currentUser = await getCurrentUser();
 

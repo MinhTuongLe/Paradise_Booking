@@ -4,6 +4,8 @@ import getCurrentUser from "../actions/getCurrentUser";
 import ProfileClient from "./ProfileClient";
 import { mock_data } from "../../mock-data/listing";
 
+export const dynamic = "force-dynamic";
+
 const ProfilePage = async (props) => {
   // const currentUser = await getCurrentUser();
 

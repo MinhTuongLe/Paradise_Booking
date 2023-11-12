@@ -4,6 +4,8 @@ import getCurrentUser from "../actions/getCurrentUser";
 import NotificationClient from "./NotificationClient";
 import { mock_data } from "../../mock-data/listing";
 
+export const dynamic = "force-dynamic";
+
 const NotificationPage = async (props) => {
   // const currentUser = await getCurrentUser();
 

@@ -4,6 +4,8 @@ import getCurrentUser from "../actions/getCurrentUser";
 import PropertiesClient from "./PropertiesClient";
 import { mock_data } from "../../mock-data/listing";
 
+export const dynamic = "force-dynamic";
+
 const PropertiesPage = async (props) => {
   const currentUser = await getCurrentUser();
 

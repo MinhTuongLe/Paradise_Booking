@@ -4,6 +4,8 @@ import getCurrentUser from "../actions/getCurrentUser";
 import { mock_data } from "../../mock-data/listing";
 import ChangePasswordClient from "./ChangePasswordClient";
 
+export const dynamic = "force-dynamic";
+
 const ChangePasswordPage = async (props) => {
   // const currentUser = await getCurrentUser();
 

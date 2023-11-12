@@ -5,6 +5,8 @@ import getCurrentUser from "../actions/getCurrentUser";
 import FavoritesClient from "./FavoritesClient";
 import { mock_data } from "../../mock-data/listing";
 
+export const dynamic = "force-dynamic";
+
 const FavoritePage = async (props) => {
   const currentUser = await getCurrentUser();
   // const listings = await getFavoriteListings();

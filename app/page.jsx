@@ -5,6 +5,8 @@ import ListingCard from "@/components/listing/ListingCard";
 import getCurrentUser from "./actions/getCurrentUser";
 import { mock_data } from "../mock-data/listing";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home({ searchParams }) {
   // const listing = await getListings(searchParams);
   const listing = mock_data.listings;

@@ -6,6 +6,8 @@ import ReservationsClient from "./ReservationsClient";
 import { mock_data } from "../../mock-data/listing";
 import { mock_data_2 } from "../../mock-data/reservation";
 
+export const dynamic = "force-dynamic";
+
 const ReservationsPage = async (props) => {
   const currentUser = await getCurrentUser();
 
