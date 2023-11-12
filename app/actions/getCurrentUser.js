@@ -6,6 +6,8 @@ export async function getSession() {
   return await getServerSession(authOptions);
 }
 
+export const dynamic = "force-dynamic";
+
 export default async function getCurrentUser() {
   try {
     const session = await getSession();
@@ -31,9 +33,6 @@ export default async function getCurrentUser() {
       emailVerified: currentUser.emailVerified?.toISOString() || null,
     };
   } catch (error) {
-    console.log(
-      "🚀 ~ file: getCurrentUser.ts:13 ~ getCurrentUser ~ error:",
-      error
-    );
+    console.log(error);
   }
 }
