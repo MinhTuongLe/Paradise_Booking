@@ -27,7 +27,7 @@ function RegisterModal({}) {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      name: "",
+      // name: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -82,14 +82,14 @@ function RegisterModal({}) {
         errors={errors}
         required
       />
-      <Input
+      {/* <Input
         id="name"
         label="User Name"
         disabled={isLoading}
         register={register}
         errors={errors}
         required
-      />
+      /> */}
       <Input
         id="password"
         label="Password"
