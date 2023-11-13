@@ -18,6 +18,7 @@ function ListingCard({
   actionLabel,
   actionId = "",
   currentUser,
+  shrink = false,
 }) {
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
@@ -75,21 +76,25 @@ function ListingCard({
         <div className="aspect-square w-full relative oerflow-hidden rounded-xl">
           <Image
             fill
-            className="object-cover h-full w-full group-hover:scale-110 transition"
+            className="object-cover h-full w-full group-hover:scale-110 transition  rounded-xl"
             src={data.imageSrc || emptyImageSrc}
             alt="listing"
           />
-          <div className="absolute top-3 right-3">
-            <HeartButton listingId={data.id} currentUser={currentUser} />
+          {shrink === false && (
+            <div className="absolute top-3 right-3">
+              <HeartButton listingId={data.id} currentUser={currentUser} />
+            </div>
+          )}
+        </div>
+        {shrink === false && (
+          <div className="font-semibold text-lg">
+            {location?.region}, {location?.label}
           </div>
-        </div>
-        <div className="font-semibold text-lg">
-          {location?.region}, {location?.label}
-        </div>
+        )}
         <div className="font-light text-neutral-500">
           {reservationDate || data.category}
         </div>
-        <div className="flex flex-row items-center gap-">
+        <div className="flex flex-row items-center">
           <div className="flex gap-1 font-semibold">
             ${price} {!reservation && <div className="font-light"> Night</div>}
           </div>

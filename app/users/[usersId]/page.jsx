@@ -2,11 +2,13 @@ import ClientOnly from "@/components/ClientOnly";
 import EmptyState from "@/components/EmptyState";
 import getCurrentUser from "../../actions/getCurrentUser";
 import UserClient from "./UserClient";
+import { mock_data } from "../../../mock-data/listing";
 
 export const dynamic = "force-dynamic";
 
 const UserPage = async (props) => {
-  // const currentUser = await getCurrentUser();
+  const currentUser = await getCurrentUser();
+  const listing = mock_data.listings;
 
   // if (!currentUser) {
   //   return <EmptyState title="Unauthorized" subtitle="Please login" />;
@@ -26,7 +28,7 @@ const UserPage = async (props) => {
   //     />
   //   );
   // }
-  return <UserClient />;
+  return <UserClient listing={listing} currentUser={currentUser} />;
 };
 
 export default UserPage;

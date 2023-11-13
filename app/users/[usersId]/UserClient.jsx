@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/no-children-prop */
 "use client";
 
@@ -18,6 +19,7 @@ import ImageUpload from "@/components/inputs/ImageUpload";
 import { AiOutlineMail, AiOutlinePhone, AiOutlineUser } from "react-icons/ai";
 import { FaRegAddressCard } from "react-icons/fa";
 import { MdOutlineDateRange } from "react-icons/md";
+import "../../../styles/globals.css";
 
 const data = {
   name: "Le Minh Tuong",
@@ -25,10 +27,10 @@ const data = {
   phone: "0834091202",
   dob: "09/12/2002",
   address: "HCM",
-  bio: "Developer in HCM City ~~~ Welcome to my profile!",
+  bio: "Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile!",
 };
 
-function UserClient() {
+function UserClient({ listing, currentUser }) {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -76,24 +78,31 @@ function UserClient() {
       <div className="mt-10 grid grid-cols-12 gap-8">
         <div className="col-span-4">
           <div className="p-8 rounded-[24px] flex flex-col items-center justify-center shadow-2xl">
-            <Image
-              width={120}
-              height={120}
-              src={emptyImageSrc}
-              alt="Avatar"
-              className="rounded-full h-[120px] w-[120px]"
-            />
-            {/* <ImageUpload
-              onChange={(value) => setCustomValue("avatar", value)}
-              value={imageSrc ? imageSrc : emptyImageSrc}
-              circle={true}
-            /> */}
-            <h1 className="text-2xl font-bold my-3">Le Minh Tuong</h1>
-            <span className="text-xl">User</span>
+            {isEditMode ? (
+              <>
+                <ImageUpload
+                  onChange={(value) => setCustomValue("avatar", value)}
+                  value={imageSrc ? imageSrc : emptyImageSrc}
+                  circle={true}
+                />
+              </>
+            ) : (
+              <>
+                <Image
+                  width={120}
+                  height={120}
+                  src={emptyImageSrc}
+                  alt="Avatar"
+                  className="rounded-full h-[120px] w-[120px]"
+                />
+                <h1 className="text-2xl font-bold my-3">Le Minh Tuong</h1>
+                <span className="text-xl">User</span>
+              </>
+            )}
           </div>
           {isEditMode && (
             <>
-              <h1 className="text-xl font-bold my-3 mt-[32px]">Your Bio</h1>
+              <h1 className="text-xl font-bold my-3">Your Bio</h1>
               <textarea
                 className="resize-none border border-solid p-8 rounded-[24px] w-full focus:outline-none"
                 rows={5}
@@ -192,7 +201,7 @@ function UserClient() {
                     >
                       Edit profile
                     </button>
-                    <div className="space-y-3 mt-6">
+                    <div className="space-y-3 mt-6 ">
                       <div className="flex justify-start items-center space-x-2">
                         <AiOutlineUser size={18} />
                         <p className="text-md">Name: {data.name}</p>
@@ -214,6 +223,95 @@ function UserClient() {
                         <p className="text-md">Address: {data.address}</p>
                       </div>
                     </div>
+                    <div className="space-y-3 pb-4 my-4 w-full border-b-[1px]">
+                      <h1 className="text-xl font-bold mt-[32px]">
+                        About Le Minh Tuong
+                      </h1>
+                      <p
+                        className="profile-bio resize-none border border-solid p-8 rounded-[24px] w-full focus:outline-none h-[30vh] overflow-auto"
+                        rows={5}
+                        placeholder="Add your bio here ..."
+                      >
+                        {data.bio}
+                      </p>
+                    </div>
+                    <div className="border-b-[1px] pb-4">
+                      <div className="flex justify-between items-center w-full">
+                        <h1 className="text-xl font-bold space-y-3">
+                          Le Minh Tuong' Comments
+                        </h1>
+                        <button
+                          className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
+                          onClick={() => setIsEditMode(true)}
+                        >
+                          Show more
+                        </button>
+                      </div>
+                      <div className="vendor-room-listing flex w-full space-x-4 mt-3">
+                        <div className="w-1/2 p-2 space-y-6 border-[1px] rounded-xl">
+                          <p className="line-clamp-5">{`"...${data.bio}`}</p>
+                          <div className="flex justify-start items-center space-x-6">
+                            <Image
+                              width={40}
+                              height={40}
+                              src={emptyImageSrc}
+                              alt="Avatar"
+                              className="rounded-full h-[40px] w-[40px]"
+                            />
+                            <div>
+                              <h1 className="text-md font-bold space-y-3">
+                                Conal
+                              </h1>
+                              <p>tháng 11 năm 2023</p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="w-1/2 p-2 space-y-6 border-[1px] rounded-xl">
+                          <p className="line-clamp-5">{`"...${data.bio}`}</p>
+                          <div className="flex justify-start items-center space-x-6">
+                            <Image
+                              width={40}
+                              height={40}
+                              src={emptyImageSrc}
+                              alt="Avatar"
+                              className="rounded-full h-[40px] w-[40px]"
+                            />
+                            <div>
+                              <h1 className="text-md font-bold space-y-3">
+                                Conal
+                              </h1>
+                              <p>tháng 11 năm 2023</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    {listing && listing.length > 0 && (
+                      <div className="w-full mt-4">
+                        <div className="flex justify-between items-center w-full">
+                          <h1 className="text-xl font-bold space-y-3">
+                            Le Minh Tuong's Rooms
+                          </h1>
+                          <button
+                            className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
+                            onClick={() => setIsEditMode(true)}
+                          >
+                            Show more
+                          </button>
+                        </div>
+                        <div className="vendor-room-listing flex w-full mt-2">
+                          {listing.slice(0, 3).map((list) => (
+                            <div key={list.id} className="w-1/3 p-2">
+                              <ListingCard
+                                data={list}
+                                currentUser={currentUser}
+                                shrink={true}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </>
                 ) : (
                   <>
