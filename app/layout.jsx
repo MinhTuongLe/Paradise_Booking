@@ -10,6 +10,7 @@ import FiltersModal from "@/components/models/FiltersModal";
 import CommentsModal from "@/components/models/CommentsModal";
 import RoomsModal from "@/components/models/RoomsModal";
 import RoomCommentsModal from "@/components/models/RoomCommentsModal";
+import DeleteModal from "@/components/models/DeleteModal";
 import Navbar from "@/components/navbar/Navbar";
 import { Nunito } from "next/font/google";
 import "../styles/globals.css";
@@ -43,6 +44,7 @@ export default async function RootLayout({ children }) {
           <CommentsModal />
           <RoomsModal currentUser={currentUser} />
           <RoomCommentsModal />
+          <DeleteModal />
           <Navbar currentUser={currentUser} />
         </ClientOnly>
         <div className="pb-20 pt-[10vh] min-h-[70vh]">{children}</div>

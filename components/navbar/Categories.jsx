@@ -20,6 +20,7 @@ import CategoryBox from "../CategoryBox";
 import Container from "../Container";
 import { BiFilterAlt } from "react-icons/bi";
 import useFiltersModal from "../../hook/useFiltersModal";
+import useDeleteModal from "../../hook/useDeleteModal";
 
 export const categories = [
   {
@@ -104,6 +105,11 @@ function Categories({}) {
   const category = params?.get("category");
   const pathname = usePathname();
   const filtersModal = useFiltersModal();
+  const deleteModal = useDeleteModal();
+
+  const functionDelete = () => {
+    console.log(123123123);
+  };
 
   const isMainPage = pathname === "/";
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -167,7 +173,7 @@ function Categories({}) {
         </div>
         <button
           className="flex flex-row border border-solid border-gray-300 rounded-lg px-[16px] py-[8px] transition duration-300 hover:shadow-lg"
-          onClick={filtersModal.onOpen}
+          onClick={deleteModal.onOpen}
         >
           <BiFilterAlt className="text-xl h-[24px]" />
           <span className="text-base font-medium ml-[8px]">Filters</span>

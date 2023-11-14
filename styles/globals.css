@@ -6,8 +6,7 @@
   body,
   textarea,
   .profile-bio,
-  .vendor-room-listing,
-  .modal-general {
+  .vendor-room-listing {
     @apply !scrollbar-thin !scrollbar-track-transparent !scrollbar-thumb-[#FF5A5F];
   }
 }
