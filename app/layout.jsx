@@ -40,7 +40,7 @@ export default async function RootLayout({ children }) {
           <FiltersModal />
           <RentModal />
           <CommentsModal />
-          <RoomsModal currentUser={currentUser}/>
+          <RoomsModal currentUser={currentUser} />
           <Navbar currentUser={currentUser} />
         </ClientOnly>
         <div className="pb-20 pt-[10vh] min-h-[70vh]">{children}</div>

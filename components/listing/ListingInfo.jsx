@@ -9,7 +9,6 @@ import Avatar from "../Avatar";
 import ListingCategory from "./ListingCategory";
 import Sleep from "../Sleep";
 import Offers from "../Offers";
-import { FaStar } from "react-icons/fa";
 
 const Map = dynamic(() => import("../Map"), {
   ssr: false,
@@ -45,13 +44,6 @@ function ListingInfo({
           <p>{guestCount} guests</p>
           <p>{roomCount} rooms</p>
           <p>{bathroomCount} bathrooms</p>
-        </div>
-        <div className="flex flex-row items-center gap-4 font-light text-neutral-500">
-          <div className="flex space-x-2 justify-between items-center">
-            <FaStar size={16} />
-            <span className="text-sm">5.0</span>
-          </div>
-          <span className="text-sm">31 comments</span>
         </div>
       </div>
       <hr />
