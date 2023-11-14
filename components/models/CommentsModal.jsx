@@ -173,7 +173,7 @@ function CommentsModal({}) {
       <div className="flex justify-between items-center w-full">
         <button
           className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
-          onClick={commentsModal.onClose}
+          onClick={commentsModal.onOpen}
         >
           Show more comments
         </button>

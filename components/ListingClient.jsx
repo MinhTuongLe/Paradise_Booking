@@ -8,12 +8,19 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Range } from "react-date-range";
 import { toast } from "react-toastify";
+import dynamic from "next/dynamic";
 
+import useCountries from "@/hook/useCountries";
 import Container from "./Container";
 import ListingHead from "./listing/ListingHead";
 import ListingInfo from "./listing/ListingInfo";
 import ListingReservation from "./listing/ListingReservation";
 import { categories } from "./navbar/Categories";
+import ListingComments from "./listing/ListingComments";
+
+const Map = dynamic(() => import("./Map"), {
+  ssr: false,
+});
 
 const initialDateRange = {
   startDate: new Date(),
@@ -24,6 +31,8 @@ const initialDateRange = {
 function ListingClient({ reservations = [], listing, currentUser }) {
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
+  const { getByValue } = useCountries();
+  const coordinates = getByValue(listing.locationValue).latlng;
 
   const router = useRouter();
   const loginModal = useLoginModel();
@@ -104,7 +113,7 @@ function ListingClient({ reservations = [], listing, currentUser }) {
             id={listing.id}
             currentUser={currentUser}
           />
-          <div className="grid grid-cols-1 md:grid-cols-7 md:gap-10 mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-7 md:gap-10 my-8">
             <ListingInfo
               user={currentUser}
               category={category}
@@ -114,7 +123,7 @@ function ListingClient({ reservations = [], listing, currentUser }) {
               bathroomCount={listing.bathroomCount}
               locationValue={listing.locationValue}
             />
-            <div className="order-first mb-10 md:order-last md:col-span-3">
+            <div className="order-first mb-10 md:order-last md:col-span-3 space-y-6">
               <ListingReservation
                 price={listing.price}
                 totalPrice={totalPrice}
@@ -125,6 +134,13 @@ function ListingClient({ reservations = [], listing, currentUser }) {
                 disabledDates={disableDates}
               />
             </div>
+          </div>
+          <hr />
+          <ListingComments />
+          <hr />
+          <div className="my-8 w-1/2">
+            <p className="text-xl font-semibold mb-8">{`Where you’ll be`}</p>
+            <Map center={coordinates} locationValue={listing.locationValue} />
           </div>
         </div>
       </div>

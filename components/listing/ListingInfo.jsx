@@ -1,18 +1,11 @@
 "use client";
 
-import useCountries from "@/hook/useCountries";
-
-import dynamic from "next/dynamic";
 import React from "react";
 import { IconType } from "react-icons";
 import Avatar from "../Avatar";
 import ListingCategory from "./ListingCategory";
 import Sleep from "../Sleep";
 import Offers from "../Offers";
-
-const Map = dynamic(() => import("../Map"), {
-  ssr: false,
-});
 
 function ListingInfo({
   user,
@@ -21,10 +14,7 @@ function ListingInfo({
   roomCount,
   bathroomCount,
   category,
-  locationValue,
 }) {
-  const { getByValue } = useCountries();
-  const coordinates = getByValue(locationValue).latlng;
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
 
@@ -73,9 +63,6 @@ function ListingInfo({
       <Sleep />
       <hr />
       <Offers />
-      <hr />
-      <p className="text-xl font-semibold">{`Where you’ll be`}</p>
-      <Map center={coordinates} locationValue={locationValue} />
     </div>
   );
 }
