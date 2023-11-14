@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import React, { useCallback, useMemo } from "react";
 import Button from "../Button";
 import HeartButton from "../HeartButton";
+import { FaStar } from "react-icons/fa";
 
 function ListingCard({
   data,
@@ -91,8 +92,14 @@ function ListingCard({
             {location?.region}, {location?.label}
           </div>
         )}
-        <div className="font-light text-neutral-500">
-          {reservationDate || data.category}
+        <div className="flex justify-between items-center">
+          <div className="font-light text-neutral-500">
+            {reservationDate || data.category}
+          </div>
+          <div className="flex space-x-2 justify-between items-center">
+            <FaStar size={16} />
+            <span className="text-sm">5.0</span>
+          </div>
         </div>
         <div className="flex flex-row items-center">
           <div className="flex gap-1 font-semibold">

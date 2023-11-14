@@ -1,24 +1,19 @@
 "use client";
 
-import useLoginModel from "@/hook/useLoginModal";
 import useFiltersModal from "../../hook/useFiltersModal";
-import axios from "axios";
+// import axios from "axios";
 import { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { AiFillFacebook } from "react-icons/ai";
-import { FcGoogle } from "react-icons/fc";
 import { toast } from "react-toastify";
 
-import { signIn } from "next-auth/react";
 import Button from "../Button";
 import Heading from "../Heading";
-import Input from "../inputs/Input";
+// import Input from "../inputs/Input";
 import Modal from "./Modal";
 import { BiDollar } from "react-icons/bi";
 
 function FiltersModal({}) {
   const filtersModal = useFiltersModal();
-  const loginModel = useLoginModel();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -45,24 +40,23 @@ function FiltersModal({}) {
 
     const { confirmPassword, ...formData } = data;
 
-    axios
-      .post("/api/register", formData)
-      .then(() => {
-        toast.success("Success!");
-        loginModel.onOpen();
-        filtersModal.onClose();
-      })
-      .catch((err) => toast.error("Something Went Wrong"))
-      .finally(() => {
-        setIsLoading(false);
-        toast.success("Register Successfully");
-      });
+    // axios
+    //   .post("/api/register", formData)
+    //   .then(() => {
+    //     toast.success("Success!");
+    //     loginModel.onOpen();
+    //     filtersModal.onClose();
+    //   })
+    //   .catch((err) => toast.error("Something Went Wrong"))
+    //   .finally(() => {
+    //     setIsLoading(false);
+    //     toast.success("Register Successfully");
+    //   });
   };
 
   const toggle = useCallback(() => {
-    loginModel.onOpen();
     filtersModal.onClose();
-  }, [loginModel, filtersModal]);
+  }, [filtersModal]);
 
   const bodyContent = (
     <div className="flex flex-col gap-4">

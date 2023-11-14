@@ -20,6 +20,8 @@ import { AiOutlineMail, AiOutlinePhone, AiOutlineUser } from "react-icons/ai";
 import { FaRegAddressCard } from "react-icons/fa";
 import { MdOutlineDateRange } from "react-icons/md";
 import "../../../styles/globals.css";
+import useCommentsModal from "@/hook/useCommentsModal";
+import useRoomsModal from "@/hook/useRoomsModal";
 
 const data = {
   name: "Le Minh Tuong",
@@ -32,6 +34,8 @@ const data = {
 
 function UserClient({ listing, currentUser }) {
   const router = useRouter();
+  const commentsModal = useCommentsModal();
+  const roomsModal = useRoomsModal();
 
   const [isLoading, setIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -242,9 +246,9 @@ function UserClient({ listing, currentUser }) {
                         </h1>
                         <button
                           className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
-                          onClick={() => setIsEditMode(true)}
+                          onClick={commentsModal.onOpen}
                         >
-                          Show more
+                          Show more comments
                         </button>
                       </div>
                       <div className="vendor-room-listing flex w-full space-x-4 mt-3">
@@ -294,9 +298,9 @@ function UserClient({ listing, currentUser }) {
                           </h1>
                           <button
                             className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
-                            onClick={() => setIsEditMode(true)}
+                            onClick={roomsModal.onOpen}
                           >
-                            Show more
+                            Show more rooms
                           </button>
                         </div>
                         <div className="vendor-room-listing flex w-full mt-2">

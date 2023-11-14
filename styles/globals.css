@@ -5,7 +5,9 @@
 @layer base {
   body,
   textarea,
-  .profile-bio, .vendor-room-listing {
+  .profile-bio,
+  .vendor-room-listing,
+  .modal-general {
     @apply !scrollbar-thin !scrollbar-track-transparent !scrollbar-thumb-[#FF5A5F];
   }
 }

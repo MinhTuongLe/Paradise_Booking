@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import Button from "../Button";
+import "../../styles/globals.css"
 
 function Modal({
   isOpen,
@@ -61,7 +62,7 @@ function Modal({
         onClick={handleClose}
       >
         <div
-          className="relative w-full md:w-4/6 lg:w-3/6 xl:w-2/5 my-6 mx-auto h-full lg:h-auto md:h-auto"
+          className="relative w-full md:w-4/6 lg:w-3/6 xl:w-2/5 my-6 mx-auto max-h-[80vh] lg:h-auto md:h-auto overflow-auto modal-general"
           onClick={(e) => e.stopPropagation()}
         >
           <div
