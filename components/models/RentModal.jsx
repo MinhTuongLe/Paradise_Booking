@@ -5,7 +5,7 @@ import useRentModal from "@/hook/useRentModal";
 import axios from "axios";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -17,20 +17,25 @@ import ImageUpload from "../inputs/ImageUpload";
 import Input from "../inputs/Input";
 import { categories } from "../navbar/Categories";
 import Modal from "./Modal";
+import Image from "next/image";
+import rent_room_1 from "@/public/assets/rent_room_1.png";
+import rent_room_2 from "@/public/assets/rent_room_2.png";
+import rent_room_3 from "@/public/assets/rent_room_3.png";
 
 const STEPS = {
-  CATEGORY: 0,
-  LOCATION: 1,
-  INFO: 2,
-  IMAGES: 3,
-  DESCRIPTION: 4,
-  PRICE: 5,
+  BECOME_VENDOR: 0,
+  CATEGORY: 1,
+  LOCATION: 2,
+  INFO: 3,
+  IMAGES: 4,
+  DESCRIPTION: 5,
+  PRICE: 6,
 };
 
 function RentModal({}) {
   const router = useRouter();
   const rentModel = useRentModal();
-  const [step, setStep] = useState(STEPS.CATEGORY);
+  const [step, setStep] = useState(STEPS.BECOME_VENDOR);
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -118,7 +123,7 @@ function RentModal({}) {
   }, [step]);
 
   const secondActionLabel = useMemo(() => {
-    if (step === STEPS.CATEGORY) {
+    if (step === STEPS.BECOME_VENDOR) {
       return undefined;
     }
 
@@ -127,11 +132,84 @@ function RentModal({}) {
 
   let bodyContent = (
     <div className="flex flex-col gap-8">
-      <Heading
-        title="Which of these best describes your place?"
-        subtitle="Pick a category"
-      />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-[#FF5A5F]">
+      <div className="grid md:grid-cols-2 gap-3 overflow-y-auto scrollbar-thin scrollbar-thumb-[#FF5A5F]">
+        <div className="col-span-1 flex items-center justify-center">
+          <span className="text-[24px] font-bold">
+            Become a vendor on Paradise
+          </span>
+        </div>
+        <div className="col-span-1 space-y-6">
+          <div className="w-full flex justify-between items-start">
+            <div className="w-[80%] flex justify-start items-start space-x-3">
+              <span className="text-lg font-bold">1</span>
+              <div className="space-y-2">
+                <p className="text-lg font-bold">Share your room to us</p>
+                <p className="text-md font-normal">
+                  Share some information such as the location, capacity of your
+                  rent room
+                </p>
+              </div>
+            </div>
+            <div className="w-[20%]">
+              <Image
+                width={400}
+                height={400}
+                src={rent_room_1}
+                alt="image 1"
+                className="w-full h-full"
+              />
+            </div>
+          </div>
+          <hr />
+          <div className="w-full flex justify-between items-start">
+            <div className="w-[80%] flex justify-start items-start space-x-3">
+              <span className="text-lg font-bold">2</span>
+              <div className="space-y-2">
+                <p className="text-lg font-bold">Make your room outstanding</p>
+                <p className="text-md font-normal">
+                  Add from 5 images with title and description
+                </p>
+              </div>
+            </div>
+            <div className="w-[20%] flex items-center justify-center">
+              <Image
+                width={400}
+                height={400}
+                src={rent_room_2}
+                alt="image 1"
+                className="w-full h-full"
+              />
+            </div>
+          </div>
+          <hr />
+          <div className="w-full flex justify-between items-start">
+            <div className="w-[80%] flex justify-start items-start space-x-3">
+              <span className="text-lg font-bold">3</span>
+              <div className="space-y-2">
+                <p className="text-lg font-bold">Finish and post</p>
+                <p className="text-md font-normal">
+                  Select options your want and post your room.
+                </p>
+              </div>
+            </div>
+            <div className="w-[20%]">
+              <Image
+                width={400}
+                height={400}
+                src={rent_room_3}
+                alt="image 1"
+                className="w-full h-full"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  if (step === STEPS.CATEGORY) {
+    bodyContent = (
+      <div className="grid md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-[#FF5A5F]">
         {categories.map((item, index) => (
           <div key={index} className="col-span-1">
             <CategoryInput
@@ -143,8 +221,8 @@ function RentModal({}) {
           </div>
         ))}
       </div>
-    </div>
-  );
+    );
+  }
 
   if (step === STEPS.LOCATION) {
     bodyContent = (
@@ -265,7 +343,7 @@ function RentModal({}) {
       actionLabel={actionLabel}
       onSubmit={handleSubmit(onSubmit)}
       secondaryActionLabel={secondActionLabel}
-      secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
+      secondaryAction={step === STEPS.BECOME_VENDOR ? undefined : onBack}
       onClose={rentModel.onClose}
       body={bodyContent}
       reset={reset}
