@@ -173,7 +173,7 @@ function Categories({}) {
         </div>
         <button
           className="flex flex-row border border-solid border-gray-300 rounded-lg px-[16px] py-[8px] transition duration-300 hover:shadow-lg"
-          onClick={deleteModal.onOpen}
+          onClick={filtersModal.onOpen}
         >
           <BiFilterAlt className="text-xl h-[24px]" />
           <span className="text-base font-medium ml-[8px]">Filters</span>
