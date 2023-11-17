@@ -129,7 +129,7 @@ function UserMenu({ currentUser }) {
                   onClick={() => menuItemSelect("/properties")}
                   label="My properties"
                 />
-                <MenuItem onClick={onRent} label="Airbnb your home" />
+                <MenuItem onClick={onRent} label="Paradise your home" />
                 <MenuItem
                   onClick={() => menuItemSelect(`/users/${currentUser.id}`)}
                   label="My profile"

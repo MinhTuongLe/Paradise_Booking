@@ -320,7 +320,7 @@ function UserClient({ listing, currentUser }) {
                 ) : (
                   <>
                     <p className="text-lg max-w-[60%]">
-                      Your Airbnb profile is an important part of every
+                      Your Paradise profile is an important part of every
                       booking/reservation. Create a profile to help other
                       Hosts/Hosts and guests learn about you.
                     </p>

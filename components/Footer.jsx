@@ -20,7 +20,7 @@ function Footer({}) {
     [
       "Support",
       "Help Center",
-      "AirCover",
+      "ParadiseCover",
       "Cancellation options",
       "Safety information",
       "Report a neighborhood concern",
