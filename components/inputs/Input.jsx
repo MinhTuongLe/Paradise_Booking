@@ -15,9 +15,9 @@ function Input({
 }) {
   const [showPassword, setShowPassword] = useState(false);
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  // const togglePasswordVisibility = () => {
+  //   setShowPassword(!showPassword);
+  // };
 
   return (
     <div className="w-full relative">
@@ -37,7 +37,8 @@ function Input({
         disabled={disabled}
         {...register(id, { required })}
         placeholder=""
-        type={showPassword ? "text" : type}
+        type={type}
+        // type={showPassword ? "text" : type}
         className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition disabled:opacity-70 disabled:cursor-not-allowed ${
           formatPrice ? "pl-9" : "pl-4"
         } ${errors[id] ? "border-rose-500" : "border-neutral-300"} ${
@@ -55,7 +56,7 @@ function Input({
         {label}
       </label>
 
-      {type === "password" && (
+      {/* {type === "password" && (
         <button
           type="button"
           onClick={togglePasswordVisibility}
@@ -67,7 +68,7 @@ function Input({
             <AiOutlineEye className="text-[24px] text-zinc-400" />
           )}
         </button>
-      )}
+      )} */}
     </div>
   );
 }
