@@ -1,3 +1,4 @@
+// Import necessary dependencies
 import React from "react";
 import { BiDollar } from "react-icons/bi";
 
@@ -11,26 +12,24 @@ function Input({
   required,
   errors,
 }) {
-  // Tính toán tỷ lệ hiện tại
-  const currentScale = formatPrice ? 0.75 : 1;
+  const emailPattern = /^\S+@\S+\.\S+$/;
+  const phonePattern = /^\d{10}$/;
+
+  const pattern =
+    type === "email" ? emailPattern : type === "tel" ? phonePattern : null;
 
   return (
-    <div className={`w-full relative scale-${currentScale}`}>
+    <div className="w-full relative">
       {formatPrice && (
         <BiDollar
           size={24}
-          className="
-            text-neutral-700
-            absolute
-            top-5
-            left-2
-          "
+          className="text-neutral-700 absolute top-5 left-2"
         />
       )}
       <input
         id={id}
         disabled={disabled}
-        {...register(id, { required })}
+        {...register(id, { required, pattern })}
         placeholder=""
         type={type}
         className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition disabled:opacity-70 disabled:cursor-not-allowed ${

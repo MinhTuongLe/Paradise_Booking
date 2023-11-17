@@ -1,6 +1,7 @@
 "use client";
 
 import useLoginModel from "@/hook/useLoginModal";
+import useReportModal from "@/hook/useReportModal";
 
 import axios from "axios";
 import { differenceInCalendarDays, eachDayOfInterval } from "date-fns";
@@ -19,7 +20,7 @@ import { categories } from "./navbar/Categories";
 import ListingComments from "./listing/ListingComments";
 import { IoChevronBack } from "react-icons/io5";
 import Image from "next/image";
-import { FaBusinessTime, FaStar } from "react-icons/fa";
+import { FaBusinessTime, FaFlag, FaStar } from "react-icons/fa";
 import Button from "./Button";
 const Map = dynamic(() => import("./Map"), {
   ssr: false,
@@ -39,6 +40,7 @@ function ListingClient({ reservations = [], listing, currentUser }) {
 
   const router = useRouter();
   const loginModal = useLoginModel();
+  const reportModal = useReportModal();
 
   const disableDates = useMemo(() => {
     let dates = [];
@@ -140,6 +142,15 @@ function ListingClient({ reservations = [], listing, currentUser }) {
                   disabled={isLoading}
                   disabledDates={disableDates}
                 />
+                <div className="w-full flex justify-center items-start">
+                  <div
+                    className="flex justify-center items-center gap-4 cursor-pointer"
+                    onClick={reportModal.onOpen}
+                  >
+                    <FaFlag size={16} />
+                    <span className="underline">Report this room</span>
+                  </div>
+                </div>
               </div>
             </div>
             <hr />
@@ -148,6 +159,55 @@ function ListingClient({ reservations = [], listing, currentUser }) {
             <div className="my-8 w-1/2">
               <p className="text-xl font-semibold mb-8">{`Where you’ll be`}</p>
               <Map center={coordinates} locationValue={listing.locationValue} />
+            </div>
+            <hr />
+            <div className="my-8 w-full">
+              <p className="flex gap-1 text-2xl font-semibold mb-4">
+                Things to know
+              </p>
+              <div className="grid grid-cols-12 gap-8">
+                <div className="col-span-4">
+                  <p className="flex gap-1 text-lg font-semibold mb-2">
+                    House rules
+                  </p>
+                  <ul className="flex flex-col justify-between items-start text-md font-thin space-y-2">
+                    <li className="text-md font-thin">Checkin after 15:00</li>
+                    <li className="text-md font-thin">Checkout before 12:00</li>
+                    <li className="text-md font-thin">Maximum 14 guest</li>
+                  </ul>
+                </div>
+                <div className="col-span-4">
+                  <p className="flex gap-1 text-lg font-semibold mb-2">
+                    Safe rules
+                  </p>
+                  <ul className="flex flex-col justify-between items-start text-md font-thin space-y-2">
+                    <li className="text-md font-thin">
+                      There is no information about having a CO gas detector
+                    </li>
+                    <li className="text-md font-thin">
+                      There is no information about the presence of smoke
+                      detectors
+                    </li>
+                  </ul>
+                </div>
+                <div className="col-span-4">
+                  <p className="flex gap-1 text-lg font-semibold mb-2">
+                    Cancel rules
+                  </p>
+                  <ul className="flex flex-col justify-between items-start text-md font-thin space-y-2">
+                    <li className="text-md font-thin">
+                      Partial refund: Receive a refund for all nights 24 hours
+                      or more before your cancellation. There are no refunds for
+                      service fees or charges for nights you have stayed
+                    </li>
+                    <li className="text-md font-thin">
+                      Please read the entire Host/Organizer cancellation policy
+                      which applies even if you cancel due to illness or
+                      disruption due to COVID-19
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -173,6 +233,29 @@ function ListingClient({ reservations = [], listing, currentUser }) {
                   <span className="text-md font-bold">Guest</span>
                   <span className="text-md font-thin">1 guest</span>
                 </div>
+              </div>
+              <hr />
+              <div className="my-6">
+                <span className="text-lg font-bold block">
+                  Contact to vendor
+                </span>
+                <div className="flex justify-start items-center space-x-6 my-4">
+                  <Image
+                    width={40}
+                    height={40}
+                    src={emptyImageSrc}
+                    alt="Avatar"
+                    className="rounded-full h-[40px] w-[40px]"
+                  />
+                  <div>
+                    <h1 className="text-md font-bold space-y-3">Conal</h1>
+                    <p>tháng 11 năm 2023</p>
+                  </div>
+                </div>
+                <textarea
+                  className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none"
+                  rows={5}
+                ></textarea>
               </div>
               <hr />
               <div className="my-6">
@@ -238,7 +321,7 @@ function ListingClient({ reservations = [], listing, currentUser }) {
                   <div className="flex justify-between items-center mt-4">
                     <span className="text-md font-thin">
                       $ {listing?.price ? listing?.price : 0} x{" "}
-                      {dayCount ? dayCount : 0}
+                      {dayCount ? dayCount : 1}
                     </span>
                     <span className="text-md font-thin">$ {totalPrice}</span>
                   </div>

@@ -143,6 +143,7 @@ function UserMenu({ currentUser }) {
                   onClick={() => {
                     signOut();
                     if (isOpen) toggleOpen();
+                    router.push("/");
                   }}
                   label="Logout"
                 />
