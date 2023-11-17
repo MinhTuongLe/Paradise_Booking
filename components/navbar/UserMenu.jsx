@@ -126,12 +126,12 @@ function UserMenu({ currentUser }) {
                   label="My reservations"
                 />
                 <MenuItem
-                  onClick={() => menuItemSelect(`/users/${currentUser.id}`)}
+                  onClick={() => menuItemSelect("/properties")}
                   label="My properties"
                 />
                 <MenuItem onClick={onRent} label="Airbnb your home" />
                 <MenuItem
-                  onClick={() => menuItemSelect("/profile")}
+                  onClick={() => menuItemSelect(`/users/${currentUser.id}`)}
                   label="My profile"
                 />
                 <MenuItem
