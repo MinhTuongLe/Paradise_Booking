@@ -232,6 +232,7 @@ function FiltersModal({}) {
       body={bodyContent}
       footer={footerContent}
       reset={reset}
+      classname="md:w-2/3 lg:w-1/2 xl:w-1/3"
     />
   );
 }

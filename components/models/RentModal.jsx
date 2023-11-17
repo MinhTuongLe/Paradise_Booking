@@ -347,6 +347,7 @@ function RentModal({}) {
       onClose={rentModel.onClose}
       body={bodyContent}
       reset={reset}
+      classname="md:w-2/3 lg:w-1/2"
     />
   );
 }

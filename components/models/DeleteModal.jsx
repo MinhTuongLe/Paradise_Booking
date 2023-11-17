@@ -82,6 +82,7 @@ function DeleteModal() {
       body={bodyContent}
       footer={footerContent}
       reset={reset}
+      classname="md:w-1/3 lg:w-1/3 xl:w-1/4"
     />
   );
 }

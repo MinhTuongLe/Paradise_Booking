@@ -183,6 +183,7 @@ function RoomCommentsModal({}) {
       body={bodyContent}
       footer={footerContent}
       reset={reset}
+      classname="sm:w-full md:w-3/4 lg:w-2/3 xl:w-1/2"
     />
   );
 }

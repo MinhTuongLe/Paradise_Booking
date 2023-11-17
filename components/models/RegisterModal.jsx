@@ -120,13 +120,13 @@ function RegisterModal({}) {
         icon={FcGoogle}
         onClick={() => signIn("google")}
       />
-      <Button
+      {/* <Button
         outline
         label="Continue with Facebook"
         icon={AiFillFacebook}
         onClick={() => signIn("facebook")}
         isColor
-      />
+      /> */}
       <div className="text-neutral-500 text-center mt-4 font-light">
         <div>
           Already have an account?{" "}
@@ -152,6 +152,7 @@ function RegisterModal({}) {
       body={bodyContent}
       footer={footerContent}
       reset={reset}
+      classname="md:w-2/3 lg:w-1/2 xl:w-1/3"
     />
   );
 }

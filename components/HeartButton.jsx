@@ -1,6 +1,7 @@
 "use client";
 
 import useFavorite from "@/hook/useFavorite";
+import useLoginModal from "@/hook/useLoginModal";
 
 import React from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
@@ -10,10 +11,18 @@ function HeartButton({ listingId, currentUser }) {
     listingId,
     currentUser,
   });
+  const loginModel = useLoginModal();
 
   return (
     <div
-      onClick={toggleFavorite}
+      onClick={(e) => {
+        if (currentUser) {
+          toggleFavorite;
+        } else {
+          e.stopPropagation();
+          loginModel.onOpen();
+        }
+      }}
       className=" relative hover:opacity-80 transition cursor-pointer"
     >
       <AiOutlineHeart
