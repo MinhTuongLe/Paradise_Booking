@@ -13,11 +13,13 @@ import { AiOutlineMenu } from "react-icons/ai";
 import Avatar from "../Avatar";
 import MenuItem from "./MenuItem";
 import { IoNotifications } from "react-icons/io5";
-import { selectAuthState } from "@/components/slice/authSlice";
-import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { reset } from "@/components/slice/authSlice";
+import { set } from "date-fns";
 
-function UserMenu({ currentUser, authState }) {
+function UserMenu({ currentUser, authState, loggedUser }) {
   const router = useRouter();
+  const dispatch = useDispatch();
   const registerModel = useRegisterModal();
   const loginModel = useLoginModel();
   const rentModel = useRentModal();
@@ -113,7 +115,7 @@ function UserMenu({ currentUser, authState }) {
       {isOpen && (
         <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm z-20">
           <div className="flex flex-col cursor-pointer">
-            {currentUser ? (
+            {authState && loggedUser ? (
               <>
                 <MenuItem
                   onClick={() => menuItemSelect("/trips")}
@@ -133,7 +135,7 @@ function UserMenu({ currentUser, authState }) {
                 />
                 <MenuItem onClick={onRent} label="Paradise your home" />
                 <MenuItem
-                  onClick={() => menuItemSelect(`/users/${currentUser.id}`)}
+                  onClick={() => menuItemSelect(`/users/${loggedUser.id}`)}
                   label="My profile"
                 />
                 <MenuItem
@@ -143,8 +145,9 @@ function UserMenu({ currentUser, authState }) {
                 <hr />
                 <MenuItem
                   onClick={() => {
-                    signOut();
                     if (isOpen) toggleOpen();
+                    dispatch(reset());
+                    signOut();
                     router.push("/");
                   }}
                   label="Logout"
