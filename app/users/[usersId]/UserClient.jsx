@@ -212,7 +212,7 @@ function UserClient({ listing }) {
                 {loggedUser && !isLoading ? (
                   <>
                     <h1 className="text-2xl font-bold my-3">
-                      Le Minh Tuong Profile
+                      {loggedUser.username || "User"} Profile
                     </h1>
                     <button
                       className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"

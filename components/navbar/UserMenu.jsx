@@ -15,8 +15,6 @@ import MenuItem from "./MenuItem";
 import { IoNotifications } from "react-icons/io5";
 import { useDispatch } from "react-redux";
 import { reset } from "@/components/slice/authSlice";
-import { set } from "date-fns";
-import Link from "next/link";
 
 function UserMenu({ currentUser, authState, loggedUser }) {
   const router = useRouter();
@@ -53,6 +51,15 @@ function UserMenu({ currentUser, authState, loggedUser }) {
   const handleChangeLanguage = () => {
     if (language === "en") setLanguage("vi");
     else setLanguage("en");
+  };
+
+  const handleLogout = async () => {
+    if (isOpen) toggleOpen();
+    await signOut();
+
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("expiresAt");
+    dispatch(reset());
   };
 
   return (
@@ -144,20 +151,11 @@ function UserMenu({ currentUser, authState, loggedUser }) {
                   label="Change Password"
                 />
                 <hr />
-                <Link
-                  href="/"
+                <MenuItem
                   className=" px-4 py-3 hover:bg-neutral-100 transition font-semibold"
-                  onClick={(e) => {
-                    signOut();
-                    if (isOpen) toggleOpen();
-
-                    localStorage.removeItem("accessToken");
-                    localStorage.removeItem("expiresAt");
-                    dispatch(reset());
-                  }}
-                >
-                  Logout
-                </Link>
+                  onClick={handleLogout}
+                  label="Logout"
+                />
               </>
             ) : (
               <>
