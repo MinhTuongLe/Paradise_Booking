@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/no-children-prop */
 "use client";
@@ -10,8 +11,7 @@ import FormItem from "@/components/inputs/FormItem";
 import ListingCard from "@/components/listing/ListingCard";
 import axios from "axios";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Button from "@/components/Button";
@@ -20,8 +20,11 @@ import { AiOutlineMail, AiOutlinePhone, AiOutlineUser } from "react-icons/ai";
 import { FaRegAddressCard } from "react-icons/fa";
 import { MdOutlineDateRange } from "react-icons/md";
 import "../../../styles/globals.css";
+import { API_URL } from "@/const";
 import useCommentsModal from "@/hook/useCommentsModal";
 import useRoomsModal from "@/hook/useRoomsModal";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoggUser } from "@/components/slice/authSlice";
 
 const data = {
   name: "Le Minh Tuong",
@@ -32,10 +35,11 @@ const data = {
   bio: "Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile!",
 };
 
-function UserClient({ listing, currentUser }) {
-  const router = useRouter();
+function UserClient({ listing }) {
   const commentsModal = useCommentsModal();
   const roomsModal = useRoomsModal();
+  const dispatch = useDispatch();
+  const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -49,15 +53,16 @@ function UserClient({ listing, currentUser }) {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      username: "",
-      name: "",
-      avatar: "",
-      address: "",
-      phoneNumber: "",
-      dob: "",
-      email: "",
+      username: loggedUser.username || "",
+      full_name: loggedUser.full_name || "",
+      // avatar: loggedUser.avatar || "",
+      address: loggedUser.address || "",
+      phone: loggedUser.phone || "",
+      dob: loggedUser.dob || "",
+      email: loggedUser.email || "",
     },
   });
+
   const imageSrc = watch("avatar");
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
@@ -72,9 +77,24 @@ function UserClient({ listing, currentUser }) {
 
   const onSubmit = (data) => {
     setIsLoading(true);
-    console.log(data);
-    setIsLoading(false);
-    setIsEditMode(false);
+    const config = {
+      headers: {
+        "content-type": "application/json",
+      },
+    };
+
+    axios
+      .patch(`${API_URL}/account/${loggedUser.id}`, data, config)
+      .then(() => {
+        setIsLoading(false);
+        setIsEditMode(false);
+        dispatch(setLoggUser(data));
+        toast.success("Update Profile Successfully");
+      })
+      .catch((err) => {
+        toast.error("Something Went Wrong");
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -122,12 +142,11 @@ function UserClient({ listing, currentUser }) {
               <>
                 <h1 className="text-2xl font-bold my-3">Profile Settings</h1>
                 <Input
-                  id="name"
+                  id="full_name"
                   label="Name"
                   disabled={isLoading}
                   register={register}
                   errors={errors}
-                  required
                 />
                 <Input
                   id="username"
@@ -135,9 +154,8 @@ function UserClient({ listing, currentUser }) {
                   disabled={isLoading}
                   register={register}
                   errors={errors}
-                  required
                 />
-                <Input
+                {/* <Input
                   id="email"
                   label="Email"
                   disabled={isLoading}
@@ -145,15 +163,14 @@ function UserClient({ listing, currentUser }) {
                   errors={errors}
                   required
                   type="email"
-                />
+                /> */}
                 <Input
-                  id="phoneNumber"
+                  id="phone"
                   label="Phone Number"
                   disabled={isLoading}
                   register={register}
                   errors={errors}
-                  required
-                  type="phone"
+                  type="tel"
                 />
                 <Input
                   id="dob"
@@ -161,7 +178,6 @@ function UserClient({ listing, currentUser }) {
                   disabled={isLoading}
                   register={register}
                   errors={errors}
-                  required
                   type="date"
                 />
                 <Input
@@ -170,7 +186,6 @@ function UserClient({ listing, currentUser }) {
                   disabled={isLoading}
                   register={register}
                   errors={errors}
-                  required
                 />
                 <div className="grid grid-cols-12 gap-8">
                   <div className="col-span-6">
@@ -194,7 +209,7 @@ function UserClient({ listing, currentUser }) {
               </>
             ) : (
               <div className="flex flex-col justify-start items-start">
-                {data ? (
+                {loggedUser && !isLoading ? (
                   <>
                     <h1 className="text-2xl font-bold my-3">
                       Le Minh Tuong Profile
@@ -208,26 +223,40 @@ function UserClient({ listing, currentUser }) {
                     <div className="space-y-3 mt-6 ">
                       <div className="flex justify-start items-center space-x-2">
                         <AiOutlineUser size={18} />
-                        <p className="text-md">Name: {data.name}</p>
+                        <p className="text-md">
+                          Name: {loggedUser.full_name || "-"}
+                        </p>
                       </div>
                       <div className="flex justify-start items-center space-x-2">
                         <AiOutlineMail />
-                        <p className="text-md">Email: {data.email}</p>
+                        <p className="text-md">
+                          Email: {loggedUser.email || "-"}
+                        </p>
                       </div>
                       <div className="flex justify-start items-center space-x-2">
                         <AiOutlinePhone />
-                        <p className="text-md">Phone: {data.phone}</p>
+                        <p className="text-md">
+                          Phone: {loggedUser.phone || "-"}
+                        </p>
                       </div>
                       <div className="flex justify-start items-center space-x-2">
                         <MdOutlineDateRange />
-                        <p className="text-md">Date of Birth: {data.dob}</p>
+                        <p className="text-md">
+                          Date of Birth: {loggedUser.dob || "-"}
+                        </p>
                       </div>
                       <div className="flex justify-start items-center space-x-2">
                         <FaRegAddressCard />
-                        <p className="text-md">Address: {data.address}</p>
+                        <p className="text-md">
+                          Address: {loggedUser.address || "-"}
+                        </p>
                       </div>
                     </div>
-                    <div className="space-y-3 pb-4 my-4 w-full border-b-[1px]">
+                    <div
+                      className={`space-y-3 pb-4 my-4 w-full ${
+                        loggedUser.type === 2 ? "border-b-[1px]" : ""
+                      }`}
+                    >
                       <h1 className="text-xl font-bold mt-[32px]">
                         About Le Minh Tuong
                       </h1>
@@ -239,82 +268,86 @@ function UserClient({ listing, currentUser }) {
                         {data.bio}
                       </p>
                     </div>
-                    <div className="border-b-[1px] pb-4">
-                      <div className="flex justify-between items-center w-full">
-                        <h1 className="text-xl font-bold space-y-3">
-                          Le Minh Tuong' Comments
-                        </h1>
-                        <button
-                          className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
-                          onClick={commentsModal.onOpen}
-                        >
-                          Show more comments
-                        </button>
-                      </div>
-                      <div className="vendor-room-listing flex w-full space-x-4 mt-3">
-                        <div className="w-1/2 p-2 space-y-6 border-[1px] rounded-xl">
-                          <p className="line-clamp-5">{`"...${data.bio}`}</p>
-                          <div className="flex justify-start items-center space-x-6">
-                            <Image
-                              width={40}
-                              height={40}
-                              src={emptyImageSrc}
-                              alt="Avatar"
-                              className="rounded-full h-[40px] w-[40px]"
-                            />
-                            <div>
-                              <h1 className="text-md font-bold space-y-3">
-                                Conal
-                              </h1>
-                              <p>tháng 11 năm 2023</p>
+                    {loggedUser.type === 2 && (
+                      <>
+                        <div className="border-b-[1px] pb-4">
+                          <div className="flex justify-between items-center w-full">
+                            <h1 className="text-xl font-bold space-y-3">
+                              Le Minh Tuong' Comments
+                            </h1>
+                            <button
+                              className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
+                              onClick={commentsModal.onOpen}
+                            >
+                              Show more comments
+                            </button>
+                          </div>
+                          <div className="vendor-room-listing flex w-full space-x-4 mt-3">
+                            <div className="w-1/2 p-2 space-y-6 border-[1px] rounded-xl">
+                              <p className="line-clamp-5">{`"...${data.bio}`}</p>
+                              <div className="flex justify-start items-center space-x-6">
+                                <Image
+                                  width={40}
+                                  height={40}
+                                  src={emptyImageSrc}
+                                  alt="Avatar"
+                                  className="rounded-full h-[40px] w-[40px]"
+                                />
+                                <div>
+                                  <h1 className="text-md font-bold space-y-3">
+                                    Conal
+                                  </h1>
+                                  <p>tháng 11 năm 2023</p>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="w-1/2 p-2 space-y-6 border-[1px] rounded-xl">
+                              <p className="line-clamp-5">{`"...${data.bio}`}</p>
+                              <div className="flex justify-start items-center space-x-6">
+                                <Image
+                                  width={40}
+                                  height={40}
+                                  src={emptyImageSrc}
+                                  alt="Avatar"
+                                  className="rounded-full h-[40px] w-[40px]"
+                                />
+                                <div>
+                                  <h1 className="text-md font-bold space-y-3">
+                                    Conal
+                                  </h1>
+                                  <p>tháng 11 năm 2023</p>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         </div>
-                        <div className="w-1/2 p-2 space-y-6 border-[1px] rounded-xl">
-                          <p className="line-clamp-5">{`"...${data.bio}`}</p>
-                          <div className="flex justify-start items-center space-x-6">
-                            <Image
-                              width={40}
-                              height={40}
-                              src={emptyImageSrc}
-                              alt="Avatar"
-                              className="rounded-full h-[40px] w-[40px]"
-                            />
-                            <div>
-                              <h1 className="text-md font-bold space-y-3">
-                                Conal
+                        {listing && listing.length > 0 && (
+                          <div className="w-full mt-4">
+                            <div className="flex justify-between items-center w-full">
+                              <h1 className="text-xl font-bold space-y-3">
+                                Le Minh Tuong's Rooms
                               </h1>
-                              <p>tháng 11 năm 2023</p>
+                              <button
+                                className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
+                                onClick={roomsModal.onOpen}
+                              >
+                                Show more rooms
+                              </button>
                             </div>
+                            {/* <div className="vendor-room-listing flex w-full mt-2">
+                              {listing.slice(0, 3).map((list) => (
+                                <div key={list.id} className="w-1/3 p-2">
+                                  <ListingCard
+                                    data={list}
+                                    currentUser={currentUser}
+                                    shrink={true}
+                                  />
+                                </div>
+                              ))}
+                            </div> */}
                           </div>
-                        </div>
-                      </div>
-                    </div>
-                    {listing && listing.length > 0 && (
-                      <div className="w-full mt-4">
-                        <div className="flex justify-between items-center w-full">
-                          <h1 className="text-xl font-bold space-y-3">
-                            Le Minh Tuong's Rooms
-                          </h1>
-                          <button
-                            className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
-                            onClick={roomsModal.onOpen}
-                          >
-                            Show more rooms
-                          </button>
-                        </div>
-                        <div className="vendor-room-listing flex w-full mt-2">
-                          {listing.slice(0, 3).map((list) => (
-                            <div key={list.id} className="w-1/3 p-2">
-                              <ListingCard
-                                data={list}
-                                currentUser={currentUser}
-                                shrink={true}
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      </div>
+                        )}
+                      </>
                     )}
                   </>
                 ) : (

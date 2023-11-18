@@ -7,7 +7,6 @@ import { mock_data } from "../../../mock-data/listing";
 export const dynamic = "force-dynamic";
 
 const UserPage = async (props) => {
-  const currentUser = await getCurrentUser();
   const listing = mock_data.listings;
 
   // if (!currentUser) {
@@ -28,7 +27,7 @@ const UserPage = async (props) => {
   //     />
   //   );
   // }
-  return <UserClient listing={listing} currentUser={currentUser} />;
+  return <UserClient listing={listing} />;
 };
 
 export default UserPage;

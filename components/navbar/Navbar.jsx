@@ -7,8 +7,10 @@ import UserMenu from "./UserMenu";
 import Categories from "./Categories";
 import { useSelector } from "react-redux";
 import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 function Navbar({ currentUser }) {
+  const router = useRouter();
   const authState = useSelector((state) => state.authSlice.authState);
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 

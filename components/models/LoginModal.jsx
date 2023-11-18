@@ -12,7 +12,7 @@ import { FcGoogle } from "react-icons/fc";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { setLoggUser, setAuthState } from "@/components/slice/authSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import Button from "../Button";
 import Heading from "../Heading";
@@ -47,8 +47,6 @@ function LoginModal({}) {
     axios
       .post(`${API_URL}/login`, data)
       .then((callback) => {
-        // console.log(callback.data);
-
         localStorage.setItem("accessToken", callback.data.accessToken);
         localStorage.setItem("expiresAt", callback.data.expiresAt);
         toast.success("Login Successfully");
@@ -63,9 +61,8 @@ function LoginModal({}) {
           },
         };
         axios
-          .get(`${API_URL}/get-profile`, config)
+          .get(`${API_URL}/profile`, config)
           .then((callback) => {
-            console.log(callback.data.data);
             dispatch(setLoggUser(callback.data.data));
           })
           .catch((err) => {

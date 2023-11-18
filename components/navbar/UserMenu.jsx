@@ -16,6 +16,7 @@ import { IoNotifications } from "react-icons/io5";
 import { useDispatch } from "react-redux";
 import { reset } from "@/components/slice/authSlice";
 import { set } from "date-fns";
+import Link from "next/link";
 
 function UserMenu({ currentUser, authState, loggedUser }) {
   const router = useRouter();
@@ -143,18 +144,20 @@ function UserMenu({ currentUser, authState, loggedUser }) {
                   label="Change Password"
                 />
                 <hr />
-                <MenuItem
-                  onClick={() => {
-                    if (isOpen) toggleOpen();
+                <Link
+                  href="/"
+                  className=" px-4 py-3 hover:bg-neutral-100 transition font-semibold"
+                  onClick={(e) => {
                     signOut();
+                    if (isOpen) toggleOpen();
 
                     localStorage.removeItem("accessToken");
                     localStorage.removeItem("expiresAt");
                     dispatch(reset());
-                    router.push("/");
                   }}
-                  label="Logout"
-                />
+                >
+                  Logout
+                </Link>
               </>
             ) : (
               <>
