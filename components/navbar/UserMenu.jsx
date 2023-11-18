@@ -146,8 +146,11 @@ function UserMenu({ currentUser, authState, loggedUser }) {
                 <MenuItem
                   onClick={() => {
                     if (isOpen) toggleOpen();
-                    dispatch(reset());
                     signOut();
+
+                    localStorage.removeItem("accessToken");
+                    localStorage.removeItem("expiresAt");
+                    dispatch(reset());
                     router.push("/");
                   }}
                   label="Logout"
