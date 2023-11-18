@@ -18,6 +18,7 @@ import Button from "../Button";
 import Heading from "../Heading";
 import Input from "../inputs/Input";
 import Modal from "./Modal";
+import { API_URL } from "@/const";
 
 function LoginModal({}) {
   const router = useRouter();
@@ -44,7 +45,7 @@ function LoginModal({}) {
     axios.defaults.headers.post["Content-Type"] = "application/json";
 
     axios
-      .post("http://localhost:8081/api/v1/login", data)
+      .post(`${API_URL}/login`, data)
       .then((callback) => {
         // console.log(callback.data);
 
@@ -62,12 +63,15 @@ function LoginModal({}) {
           },
         };
         axios
-          .get("http://localhost:8081/api/v1/get-profile", config)
+          .get(`${API_URL}/get-profile`, config)
           .then((callback) => {
             console.log(callback.data.data);
             dispatch(setLoggUser(callback.data.data));
           })
-          .catch((err) => {toast.error("Get user information failed"); setIsLoading(false)});
+          .catch((err) => {
+            toast.error("Get user information failed");
+            setIsLoading(false);
+          });
       })
       .catch((err) => {
         toast.error("Something Went Wrong");

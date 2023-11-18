@@ -20,16 +20,15 @@ function Navbar({ currentUser }) {
     if (currentTimestamp >= parsedValue) {
       localStorage.removeItem("accessToken");
       localStorage.removeItem("expiresAt");
+
+      signOut();
+
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("expiresAt");
+      dispatch(reset());
+      router.push("/");
     }
   }
-
-  signOut();
-
-  localStorage.removeItem("accessToken");
-  localStorage.removeItem("expiresAt");
-  dispatch(reset());
-  router.push("/");
-
   return (
     <div className="fixed w-full bg-white z-10 shadow-sm h-[10vh]">
       <div className="py-4 border-b-[1px] h-full">

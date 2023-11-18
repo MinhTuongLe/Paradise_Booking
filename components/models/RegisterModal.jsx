@@ -14,6 +14,7 @@ import Button from "../Button";
 import Heading from "../Heading";
 import Input from "../inputs/Input";
 import Modal from "./Modal";
+import { API_URL } from "@/const";
 
 function RegisterModal({}) {
   const registerModel = useRegisterModal();
@@ -47,7 +48,7 @@ function RegisterModal({}) {
     axios.defaults.headers.post["Content-Type"] = "application/json";
 
     axios
-      .post("http://localhost:8081/api/v1/register", formData)
+      .post(`${API_URL}/register`, formData)
       .then(() => {
         setIsLoading(false);
         toast.success("Register Successfully");
