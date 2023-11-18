@@ -44,16 +44,20 @@ function RegisterModal({}) {
     }
 
     const { confirmPassword, ...formData } = data;
+    axios.defaults.headers.post["Content-Type"] = "application/json";
 
     axios
-      .post("/api/register", formData)
+      .post("http://localhost:8081/api/v1/register", formData)
       .then(() => {
         setIsLoading(false);
         toast.success("Register Successfully");
         loginModel.onOpen();
         registerModel.onClose();
       })
-      .catch((err) => toast.error("Something Went Wrong"));
+      .catch((err) => {
+        toast.error("Something Went Wrong");
+        setIsLoading(false);
+      });
   };
 
   const toggle = useCallback(() => {

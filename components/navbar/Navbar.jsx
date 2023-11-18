@@ -5,8 +5,9 @@ import Logo from "./Logo";
 import Search from "./Search";
 import UserMenu from "./UserMenu";
 import Categories from "./Categories";
-
+import {useSelector} from "react-redux"
 function Navbar({ currentUser }) {
+  const authState = useSelector(state => state.authSlice.authState)
   return (
     <div className="fixed w-full bg-white z-10 shadow-sm h-[10vh]">
       <div className="py-4 border-b-[1px] h-full">
@@ -14,7 +15,7 @@ function Navbar({ currentUser }) {
           <div className="flex flex-row items-center justify-between gap-3 md:gap-0 h-full">
             <Logo />
             <Search />
-            <UserMenu currentUser={currentUser} />
+            <UserMenu currentUser={currentUser} authState={authState}/>
           </div>
         </Container>
       </div>

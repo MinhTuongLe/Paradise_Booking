@@ -13,8 +13,10 @@ import { AiOutlineMenu } from "react-icons/ai";
 import Avatar from "../Avatar";
 import MenuItem from "./MenuItem";
 import { IoNotifications } from "react-icons/io5";
+import { selectAuthState } from "@/components/slice/authSlice";
+import { useSelector } from "react-redux";
 
-function UserMenu({ currentUser }) {
+function UserMenu({ currentUser, authState }) {
   const router = useRouter();
   const registerModel = useRegisterModal();
   const loginModel = useLoginModel();
@@ -80,7 +82,7 @@ function UserMenu({ currentUser }) {
             </span>
           </label>
         </div>
-        {currentUser && (
+        {authState && (
           <div
             onClick={toggleNotification}
             className="flex flex-row items-center gap-3 cursor-pointer transition relative"
