@@ -14,23 +14,23 @@ function Navbar({ currentUser }) {
   const authState = useSelector((state) => state.authSlice.authState);
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
-  const expiredAt = localStorage.getItem("expiresAt");
-  if (expiredAt) {
-    const parsedValue = JSON.parse(expiredAt);
-    const currentTimestamp = Math.floor(Date.now() / 1000);
+  // const expiredAt = localStorage.getItem("expiresAt");
+  // if (expiredAt) {
+  //   const parsedValue = JSON.parse(expiredAt);
+  //   const currentTimestamp = Math.floor(Date.now() / 1000);
 
-    if (currentTimestamp >= parsedValue) {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("expiresAt");
+  //   if (currentTimestamp >= parsedValue) {
+  //     localStorage.removeItem("accessToken");
+  //     localStorage.removeItem("expiresAt");
 
-      signOut();
+  //     signOut();
 
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("expiresAt");
-      dispatch(reset());
-      router.push("/");
-    }
-  }
+  //     localStorage.removeItem("accessToken");
+  //     localStorage.removeItem("expiresAt");
+  //     dispatch(reset());
+  //     router.push("/");
+  //   }
+  // }
   return (
     <div className="fixed w-full bg-white z-10 shadow-sm h-[10vh]">
       <div className="py-4 border-b-[1px] h-full">

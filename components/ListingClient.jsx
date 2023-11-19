@@ -154,8 +154,8 @@ function ListingClient({ reservations = [], place, currentUser }) {
               </div> */}
             </div>
             <hr />
-            {/* <ListingComments /> */}
-            {/* <hr />
+            <ListingComments />
+            <hr />
             <div className="my-8 w-1/2">
               <p className="text-xl font-semibold mb-8">{`Where you’ll be`}</p>
               <Map center={coordinates} locationValue={place.country} />
@@ -208,7 +208,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
                   </ul>
                 </div>
               </div>
-            </div> */}
+            </div>
           </div>
         </div>
       ) : (

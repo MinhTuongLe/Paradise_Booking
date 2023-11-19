@@ -13,7 +13,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { setLoggUser, setAuthState } from "@/components/slice/authSlice";
 import { useDispatch } from "react-redux";
-
+import Cookie from "js-cookie";
 import Button from "../Button";
 import Heading from "../Heading";
 import Input from "../inputs/Input";
@@ -47,9 +47,9 @@ function LoginModal({}) {
     axios
       .post(`${API_URL}/login`, data)
       .then((callback) => {
-        localStorage.setItem("accessToken", callback.data.accessToken);
-        localStorage.setItem("expiresAt", callback.data.expiresAt);
         toast.success("Login Successfully");
+        Cookie.set("accessToken", callback.data.accessToken);
+        Cookie.set("expiresAt", callback.data.expiresAt);
         dispatch(setAuthState(true));
         setIsLoading(false);
         router.refresh();

@@ -15,18 +15,6 @@ export default async function Home({ searchParams }) {
   const places = await getPlaces();
   // console.log(places);
 
-  // const expiresAt = localStorage.getItem("expiresAt");
-
-  // const currentTimestamp = Math.floor(Date.now() / 1000);
-
-  // if (currentTimestamp >= expiresAt) {
-  //   localStorage.removeItem("accessToken");
-  //   localStorage.removeItem("expiresAt");
-  //   console.log("Token has expired. Removed from localStorage.");
-  // } else {
-  //   console.log("Token is still valid.");
-  // }
-
   // const currentUser = localStorage.
 
   if (places.length === 0) {
