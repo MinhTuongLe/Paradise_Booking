@@ -23,10 +23,10 @@ function ListingCard({
 }) {
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
-  const router = useRouter();
+
   const { getByValue } = useCountries();
 
-  const location = getByValue(data.locationValue);
+  const location = getByValue(data.country);
 
   const handleCancel = useCallback(
     (e) => {
@@ -39,13 +39,13 @@ function ListingCard({
     [onAction, actionId, disabled]
   );
 
-  const price = useMemo(() => {
+  const price_per_night = useMemo(() => {
     if (reservation) {
       return reservation.totalPrice;
     }
 
-    return data.price;
-  }, [reservation, data.price]);
+    return data.price_per_night;
+  }, [reservation, data.price_per_night]);
 
   const reservationDate = useMemo(() => {
     if (!reservation) {
@@ -78,7 +78,7 @@ function ListingCard({
           <Image
             fill
             className="object-cover h-full w-full group-hover:scale-110 transition  rounded-xl"
-            src={data.imageSrc || emptyImageSrc}
+            src={data.cover || emptyImageSrc}
             alt="listing"
           />
           {shrink === false && (
@@ -94,7 +94,8 @@ function ListingCard({
         )}
         <div className="flex justify-between items-center">
           <div className="font-light text-neutral-500">
-            {reservationDate || data.category}
+            {/* {reservationDate || data.category} */}
+            {data.city}, {data.state}
           </div>
           <div className="flex space-x-2 justify-between items-center">
             <FaStar size={16} />
@@ -103,7 +104,8 @@ function ListingCard({
         </div>
         <div className="flex flex-row items-center">
           <div className="flex gap-1 font-semibold">
-            ${price} {!reservation && <div className="font-light"> Night</div>}
+            ${price_per_night}{" "}
+            {!reservation && <div className="font-light"> / Night</div>}
           </div>
         </div>
         {onAction && actionLabel && (

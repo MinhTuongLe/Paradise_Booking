@@ -25,6 +25,7 @@ import useCommentsModal from "@/hook/useCommentsModal";
 import useRoomsModal from "@/hook/useRoomsModal";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoggUser } from "@/components/slice/authSlice";
+import EmptyState from "@/components/EmptyState";
 
 const data = {
   name: "Le Minh Tuong",
@@ -40,6 +41,7 @@ function UserClient({ listing }) {
   const roomsModal = useRoomsModal();
   const dispatch = useDispatch();
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
+  const accessToken = localStorage.getItem("accessToken");
 
   const [isLoading, setIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -97,6 +99,10 @@ function UserClient({ listing }) {
       });
   };
 
+  if (!accessToken) {
+    return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  }
+
   return (
     <div className="max-w-[1200px] mx-auto px-4">
       <div className="mt-10 grid grid-cols-12 gap-8">
@@ -119,7 +125,9 @@ function UserClient({ listing }) {
                   alt="Avatar"
                   className="rounded-full h-[120px] w-[120px]"
                 />
-                <h1 className="text-2xl font-bold my-3">Le Minh Tuong</h1>
+                <h1 className="text-2xl font-bold my-3">
+                  {loggedUser.username}
+                </h1>
                 <span className="text-xl">User</span>
               </>
             )}

@@ -1,4 +1,6 @@
 import getCurrentUser from "@/app/actions/getCurrentUser";
+import getPlaceById from "@/app/actions/getPlaceById";
+import getUserById from "@/app/actions/getUserById";
 import ClientOnly from "@/components/ClientOnly";
 import EmptyState from "@/components/EmptyState";
 import ListingClient from "@/components/ListingClient";
@@ -9,6 +11,11 @@ export const dynamic = "force-dynamic";
 
 const ListingPage = async ({ params }) => {
   // const listing = await getListingById(params);
+  const { place, vendor_id } = await getPlaceById(params.listingId);
+  const vendor = await getUserById(vendor_id);
+  console.log(vendor_id);
+  console.log(vendor);
+
   const listing = mock_data.listings.find(
     (item) => item.id === params.listingId
   );
@@ -19,7 +26,7 @@ const ListingPage = async ({ params }) => {
 
   const currentUser = await getCurrentUser();
 
-  if (!listing) {
+  if (!place) {
     return (
       <ClientOnly>
         <EmptyState />
@@ -30,8 +37,8 @@ const ListingPage = async ({ params }) => {
   return (
     <ClientOnly>
       <ListingClient
-        listing={listing}
-        currentUser={currentUser}
+        place={place}
+        currentUser={vendor}
         reservations={reservations}
       />
     </ClientOnly>

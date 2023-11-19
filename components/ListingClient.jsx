@@ -32,11 +32,11 @@ const initialDateRange = {
   key: "selection",
 };
 
-function ListingClient({ reservations = [], listing, currentUser }) {
+function ListingClient({ reservations = [], place, currentUser }) {
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
   const { getByValue } = useCountries();
-  const coordinates = getByValue(listing.locationValue).latlng;
+  const coordinates = getByValue(place.country).latlng;
 
   const router = useRouter();
   const loginModal = useLoginModel();
@@ -58,7 +58,7 @@ function ListingClient({ reservations = [], listing, currentUser }) {
   }, [reservations]);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [totalPrice, setTotalPrice] = useState(listing.price);
+  const [totalPrice, setTotalPrice] = useState(place.price_per_night);
   const [dateRange, setDateRange] = useState(initialDateRange);
   const [paymentMode, setPaymentMode] = useState(false);
   const [dayCount, setDayCount] = useState(1);
@@ -75,7 +75,7 @@ function ListingClient({ reservations = [], listing, currentUser }) {
         totalPrice,
         startDate: dateRange.startDate,
         endDate: dateRange.endDate,
-        listingId: listing.id,
+        placeId: place.id,
       })
       .then(() => {
         toast.success("Success!");
@@ -88,7 +88,7 @@ function ListingClient({ reservations = [], listing, currentUser }) {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [totalPrice, dateRange, listing.id, router, currentUser, loginModal]);
+  }, [totalPrice, dateRange, place.id, router, currentUser, loginModal]);
 
   useEffect(() => {
     if (dateRange.startDate && dateRange.endDate) {
@@ -98,17 +98,17 @@ function ListingClient({ reservations = [], listing, currentUser }) {
       );
       setDayCount(count);
 
-      if (count && listing.price) {
-        setTotalPrice(count * listing.price);
+      if (count && place.price_per_night) {
+        setTotalPrice(count * place.price_per_night);
       } else {
-        setTotalPrice(listing.price);
+        setTotalPrice(place.price_per_night);
       }
     }
-  }, [dateRange, listing.price]);
+  }, [dateRange, place.price_per_night]);
 
   const category = useMemo(() => {
-    return categories.find((item) => item.label === listing.category);
-  }, [listing.category]);
+    return categories.find((item) => item.label === place.category);
+  }, [place.category]);
 
   return (
     <Container>
@@ -116,25 +116,25 @@ function ListingClient({ reservations = [], listing, currentUser }) {
         <div className="w-full mx-auto mt-4">
           <div className="flex flex-col">
             <ListingHead
-              title={listing.title}
-              imageSrc={listing.imageSrc || emptyImageSrc}
-              locationValue={listing.locationValue}
-              id={listing.id}
+              title={place.name}
+              imageSrc={place.cover || emptyImageSrc}
+              locationValue={place.country}
+              id={place.id}
               currentUser={currentUser}
             />
             <div className="grid grid-cols-1 md:grid-cols-7 md:gap-10 my-8">
               <ListingInfo
                 user={currentUser}
                 category={category}
-                description={listing.description}
-                roomCount={listing.roomCount}
-                guestCount={listing.guestCount}
-                bathroomCount={listing.bathroomCount}
-                locationValue={listing.locationValue}
+                description={place.description}
+                roomCount={place.roomCount || 0}
+                guestCount={place.guestCount || 0}
+                bathroomCount={place.bathroomCount || 0}
+                locationValue={place.country}
               />
-              <div className="order-first mb-10 md:order-last md:col-span-3 space-y-6">
+              {/* <div className="order-first mb-10 md:order-last md:col-span-3 space-y-6">
                 <ListingReservation
-                  price={listing.price}
+                  price={place.price_per_night}
                   totalPrice={totalPrice}
                   onChangeDate={(value) => setDateRange(value)}
                   dateRange={dateRange}
@@ -151,14 +151,14 @@ function ListingClient({ reservations = [], listing, currentUser }) {
                     <span className="underline">Report this room</span>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
             <hr />
-            <ListingComments />
-            <hr />
+            {/* <ListingComments /> */}
+            {/* <hr />
             <div className="my-8 w-1/2">
               <p className="text-xl font-semibold mb-8">{`Where you’ll be`}</p>
-              <Map center={coordinates} locationValue={listing.locationValue} />
+              <Map center={coordinates} locationValue={place.country} />
             </div>
             <hr />
             <div className="my-8 w-full">
@@ -208,7 +208,7 @@ function ListingClient({ reservations = [], listing, currentUser }) {
                   </ul>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       ) : (
@@ -298,7 +298,7 @@ function ListingClient({ reservations = [], listing, currentUser }) {
                     <Image
                       width={500}
                       height={500}
-                      src={listing.imageSrc || emptyImageSrc}
+                      src={place.imageSrc || emptyImageSrc}
                       alt="room image"
                       className="rounded-xl"
                     />
@@ -320,7 +320,7 @@ function ListingClient({ reservations = [], listing, currentUser }) {
                   <span className="text-lg font-bold">Price details</span>
                   <div className="flex justify-between items-center mt-4">
                     <span className="text-md font-thin">
-                      $ {listing?.price ? listing?.price : 0} x{" "}
+                      $ {place?.price_per_night ? place?.price_per_night : 0} x{" "}
                       {dayCount ? dayCount : 1}
                     </span>
                     <span className="text-md font-thin">$ {totalPrice}</span>

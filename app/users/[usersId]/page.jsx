@@ -5,7 +5,8 @@ import { mock_data } from "../../../mock-data/listing";
 
 export const dynamic = "force-dynamic";
 
-const UserPage = async (props) => {
+const UserPage = async ({ searchParams }) => {
+  console.log(searchParams.usersId);
   const listing = mock_data.listings;
 
   // if (typeof window !== "undefined") {
