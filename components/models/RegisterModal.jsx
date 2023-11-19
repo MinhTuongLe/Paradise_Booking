@@ -14,6 +14,7 @@ import Button from "../Button";
 import Heading from "../Heading";
 import Input from "../inputs/Input";
 import Modal from "./Modal";
+import { API_URL } from "@/const";
 
 function RegisterModal({}) {
   const registerModel = useRegisterModal();
@@ -44,16 +45,20 @@ function RegisterModal({}) {
     }
 
     const { confirmPassword, ...formData } = data;
+    axios.defaults.headers.post["Content-Type"] = "application/json";
 
     axios
-      .post("/api/register", formData)
+      .post(`${API_URL}/register`, formData)
       .then(() => {
         setIsLoading(false);
         toast.success("Register Successfully");
         loginModel.onOpen();
         registerModel.onClose();
       })
-      .catch((err) => toast.error("Something Went Wrong"));
+      .catch((err) => {
+        toast.error("Something Went Wrong");
+        setIsLoading(false);
+      });
   };
 
   const toggle = useCallback(() => {

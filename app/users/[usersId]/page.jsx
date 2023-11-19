@@ -1,34 +1,33 @@
 import ClientOnly from "@/components/ClientOnly";
 import EmptyState from "@/components/EmptyState";
-import getCurrentUser from "../../actions/getCurrentUser";
 import UserClient from "./UserClient";
-import { mock_data } from "../../../mock-data/listing";
+import { cookies } from "next/headers";
+import getUserById from "@/app/actions/getUserById";
+import getPlaceByVendorId from "@/app/actions/getPlaceByVendorId";
+import RoomsModal from "@/components/models/RoomsModal";
 
 export const dynamic = "force-dynamic";
 
-const UserPage = async (props) => {
-  const currentUser = await getCurrentUser();
-  const listing = mock_data.listings;
+const UserPage = async ({ params }) => {
+  const accessToken = cookies().get("accessToken");
 
-  // if (!currentUser) {
-  //   return <EmptyState title="Unauthorized" subtitle="Please login" />;
-  // }
+  console.log(params);
+  console.log(params.usersId);
 
-  // const listings = await getListings({ userId: currentUser.id });
+  const user = await getUserById(params?.usersId);
 
-  // const listings = mock_data.listings.filter(
-  //   (item) => item.userId === currentUser.id
-  // );
+  const places = await getPlaceByVendorId(user.id);
 
-  // if (listings.length === 0) {
-  //   return (
-  //     <EmptyState
-  //       title="No Profile found"
-  //       subtitle="Looks like you have not any Profile"
-  //     />
-  //   );
-  // }
-  return <UserClient listing={listing} currentUser={currentUser} />;
+  if (!accessToken && user.role !== 2) {
+    return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  }
+
+  return (
+    <ClientOnly>
+      <RoomsModal currentUser={user} places={places}/>
+      <UserClient places={places} currentUser={user} role={user.role} />
+    </ClientOnly>
+  );
 };
 
 export default UserPage;

@@ -40,8 +40,7 @@ function Modal({
     if (disabled) {
       return;
     }
-
-    onSubmit();
+    if (onSubmit) onSubmit();
   }, [onSubmit, disabled]);
 
   const handleSecondAction = useCallback(() => {

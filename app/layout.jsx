@@ -16,6 +16,7 @@ import Navbar from "@/components/navbar/Navbar";
 import { Nunito } from "next/font/google";
 import "../styles/globals.css";
 import getCurrentUser from "./actions/getCurrentUser";
+import { StoreProvider } from "../store/StoreProvider";
 
 export const metadata = {
   title: "Paradise",
@@ -34,23 +35,24 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={font.className}>
-        <ClientOnly>
-          <ToastContainerBar />
-          <SearchModal />
-          <RegisterModal />
-          <LoginModal />
-          <ForgotPasswordModal />
-          <FiltersModal />
-          <RentModal />
-          <CommentsModal />
-          <RoomsModal currentUser={currentUser} />
-          <RoomCommentsModal />
-          <DeleteModal />
-          <ReportModal />
-          <Navbar currentUser={currentUser} />
-        </ClientOnly>
-        <div className="pb-20 pt-[10vh] min-h-[70vh]">{children}</div>
-        <Footer />
+        <StoreProvider>
+          <ClientOnly>
+            <ToastContainerBar />
+            <SearchModal />
+            <RegisterModal />
+            <LoginModal />
+            <ForgotPasswordModal />
+            <FiltersModal />
+            <RentModal />
+            <CommentsModal />
+            <RoomCommentsModal />
+            <DeleteModal />
+            <ReportModal />
+            <Navbar />
+          </ClientOnly>
+          <div className="pb-20 pt-[10vh] min-h-[70vh]">{children}</div>
+          <Footer />
+        </StoreProvider>
       </body>
     </html>
   );

@@ -1,5 +1,6 @@
 // Import necessary dependencies
-import React from "react";
+import React, { useState } from "react";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { BiDollar } from "react-icons/bi";
 
 function Input({
@@ -12,11 +13,16 @@ function Input({
   required,
   errors,
 }) {
+  const [showPassword, setShowPassword] = useState(false);
   const emailPattern = /^\S+@\S+\.\S+$/;
   const phonePattern = /^\d{10}$/;
 
   const pattern =
     type === "email" ? emailPattern : type === "tel" ? phonePattern : null;
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
   return (
     <div className="w-full relative">
@@ -31,7 +37,7 @@ function Input({
         disabled={disabled}
         {...register(id, { required, pattern })}
         placeholder=""
-        type={type}
+        type={showPassword ? "text" : type}
         className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition disabled:opacity-70 disabled:cursor-not-allowed ${
           formatPrice ? "pl-9" : "pl-4"
         } ${errors[id] ? "border-rose-500" : "border-neutral-300"} ${
@@ -48,6 +54,20 @@ function Input({
       >
         {label}
       </label>
+
+      {type === "password" && (
+        <button
+          type="button"
+          onClick={togglePasswordVisibility}
+          className="absolute top-5 right-2 cursor-pointer focus:outline-none"
+        >
+          {showPassword ? (
+            <AiOutlineEyeInvisible className="text-[24px] text-zinc-400" />
+          ) : (
+            <AiOutlineEye className="text-[24px] text-zinc-400" />
+          )}
+        </button>
+      )}
     </div>
   );
 }

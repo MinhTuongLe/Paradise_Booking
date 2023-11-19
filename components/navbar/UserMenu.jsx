@@ -6,6 +6,7 @@ import useRentModal from "@/hook/useRentModal";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Notification from "@/components/Notification";
+import Cookie from "js-cookie";
 
 import { signOut } from "next-auth/react";
 import { useCallback, useState } from "react";
@@ -13,9 +14,12 @@ import { AiOutlineMenu } from "react-icons/ai";
 import Avatar from "../Avatar";
 import MenuItem from "./MenuItem";
 import { IoNotifications } from "react-icons/io5";
+import { useDispatch } from "react-redux";
+import { reset } from "@/components/slice/authSlice";
 
-function UserMenu({ currentUser }) {
+function UserMenu({ authState, loggedUser }) {
   const router = useRouter();
+  const dispatch = useDispatch();
   const registerModel = useRegisterModal();
   const loginModel = useLoginModel();
   const rentModel = useRentModal();
@@ -38,17 +42,27 @@ function UserMenu({ currentUser }) {
   };
 
   const onRent = useCallback(() => {
-    if (!currentUser) {
+    if (!loggedUser) {
       return loginModel.onOpen();
     }
 
     rentModel.onOpen();
-  }, [currentUser, loginModel, rentModel]);
+  }, [loggedUser, loginModel, rentModel]);
 
   const handleChangeLanguage = () => {
     if (language === "en") setLanguage("vi");
     else setLanguage("en");
   };
+
+  const handleLogout = async () => {
+    if (isOpen) toggleOpen();
+    await signOut();
+    Cookie.remove("accessToken");
+    Cookie.remove("expiresAt");
+    dispatch(reset());
+  };
+
+  console.log(loggedUser.id);
 
   return (
     <div
@@ -80,7 +94,7 @@ function UserMenu({ currentUser }) {
             </span>
           </label>
         </div>
-        {currentUser && (
+        {authState && (
           <div
             onClick={toggleNotification}
             className="flex flex-row items-center gap-3 cursor-pointer transition relative"
@@ -94,8 +108,8 @@ function UserMenu({ currentUser }) {
         >
           <AiOutlineMenu />
           <div className="hidden md:block">
-            {currentUser ? (
-              <Avatar src={currentUser.image} userName={currentUser.name} />
+            {loggedUser ? (
+              <Avatar src={loggedUser.cover} userName={loggedUser.full_name} />
             ) : (
               <Image
                 className="rounded-full"
@@ -111,7 +125,7 @@ function UserMenu({ currentUser }) {
       {isOpen && (
         <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm z-20">
           <div className="flex flex-col cursor-pointer">
-            {currentUser ? (
+            {authState && loggedUser ? (
               <>
                 <MenuItem
                   onClick={() => menuItemSelect("/trips")}
@@ -131,7 +145,7 @@ function UserMenu({ currentUser }) {
                 />
                 <MenuItem onClick={onRent} label="Paradise your home" />
                 <MenuItem
-                  onClick={() => menuItemSelect(`/users/${currentUser.id}`)}
+                  onClick={() => menuItemSelect(`/users/${loggedUser.id}`)}
                   label="My profile"
                 />
                 <MenuItem
@@ -140,11 +154,8 @@ function UserMenu({ currentUser }) {
                 />
                 <hr />
                 <MenuItem
-                  onClick={() => {
-                    signOut();
-                    if (isOpen) toggleOpen();
-                    router.push("/");
-                  }}
+                  className=" px-4 py-3 hover:bg-neutral-100 transition font-semibold"
+                  onClick={handleLogout}
                   label="Logout"
                 />
               </>

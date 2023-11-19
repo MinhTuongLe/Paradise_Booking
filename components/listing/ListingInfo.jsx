@@ -26,9 +26,9 @@ function ListingInfo({
             className="cursor-pointer hover:text-rose-500"
             onClick={() => window.open(`/users/${user.id}`, "_blank")}
           >
-            Hosted by {user.name}
+            Hosted by {user.full_name}
           </div>
-          <Avatar src={user.image || emptyImageSrc} userName={user.name} />
+          <Avatar src={user.image || emptyImageSrc} userName={user.full_name} />
         </div>
         <div className="flex flex-row items-center gap-4 font-light text-neutral-500">
           <p>{guestCount} guests</p>

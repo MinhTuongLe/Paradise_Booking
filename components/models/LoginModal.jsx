@@ -10,11 +10,15 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { AiFillFacebook } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
 import { toast } from "react-toastify";
-
+import axios from "axios";
+import { setLoggUser, setAuthState } from "@/components/slice/authSlice";
+import { useDispatch } from "react-redux";
+import Cookie from "js-cookie";
 import Button from "../Button";
 import Heading from "../Heading";
 import Input from "../inputs/Input";
 import Modal from "./Modal";
+import { API_URL } from "@/const";
 
 function LoginModal({}) {
   const router = useRouter();
@@ -22,6 +26,7 @@ function LoginModal({}) {
   const loginModel = useLoginModel();
   const forgotPasswordModel = useForgotPasswordModal();
   const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const {
     register,
@@ -37,21 +42,38 @@ function LoginModal({}) {
 
   const onSubmit = (data) => {
     setIsLoading(true);
+    axios.defaults.headers.post["Content-Type"] = "application/json";
 
-    signIn("credentials", {
-      ...data,
-      redirect: false,
-    }).then((callback) => {
-      setIsLoading(false);
-
-      if (callback?.ok) {
+    axios
+      .post(`${API_URL}/login`, data)
+      .then((callback) => {
         toast.success("Login Successfully");
+        Cookie.set("accessToken", callback.data.accessToken);
+        Cookie.set("expiresAt", callback.data.expiresAt);
+        dispatch(setAuthState(true));
+        setIsLoading(false);
         router.refresh();
         loginModel.onClose();
-      } else if (callback?.error) {
+
+        const config = {
+          params: {
+            email: data.email,
+          },
+        };
+        axios
+          .get(`${API_URL}/profile`, config)
+          .then((callback) => {
+            dispatch(setLoggUser(callback.data.data));
+          })
+          .catch((err) => {
+            toast.error("Get user information failed");
+            setIsLoading(false);
+          });
+      })
+      .catch((err) => {
         toast.error("Something Went Wrong");
-      }
-    });
+        setIsLoading(false);
+      });
   };
 
   const toggle = useCallback(() => {
