@@ -17,7 +17,6 @@ export const authSlice = createSlice({
     reset() {
       return initialState;
     },
-    // Action to set the authentication status
     setAuthState(state, action) {
       state.authState = action.payload;
     },

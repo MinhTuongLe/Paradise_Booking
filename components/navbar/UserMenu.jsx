@@ -6,6 +6,7 @@ import useRentModal from "@/hook/useRentModal";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Notification from "@/components/Notification";
+import Cookie from "js-cookie";
 
 import { signOut } from "next-auth/react";
 import { useCallback, useState } from "react";
@@ -16,7 +17,7 @@ import { IoNotifications } from "react-icons/io5";
 import { useDispatch } from "react-redux";
 import { reset } from "@/components/slice/authSlice";
 
-function UserMenu({ currentUser, authState, loggedUser }) {
+function UserMenu({ authState, loggedUser }) {
   const router = useRouter();
   const dispatch = useDispatch();
   const registerModel = useRegisterModal();
@@ -41,12 +42,12 @@ function UserMenu({ currentUser, authState, loggedUser }) {
   };
 
   const onRent = useCallback(() => {
-    if (!currentUser) {
+    if (!loggedUser) {
       return loginModel.onOpen();
     }
 
     rentModel.onOpen();
-  }, [currentUser, loginModel, rentModel]);
+  }, [loggedUser, loginModel, rentModel]);
 
   const handleChangeLanguage = () => {
     if (language === "en") setLanguage("vi");
@@ -56,11 +57,12 @@ function UserMenu({ currentUser, authState, loggedUser }) {
   const handleLogout = async () => {
     if (isOpen) toggleOpen();
     await signOut();
-
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("expiresAt");
+    Cookie.remove("accessToken");
+    Cookie.remove("expiresAt");
     dispatch(reset());
   };
+
+  console.log(loggedUser.id);
 
   return (
     <div
@@ -106,8 +108,8 @@ function UserMenu({ currentUser, authState, loggedUser }) {
         >
           <AiOutlineMenu />
           <div className="hidden md:block">
-            {currentUser ? (
-              <Avatar src={currentUser.image} userName={currentUser.name} />
+            {loggedUser ? (
+              <Avatar src={loggedUser.cover} userName={loggedUser.full_name} />
             ) : (
               <Image
                 className="rounded-full"

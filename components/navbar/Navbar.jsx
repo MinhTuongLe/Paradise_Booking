@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
-function Navbar({ currentUser }) {
+function Navbar() {
   const router = useRouter();
   const authState = useSelector((state) => state.authSlice.authState);
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
@@ -39,7 +39,6 @@ function Navbar({ currentUser }) {
             <Logo />
             <Search />
             <UserMenu
-              currentUser={currentUser}
               authState={authState}
               loggedUser={loggedUser}
             />

@@ -1,44 +1,31 @@
 import ClientOnly from "@/components/ClientOnly";
 import EmptyState from "@/components/EmptyState";
 import UserClient from "./UserClient";
-import { mock_data } from "../../../mock-data/listing";
+import { cookies } from "next/headers";
+import getUserById from "@/app/actions/getUserById";
+import getPlaceByVendorId from "@/app/actions/getPlaceByVendorId";
+import RoomsModal from "@/components/models/RoomsModal";
 
 export const dynamic = "force-dynamic";
 
-const UserPage = async ({ searchParams }) => {
-  console.log(searchParams.usersId);
-  const listing = mock_data.listings;
+const UserPage = async ({ params }) => {
+  const accessToken = cookies().get("accessToken");
 
-  // if (typeof window !== "undefined") {
-  //   const accessToken = localStorage.getItem("accessToken");
-  //   console.log(accessToken);
+  console.log(params);
+  console.log(params.usersId);
 
-  //   if (!accessToken) {
-  //     return (
-  //       <ClientOnly>
-  //         <EmptyState title="Unauthorized" subtitle="Please login" />
-  //       </ClientOnly>
-  //     );
-  //   }
-  // }
+  const user = await getUserById(params?.usersId);
 
-  // const listings = await getListings({ userId: currentUser.id });
+  const places = await getPlaceByVendorId(user.id);
 
-  // const listings = mock_data.listings.filter(
-  //   (item) => item.userId === currentUser.id
-  // );
+  if (!accessToken && user.role !== 2) {
+    return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  }
 
-  // if (listings.length === 0) {
-  //   return (
-  //     <EmptyState
-  //       title="No Profile found"
-  //       subtitle="Looks like you have not any Profile"
-  //     />
-  //   );
-  // }
   return (
     <ClientOnly>
-      <UserClient listing={listing} />
+      <RoomsModal currentUser={user} places={places}/>
+      <UserClient places={places} currentUser={user} role={user.role} />
     </ClientOnly>
   );
 };

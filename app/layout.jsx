@@ -16,7 +16,6 @@ import Navbar from "@/components/navbar/Navbar";
 import { Nunito } from "next/font/google";
 import "../styles/globals.css";
 import getCurrentUser from "./actions/getCurrentUser";
-import { wrapper } from "../store/store";
 import { StoreProvider } from "../store/StoreProvider";
 
 export const metadata = {
@@ -46,11 +45,10 @@ export default async function RootLayout({ children }) {
             <FiltersModal />
             <RentModal />
             <CommentsModal />
-            <RoomsModal currentUser={currentUser} />
             <RoomCommentsModal />
             <DeleteModal />
             <ReportModal />
-            <Navbar currentUser={currentUser} />
+            <Navbar />
           </ClientOnly>
           <div className="pb-20 pt-[10vh] min-h-[70vh]">{children}</div>
           <Footer />

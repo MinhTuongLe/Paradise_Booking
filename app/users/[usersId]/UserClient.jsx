@@ -23,9 +23,9 @@ import "../../../styles/globals.css";
 import { API_URL } from "@/const";
 import useCommentsModal from "@/hook/useCommentsModal";
 import useRoomsModal from "@/hook/useRoomsModal";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setLoggUser } from "@/components/slice/authSlice";
-import EmptyState from "@/components/EmptyState";
+import { useSelector } from "react-redux";
 
 const data = {
   name: "Le Minh Tuong",
@@ -36,12 +36,12 @@ const data = {
   bio: "Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile!",
 };
 
-function UserClient({ listing }) {
+function UserClient({ places, currentUser, role }) {
   const commentsModal = useCommentsModal();
   const roomsModal = useRoomsModal();
   const dispatch = useDispatch();
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
-  const accessToken = localStorage.getItem("accessToken");
+  const authState = useSelector((state) => state.authSlice.authState);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -54,15 +54,26 @@ function UserClient({ listing }) {
     watch,
     formState: { errors },
   } = useForm({
-    defaultValues: {
-      username: loggedUser.username || "",
-      full_name: loggedUser.full_name || "",
-      // avatar: loggedUser.avatar || "",
-      address: loggedUser.address || "",
-      phone: loggedUser.phone || "",
-      dob: loggedUser.dob || "",
-      email: loggedUser.email || "",
-    },
+    defaultValues:
+      role === 2
+        ? {
+            username: currentUser.username || "",
+            full_name: currentUser.full_name || "",
+            // avatar: currentUser.avatar || "",
+            address: currentUser.address || "",
+            phone: currentUser.phone || "",
+            dob: currentUser.dob || "",
+            email: currentUser.email || "",
+          }
+        : {
+            username: loggedUser.username || "",
+            full_name: loggedUser.full_name || "",
+            // avatar:  loggedUser.avatar : "",
+            address: loggedUser.address || "",
+            phone: loggedUser.phone || "",
+            dob: loggedUser.dob || "",
+            email: loggedUser.email || "",
+          },
   });
 
   const imageSrc = watch("avatar");
@@ -86,7 +97,7 @@ function UserClient({ listing }) {
     };
 
     axios
-      .patch(`${API_URL}/account/${loggedUser.id}`, data, config)
+      .patch(`${API_URL}/account/${currentUser.id}`, data, config)
       .then(() => {
         setIsLoading(false);
         setIsEditMode(false);
@@ -98,10 +109,6 @@ function UserClient({ listing }) {
         setIsLoading(false);
       });
   };
-
-  if (!accessToken) {
-    return <EmptyState title="Unauthorized" subtitle="Please login" />;
-  }
 
   return (
     <div className="max-w-[1200px] mx-auto px-4">
@@ -126,7 +133,7 @@ function UserClient({ listing }) {
                   className="rounded-full h-[120px] w-[120px]"
                 />
                 <h1 className="text-2xl font-bold my-3">
-                  {loggedUser.username}
+                  {loggedUser.username || currentUser.username}
                 </h1>
                 <span className="text-xl">User</span>
               </>
@@ -217,56 +224,65 @@ function UserClient({ listing }) {
               </>
             ) : (
               <div className="flex flex-col justify-start items-start">
-                {loggedUser && !isLoading ? (
+                {loggedUser || (currentUser && !isLoading) ? (
                   <>
-                    <h1 className="text-2xl font-bold my-3">
-                      {loggedUser.username || "User"} Profile
+                    <h1 className="text-2xl font-bold">
+                      {loggedUser.username || currentUser.username || "User"}{" "}
+                      Profile
                     </h1>
-                    <button
-                      className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
-                      onClick={() => setIsEditMode(true)}
-                    >
-                      Edit profile
-                    </button>
+                    {authState && currentUser?.email === loggedUser?.email && (
+                      <button
+                        className="mt-8 px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
+                        onClick={() => setIsEditMode(true)}
+                      >
+                        Edit profile
+                      </button>
+                    )}
                     <div className="space-y-3 mt-6 ">
                       <div className="flex justify-start items-center space-x-2">
                         <AiOutlineUser size={18} />
                         <p className="text-md">
-                          Name: {loggedUser.full_name || "-"}
+                          Name:{" "}
+                          {loggedUser.full_name || currentUser.full_name || "-"}
                         </p>
                       </div>
                       <div className="flex justify-start items-center space-x-2">
                         <AiOutlineMail />
                         <p className="text-md">
-                          Email: {loggedUser.email || "-"}
+                          Email: {loggedUser.email || currentUser.email || "-"}
                         </p>
                       </div>
                       <div className="flex justify-start items-center space-x-2">
                         <AiOutlinePhone />
                         <p className="text-md">
-                          Phone: {loggedUser.phone || "-"}
+                          Phone: {loggedUser.phone || currentUser.phone || "-"}
                         </p>
                       </div>
                       <div className="flex justify-start items-center space-x-2">
                         <MdOutlineDateRange />
                         <p className="text-md">
-                          Date of Birth: {loggedUser.dob || "-"}
+                          Date of Birth:{" "}
+                          {loggedUser.dob || currentUser.dob || "-"}
                         </p>
                       </div>
                       <div className="flex justify-start items-center space-x-2">
                         <FaRegAddressCard />
                         <p className="text-md">
-                          Address: {loggedUser.address || "-"}
+                          Address:{" "}
+                          {loggedUser.address || currentUser.address || "-"}
                         </p>
                       </div>
                     </div>
                     <div
                       className={`space-y-3 pb-4 my-4 w-full ${
-                        loggedUser.type === 2 ? "border-b-[1px]" : ""
+                        role === 2 ? "border-b-[1px]" : ""
                       }`}
                     >
                       <h1 className="text-xl font-bold mt-[32px]">
-                        About Le Minh Tuong
+                        About{" "}
+                        {loggedUser.full_name ||
+                          currentUser.full_name ||
+                          "user"}
                       </h1>
                       <p
                         className="profile-bio resize-none border border-solid p-8 rounded-[24px] w-full focus:outline-none h-[30vh] overflow-auto"
@@ -276,12 +292,12 @@ function UserClient({ listing }) {
                         {data.bio}
                       </p>
                     </div>
-                    {loggedUser.type === 2 && (
+                    {role === 2 && (
                       <>
                         <div className="border-b-[1px] pb-4">
                           <div className="flex justify-between items-center w-full">
                             <h1 className="text-xl font-bold space-y-3">
-                              Le Minh Tuong' Comments
+                              {currentUser.full_name || "User"}' Comments
                             </h1>
                             <button
                               className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
@@ -290,7 +306,7 @@ function UserClient({ listing }) {
                               Show more comments
                             </button>
                           </div>
-                          <div className="vendor-room-listing flex w-full space-x-4 mt-3">
+                          <div className="vendor-room-places flex w-full space-x-4 mt-3">
                             <div className="w-1/2 p-2 space-y-6 border-[1px] rounded-xl">
                               <p className="line-clamp-5">{`"...${data.bio}`}</p>
                               <div className="flex justify-start items-center space-x-6">
@@ -329,22 +345,24 @@ function UserClient({ listing }) {
                             </div>
                           </div>
                         </div>
-                        {listing && listing.length > 0 && (
+                        {places && places.length > 0 && (
                           <div className="w-full mt-4">
                             <div className="flex justify-between items-center w-full">
                               <h1 className="text-xl font-bold space-y-3">
                                 Le Minh Tuong's Rooms
                               </h1>
-                              <button
-                                className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
-                                onClick={roomsModal.onOpen}
-                              >
-                                Show more rooms
-                              </button>
+                              {places.length > 3 && (
+                                <button
+                                  className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
+                                  onClick={roomsModal.onOpen}
+                                >
+                                  Show more rooms
+                                </button>
+                              )}
                             </div>
-                            {/* <div className="vendor-room-listing flex w-full mt-2">
-                              {listing.slice(0, 3).map((list) => (
-                                <div key={list.id} className="w-1/3 p-2">
+                            <div className="vendor-room-places flex w-full mt-2">
+                              {places.slice(0, 3).map((list) => (
+                                <div key={list.id} className="w-1/3 p-4">
                                   <ListingCard
                                     data={list}
                                     currentUser={currentUser}
@@ -352,7 +370,7 @@ function UserClient({ listing }) {
                                   />
                                 </div>
                               ))}
-                            </div> */}
+                            </div>
                           </div>
                         )}
                       </>
