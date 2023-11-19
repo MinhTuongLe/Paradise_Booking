@@ -4,18 +4,12 @@ import EmptyState from "@/components/EmptyState";
 import ListingCard from "@/components/listing/ListingCard";
 import getCurrentUser from "./actions/getCurrentUser";
 import getPlaces from "./actions/getPlaces";
-import { mock_data } from "../mock-data/listing";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home({ searchParams }) {
-  // const listing = await getListings(searchParams);
-  // const listing = mock_data.listings;
   const currentUser = await getCurrentUser();
   const places = await getPlaces();
-  // console.log(places);
-
-  // const currentUser = localStorage.
 
   if (places.length === 0) {
     return (
