@@ -1,22 +1,14 @@
-import { API_URL } from "@/const";
 import axios from "axios";
+import { API_URL } from "@/const";
 
-export default async function getPlaces(page = 1, limit = 5) {
+export default async function getPlaces() {
   try {
-    const formData = new FormData();
-    formData.append("page", page);
-    formData.append("limit", limit);
-
-    const response = await axios.post(`${API_URL}/places`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
+    const response = await axios.get(`${API_URL}/places`);
 
     const places = response.data;
 
     return places;
   } catch (error) {
-    console.error("Something went wrong", error);
+    console.log("Something went wrong");
   }
 }
