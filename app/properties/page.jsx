@@ -14,10 +14,10 @@ const PropertiesPage = async () => {
   // console.log(accessToken);
 
   const user = await getUserById(userId);
-  console.log(user);
+  // console.log(user);
   let places = [];
   if (user.role === 2) places = await getPlaceByVendorId(userId);
-  console.log(places, user);
+  // console.log(places, user);
 
   if (!accessToken || user.role !== 2) {
     return (
