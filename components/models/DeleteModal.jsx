@@ -2,7 +2,6 @@
 
 import useDeleteModal from "@/hook/useDeleteModal";
 import useForgotPasswordModal from "@/hook/useForgotPasswordModal";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
@@ -64,12 +63,6 @@ function DeleteModal() {
     <div className="flex gap-4 mt-3">
       <hr />
       <Button label="Cancel" onClick={deleteModal.onClose} />
-      <Button
-        outline
-        label="Delete"
-        onClick={() => signIn("facebook")}
-        isColor
-      />
     </div>
   );
   return (

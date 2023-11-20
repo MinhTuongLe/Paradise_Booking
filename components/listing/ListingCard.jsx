@@ -18,7 +18,6 @@ function ListingCard({
   disabled,
   actionLabel,
   actionId = "",
-  currentUser,
   shrink = false,
 }) {
   const emptyImageSrc =
@@ -81,11 +80,11 @@ function ListingCard({
             src={data.cover || emptyImageSrc}
             alt="listing"
           />
-          {shrink === false && (
+          {/* {shrink === false && (
             <div className="absolute top-3 right-3">
               <HeartButton listingId={data.id} currentUser={currentUser} />
             </div>
-          )}
+          )} */}
         </div>
         {shrink === false && (
           <div className="font-semibold text-lg">

@@ -3,7 +3,6 @@
 import useLoginModel from "@/hook/useLoginModal";
 import useRegisterModal from "@/hook/useRegisterModal";
 import useForgotPasswordModal from "@/hook/useForgotPasswordModal";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
@@ -64,6 +63,7 @@ function LoginModal({}) {
           .get(`${API_URL}/profile`, config)
           .then((callback) => {
             dispatch(setLoggUser(callback.data.data));
+            Cookie.set("userId", callback.data.data.id);
           })
           .catch((err) => {
             toast.error("Get user information failed");
@@ -126,17 +126,11 @@ function LoginModal({}) {
   const footerContent = (
     <div className="flex flex-col gap-4 mt-3">
       <hr />
-      <Button
-        outline
-        label="Continue with Google"
-        icon={FcGoogle}
-        onClick={() => signIn("google")}
-      />
+      <Button outline label="Continue with Google" icon={FcGoogle} />
       {/* <Button
         outline
         label="Continue with Facebook"
         icon={AiFillFacebook}
-        onClick={() => signIn("facebook")}
         isColor
       /> */}
       <div className="text-neutral-500 text-center mt-4 font-light">

@@ -2,13 +2,11 @@ import ClientOnly from "@/components/ClientOnly";
 import Container from "@/components/Container";
 import EmptyState from "@/components/EmptyState";
 import ListingCard from "@/components/listing/ListingCard";
-import getCurrentUser from "./actions/getCurrentUser";
 import getPlaces from "./actions/getPlaces";
 
 export const dynamic = "force-dynamic";
 
 export default async function Home({ searchParams }) {
-  const currentUser = await getCurrentUser();
   const places = await getPlaces();
 
   if (places.length === 0) {
@@ -28,7 +26,7 @@ export default async function Home({ searchParams }) {
               <ListingCard
                 key={place.id}
                 data={place}
-                currentUser={currentUser}
+                // currentUser={currentUser}
               />
             );
           })}

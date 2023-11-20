@@ -212,11 +212,9 @@ function FiltersModal({}) {
         <Button
           outline
           label="Remove all"
-          // onClick={() => signIn("google")}
         />
         <Button
           label={`Display ${7} Result(s)`}
-          // onClick={() => signIn("facebook")}
         />
       </div>
     </>

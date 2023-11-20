@@ -15,7 +15,6 @@ import ReportModal from "@/components/models/ReportModal";
 import Navbar from "@/components/navbar/Navbar";
 import { Nunito } from "next/font/google";
 import "../styles/globals.css";
-import getCurrentUser from "./actions/getCurrentUser";
 import { StoreProvider } from "../store/StoreProvider";
 
 export const metadata = {
@@ -30,8 +29,6 @@ const font = Nunito({
 });
 
 export default async function RootLayout({ children }) {
-  const currentUser = await getCurrentUser();
-
   return (
     <html lang="en">
       <body className={font.className}>

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import Container from "@/components/Container";
@@ -14,20 +15,7 @@ function PropertiesClient({ listings, currentUser }) {
 
   const onDelete = useCallback(
     (id) => {
-      setDeletingId(id);
-
-      axios
-        .delete(`/api/listings/${id}`)
-        .then(() => {
-          toast.info("Listing deleted");
-          router.refresh();
-        })
-        .catch((error) => {
-          toast.error(error?.response?.data?.error);
-        })
-        .finally(() => {
-          setDeletingId("");
-        });
+      console.log(id);
     },
     [router]
   );

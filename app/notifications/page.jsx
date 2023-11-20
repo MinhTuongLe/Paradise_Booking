@@ -1,13 +1,11 @@
 import ClientOnly from "@/components/ClientOnly";
 import EmptyState from "@/components/EmptyState";
-import getCurrentUser from "../actions/getCurrentUser";
 import NotificationClient from "./NotificationClient";
 import { mock_data } from "../../mock-data/listing";
 
 export const dynamic = "force-dynamic";
 
 const NotificationPage = async (props) => {
-  // const currentUser = await getCurrentUser();
 
   // if (!currentUser) {
   //   return <EmptyState title="Unauthorized" subtitle="Please login" />;

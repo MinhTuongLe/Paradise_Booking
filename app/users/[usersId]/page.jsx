@@ -10,13 +10,11 @@ export const dynamic = "force-dynamic";
 
 const UserPage = async ({ params }) => {
   const accessToken = cookies().get("accessToken");
-
-  console.log(params);
-  console.log(params.usersId);
-
+  
   const user = await getUserById(params?.usersId);
 
-  const places = await getPlaceByVendorId(user.id);
+  let places = [];
+  if (user.id === 2) places = await getPlaceByVendorId(user.id);
 
   if (!accessToken && user.role !== 2) {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;
@@ -24,7 +22,7 @@ const UserPage = async ({ params }) => {
 
   return (
     <ClientOnly>
-      <RoomsModal currentUser={user} places={places}/>
+      <RoomsModal currentUser={user} places={places} />
       <UserClient places={places} currentUser={user} role={user.role} />
     </ClientOnly>
   );

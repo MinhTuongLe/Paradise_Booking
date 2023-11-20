@@ -1,15 +1,25 @@
 import ClientOnly from "@/components/ClientOnly";
 import EmptyState from "@/components/EmptyState";
-import getCurrentUser from "../actions/getCurrentUser";
 import PropertiesClient from "./PropertiesClient";
-import { mock_data } from "../../mock-data/listing";
+import getPlaceByVendorId from "@/app/actions/getPlaceByVendorId";
+import getUserById from "@/app/actions/getUserById";
+import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
-const PropertiesPage = async (props) => {
-  const currentUser = await getCurrentUser();
+const PropertiesPage = async () => {
+  const userId = cookies().get("userId").value;
+  // console.log(userId);
+  const accessToken = cookies().get("accessToken").value;
+  // console.log(accessToken);
 
-  if (!currentUser) {
+  const user = await getUserById(userId);
+  console.log(user);
+  let places = [];
+  if (user.role === 2) places = await getPlaceByVendorId(userId);
+  console.log(places, user);
+
+  if (!accessToken || user.role !== 2) {
     return (
       <ClientOnly>
         <EmptyState title="Unauthorized" subtitle="Please login" />
@@ -17,13 +27,7 @@ const PropertiesPage = async (props) => {
     );
   }
 
-  // const listings = await getListings({ userId: currentUser.id });
-
-  const listings = mock_data.listings.filter(
-    (item) => item.userId === currentUser.id
-  );
-
-  if (listings.length === 0) {
+  if (places.length === 0) {
     return (
       <ClientOnly>
         <EmptyState
@@ -33,9 +37,10 @@ const PropertiesPage = async (props) => {
       </ClientOnly>
     );
   }
+
   return (
     <ClientOnly>
-      <PropertiesClient listings={listings} currentUser={currentUser} />
+      <PropertiesClient listings={places} currentUser={user} />
     </ClientOnly>
   );
 };

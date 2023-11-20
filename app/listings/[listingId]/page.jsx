@@ -1,4 +1,3 @@
-import getCurrentUser from "@/app/actions/getCurrentUser";
 import getPlaceById from "@/app/actions/getPlaceById";
 import getUserById from "@/app/actions/getUserById";
 import ClientOnly from "@/components/ClientOnly";

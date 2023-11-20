@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import Notification from "@/components/Notification";
 import Cookie from "js-cookie";
 
-import { signOut } from "next-auth/react";
 import { useCallback, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import Avatar from "../Avatar";
@@ -54,15 +53,15 @@ function UserMenu({ authState, loggedUser }) {
     else setLanguage("en");
   };
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     if (isOpen) toggleOpen();
-    await signOut();
+    Cookie.remove("loggedUser");
     Cookie.remove("accessToken");
     Cookie.remove("expiresAt");
     dispatch(reset());
   };
 
-  console.log(loggedUser.id);
+  // console.log(loggedUser.id);
 
   return (
     <div
@@ -139,11 +138,12 @@ function UserMenu({ authState, loggedUser }) {
                   onClick={() => menuItemSelect("/reservations")}
                   label="My reservations"
                 />
-                <MenuItem
-                  onClick={() => menuItemSelect("/properties")}
-                  label="My properties"
-                />
-                <MenuItem onClick={onRent} label="Paradise your home" />
+                {loggedUser.role === 2 && (
+                  <MenuItem
+                    onClick={() => menuItemSelect("/properties")}
+                    label="My properties"
+                  />
+                )}
                 <MenuItem
                   onClick={() => menuItemSelect(`/users/${loggedUser.id}`)}
                   label="My profile"

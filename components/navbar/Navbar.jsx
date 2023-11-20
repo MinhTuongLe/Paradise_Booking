@@ -6,11 +6,8 @@ import Search from "./Search";
 import UserMenu from "./UserMenu";
 import Categories from "./Categories";
 import { useSelector } from "react-redux";
-import { signOut } from "next-auth/react";
-import { useRouter } from "next/navigation";
 
 function Navbar() {
-  const router = useRouter();
   const authState = useSelector((state) => state.authSlice.authState);
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
@@ -38,10 +35,7 @@ function Navbar() {
           <div className="flex flex-row items-center justify-between gap-3 md:gap-0 h-full">
             <Logo />
             <Search />
-            <UserMenu
-              authState={authState}
-              loggedUser={loggedUser}
-            />
+            <UserMenu authState={authState} loggedUser={loggedUser} />
           </div>
         </Container>
       </div>

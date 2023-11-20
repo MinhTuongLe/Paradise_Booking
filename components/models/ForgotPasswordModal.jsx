@@ -2,7 +2,6 @@
 
 import useForgotPasswordModal from "@/hook/useForgotPasswordModal";
 import useLoginModal from "@/hook/useLoginModal";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
@@ -37,20 +36,6 @@ function ForgotPasswordModal({}) {
     console.log(data);
     // setIsLoading(true);
 
-    // signIn("credentials", {
-    //   ...data,
-    //   redirect: false,
-    // }).then((callback) => {
-    //   setIsLoading(false);
-
-    //   if (callback?.ok) {
-    //     toast.success("Login Successfully");
-    //     router.refresh();
-    //     forgotPasswordModel.onClose();
-    //   } else if (callback?.error) {
-    //     toast.error("Something Went Wrong");
-    //   }
-    // });
   };
 
   const onKeyPress = (event) => {
