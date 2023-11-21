@@ -9,8 +9,8 @@ import RoomsModal from "@/components/models/RoomsModal";
 export const dynamic = "force-dynamic";
 
 const UserPage = async ({ params }) => {
-  const accessToken = cookies().get("accessToken");
-  
+  const accessToken = cookies().get("accessToken")?.value;
+
   const user = await getUserById(params?.usersId);
 
   let places = [];

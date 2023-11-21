@@ -5,7 +5,7 @@ import useCountries from "@/hook/useCountries";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import React, { useCallback, useMemo } from "react";
 import Button from "../Button";
 import HeartButton from "../HeartButton";
@@ -24,6 +24,8 @@ function ListingCard({
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
 
   const { getByValue } = useCountries();
+  const pathName = usePathname();
+  const router = useRouter();
 
   const location = getByValue(data.country);
 
@@ -67,7 +69,8 @@ function ListingCard({
         ease: [0, 0.71, 0.2, 1.01],
       }}
       onClick={() => {
-        window.open(`/listings/${data.id}`, "_blank");
+        if (pathName === "/properties") router.push(`/properties/${data.id}`);
+        else window.open(`/listings/${data.id}`, "_blank");
         // router.push(`/listings/${data.id}`)
       }}
       className="col-span-1 cursor-pointer group"
@@ -85,6 +88,11 @@ function ListingCard({
               <HeartButton listingId={data.id} currentUser={currentUser} />
             </div>
           )} */}
+          {shrink === false && (
+            <div className="absolute top-3 right-3">
+              <HeartButton listingId={data.id} />
+            </div>
+          )}
         </div>
         {shrink === false && (
           <div className="font-semibold text-lg">

@@ -16,11 +16,13 @@ function CountrySelect({ value, onChange }) {
         value={value}
         onChange={(value) => onChange(value)}
         formatOptionLabel={(option) => (
-          <div className="flex flex-row items-center gap-3">
+          <div className="flex flex-row items-center gap-3 bg-white">
             <Flag code={option.value} className="w-5" />
             <div>
               {option.label},
-              <span className="text-neutral-500 ml-1">{option.region}</span>
+              <span className="text-neutral-500 ml-1 bg-white">
+                {option.region}
+              </span>
             </div>
           </div>
         )}
@@ -35,7 +37,7 @@ function CountrySelect({ value, onChange }) {
           colors: {
             ...theme.colors,
             primary: "black",
-            primary25: "#ffe4e6",
+            primary25: "#fff",
           },
         })}
       />
