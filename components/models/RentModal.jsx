@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import Cookie from "js-cookie";
 
 import Heading from "../Heading";
 import CategoryInput from "../inputs/CategoryInput";
@@ -21,6 +22,7 @@ import Image from "next/image";
 import rent_room_1 from "@/public/assets/rent_room_1.png";
 import rent_room_2 from "@/public/assets/rent_room_2.png";
 import rent_room_3 from "@/public/assets/rent_room_3.png";
+import { API_URL } from "@/const";
 
 const STEPS = {
   BECOME_VENDOR: 0,
@@ -97,13 +99,34 @@ function RentModal({}) {
 
     setIsLoading(true);
 
+    const submitValues = {
+      name: data.name,
+      description: data.description,
+      price_per_night: Number(data.price_per_night),
+      address: data.location.label,
+      capacity: data.guestCount,
+      lat: data.location.latlng[0],
+      lng: data.location.latlng[1],
+      country: data.location.region,
+      state: data.location.label,
+      city: data.location.label,
+    };
+
+    // console.log(submitValues);
+    const accessToken = Cookie.get("accessToken");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+
     axios
-      .post("/api/listings", data)
+      .post(`${API_URL}/places`, submitValues, config)
       .then(() => {
-        toast.success("Listing Created!");
+        toast.success("Create place successfully");
         router.refresh();
         reset();
-        setStep(STEPS.CATEGORY);
+        setStep(STEPS.BECOME_VENDOR);
         rentModel.onClose();
       })
       .catch(() => {
@@ -294,8 +317,8 @@ function RentModal({}) {
           subtitle="How much do you charge per night?"
         />
         <Input
-          id="title"
-          label="Title"
+          id="name"
+          label="Name"
           disabled={isLoading}
           register={register}
           errors={errors}
@@ -322,8 +345,8 @@ function RentModal({}) {
           subtitle="How much do you charge per night?"
         />
         <Input
-          id="price"
-          label="Price"
+          id="price_per_night"
+          label="Price per Night"
           formatPrice
           type="number"
           disabled={isLoading}

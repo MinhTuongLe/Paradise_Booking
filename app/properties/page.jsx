@@ -8,18 +8,18 @@ import { cookies } from "next/headers";
 export const dynamic = "force-dynamic";
 
 const PropertiesPage = async () => {
-  const userId = cookies().get("userId").value;
-  // console.log(userId);
-  const accessToken = cookies().get("accessToken").value;
-  // console.log(accessToken);
+  let unauthorized = false;
+  const userId = cookies().get("userId")?.value;
+  if (!userId) unauthorized = true;
+  const accessToken = cookies().get("accessToken")?.value;
+  if (!accessToken) unauthorized = true;
 
   const user = await getUserById(userId);
-  // console.log(user);
   let places = [];
-  if (user.role === 2) places = await getPlaceByVendorId(userId);
-  // console.log(places, user);
+  if (user?.role === 2) places = await getPlaceByVendorId(userId);
+  else unauthorized = true;
 
-  if (!accessToken || user.role !== 2) {
+  if (unauthorized) {
     return (
       <ClientOnly>
         <EmptyState title="Unauthorized" subtitle="Please login" />

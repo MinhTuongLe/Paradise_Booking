@@ -47,8 +47,8 @@ function LoginModal({}) {
       .post(`${API_URL}/login`, data)
       .then((callback) => {
         toast.success("Login Successfully");
-        Cookie.set("accessToken", callback.data.accessToken);
-        Cookie.set("expiresAt", callback.data.expiresAt);
+        Cookie.set("accessToken", callback.data.accessToken, {});
+        Cookie.set("expiresAt", callback.data.expiresAt, {});
         dispatch(setAuthState(true));
         setIsLoading(false);
         router.refresh();
@@ -63,7 +63,7 @@ function LoginModal({}) {
           .get(`${API_URL}/profile`, config)
           .then((callback) => {
             dispatch(setLoggUser(callback.data.data));
-            Cookie.set("userId", callback.data.data.id);
+            Cookie.set("userId", callback.data.data.id, {});
           })
           .catch((err) => {
             toast.error("Get user information failed");

@@ -88,13 +88,13 @@ function ListingCard({
         </div>
         {shrink === false && (
           <div className="font-semibold text-lg">
-            {location?.region}, {location?.label}
+            {data.address || ""} {data.country ? `, ${data.country}` : ""}
           </div>
         )}
         <div className="flex justify-between items-center">
           <div className="font-light text-neutral-500">
             {/* {reservationDate || data.category} */}
-            {data.city}, {data.state}
+            {data.city || ""} {data.state ? `, ${data.state}` : ""}
           </div>
           <div className="flex space-x-2 justify-between items-center">
             <FaStar size={16} />
