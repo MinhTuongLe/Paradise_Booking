@@ -4,12 +4,19 @@ import { useRouter, useSearchParams } from "next/navigation";
 import qs from "query-string";
 import React, { useCallback } from "react";
 import { IconType } from "react-icons";
+import { useSelector } from "react-redux";
 
 function CategoryBox({ icon: Icon, label, selected }) {
   const router = useRouter();
   const params = useSearchParams();
+  const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
   const handleClick = useCallback(() => {
+    if (loggedUser.role === 3) {
+      router.push(`/${label.toLowerCase()}`);
+      return;
+    }
+
     let currentQuery = {};
 
     if (params) {

@@ -5,6 +5,7 @@ import Logo from "./Logo";
 import Search from "./Search";
 import UserMenu from "./UserMenu";
 import Categories from "./Categories";
+import AdminNavBar from "./AdminNavbar";
 import { useSelector } from "react-redux";
 
 function Navbar() {
@@ -34,7 +35,8 @@ function Navbar() {
         <Container>
           <div className="flex flex-row items-center justify-between gap-3 md:gap-0 h-full">
             <Logo />
-            <Search />
+            {loggedUser.role !== 3 && <Search />}
+            {loggedUser.role === 3 && <AdminNavBar />}
             <UserMenu authState={authState} loggedUser={loggedUser} />
           </div>
         </Container>

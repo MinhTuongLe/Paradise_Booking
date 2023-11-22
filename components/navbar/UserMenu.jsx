@@ -72,12 +72,14 @@ function UserMenu({ authState, loggedUser }) {
       }}
     >
       <div className="flex flex-row items-center gap-6">
-        <div
-          className="hidden md:block text-sm font-semibold py-3 rounded-full hover:bg-neutral-100 transition cursor-pointer"
-          onClick={onRent}
-        >
-          Paradise your Home
-        </div>
+        {loggedUser.role !== 3 && (
+          <div
+            className="hidden md:block text-sm font-semibold py-3 rounded-full hover:bg-neutral-100 transition cursor-pointer"
+            onClick={onRent}
+          >
+            Paradise your Home
+          </div>
+        )}
         <div
           // onClick={}
           className="flex flex-row items-center gap-3 cursor-pointer transition relative"
@@ -126,18 +128,22 @@ function UserMenu({ authState, loggedUser }) {
           <div className="flex flex-col cursor-pointer">
             {authState && loggedUser ? (
               <>
-                <MenuItem
-                  onClick={() => menuItemSelect("/trips")}
-                  label="My trips"
-                />
-                <MenuItem
-                  onClick={() => menuItemSelect("/favorites")}
-                  label="My favorites"
-                />
-                <MenuItem
-                  onClick={() => menuItemSelect("/reservations")}
-                  label="My reservations"
-                />
+                {loggedUser.role !== 3 && (
+                  <>
+                    <MenuItem
+                      onClick={() => menuItemSelect("/trips")}
+                      label="My trips"
+                    />
+                    <MenuItem
+                      onClick={() => menuItemSelect("/favorites")}
+                      label="My favorites"
+                    />
+                    <MenuItem
+                      onClick={() => menuItemSelect("/reservations")}
+                      label="My reservations"
+                    />
+                  </>
+                )}
                 {loggedUser.role === 2 && (
                   <MenuItem
                     onClick={() => menuItemSelect("/properties")}
@@ -148,6 +154,7 @@ function UserMenu({ authState, loggedUser }) {
                   onClick={() => menuItemSelect(`/users/${loggedUser.id}`)}
                   label="My profile"
                 />
+                <hr />
                 <MenuItem
                   onClick={() => menuItemSelect("/change-password")}
                   label="Change Password"

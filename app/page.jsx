@@ -6,7 +6,7 @@ import getPlaces from "./actions/getPlaces";
 
 export const dynamic = "force-dynamic";
 
-export default async function Home({ searchParams }) {
+export default async function Home({}) {
   const places = await getPlaces();
 
   if (places.length === 0) {
