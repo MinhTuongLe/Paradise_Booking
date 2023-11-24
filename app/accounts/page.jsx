@@ -3,9 +3,11 @@ import EmptyState from "@/components/EmptyState";
 import AccountClient from "./AccountClient";
 import { cookies } from "next/headers";
 import getUserById from "@/app/actions/getUserById";
+import getAccounts from "@/app/actions/getAccounts";
 import getPlaceByVendorId from "@/app/actions/getPlaceByVendorId";
 import RoomsModal from "@/components/models/RoomsModal";
 import { accounts_data } from "../../mock-data/accounts";
+
 export const dynamic = "force-dynamic";
 
 const AccountPage = async ({}) => {
@@ -17,13 +19,17 @@ const AccountPage = async ({}) => {
   const user = await getUserById(userId);
   if (!accessToken || !userId || !user || user?.role !== 3) unauthorized = true;
 
+  let accounts = [];
   if (unauthorized) {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  } else {
+    accounts = await getAccounts();
+    console.log(accounts);
   }
 
   return (
     <ClientOnly>
-      <AccountClient accounts={accounts_data} />
+      <AccountClient accounts={accounts} />
     </ClientOnly>
   );
 };
