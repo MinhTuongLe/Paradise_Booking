@@ -8,7 +8,6 @@ import RentModal from "@/components/models/RentModal";
 import SearchModal from "@/components/models/SearchModal";
 import FiltersModal from "@/components/models/FiltersModal";
 import CommentsModal from "@/components/models/CommentsModal";
-import RoomsModal from "@/components/models/RoomsModal";
 import RoomCommentsModal from "@/components/models/RoomCommentsModal";
 import DeleteModal from "@/components/models/DeleteModal";
 import ReportModal from "@/components/models/ReportModal";

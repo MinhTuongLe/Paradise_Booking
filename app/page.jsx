@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 export default async function Home({}) {
   const places = await getPlaces();
 
-  if (places.length === 0) {
+  if (places?.length === 0) {
     return (
       <ClientOnly>
         <EmptyState showReset />
@@ -21,7 +21,7 @@ export default async function Home({}) {
     <ClientOnly>
       <Container>
         <div className="pt-24 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-6 gap-8 overflow-x-hidden">
-          {places.data.map((place) => {
+          {places?.data.map((place) => {
             return (
               <ListingCard
                 key={place.id}

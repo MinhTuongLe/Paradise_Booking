@@ -17,8 +17,10 @@ import {
   TableRow,
   TableCell,
 } from "@nextui-org/react";
+import Cookie from "js-cookie";
 
 const columns = [
+  { name: "Id", uid: "id" },
   { name: "Username", uid: "username" },
   { name: "Fullname", uid: "full_name" },
   { name: "Role", uid: "role" },
@@ -41,25 +43,29 @@ function AccountClient({ accounts }) {
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
 
   const handleStatusChange = (event, accountId) => {
-    const newStatus = event.target.value === "2" ? "Active" : "Inactive";
-
+    const newStatus = event.target.value;
     console.log(newStatus, accountId);
-    // const config = {
-    //   headers: {
-    //     "content-type": "application/json",
-    //   },
-    // };
 
-    // axios
-    //   .patch(`${API_URL}/account/${accountId}`)
-    //   .then(() => {
-    //     setIsLoading(false);
-    //     toast.success("Update Account Status Successfully");
-    //   })
-    //   .catch((err) => {
-    //     toast.error("Something Went Wrong");
-    //     setIsLoading(false);
-    //   });
+    const accessToken = Cookie.get("accessToken");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+
+    axios
+      .post(
+        `${API_URL}/change/status?id=${accountId}&status=${newStatus}`,
+        config
+      )
+      .then(() => {
+        setIsLoading(false);
+        toast.success("Update Account Status Successfully");
+      })
+      .catch((err) => {
+        toast.error("Something Went Wrong");
+        setIsLoading(false);
+      });
   };
 
   const renderCell = useCallback((user, columnKey) => {
@@ -90,7 +96,7 @@ function AccountClient({ accounts }) {
             onChange={(event) => handleStatusChange(event, user.id)}
             defaultValue={cellValue === "Active" ? 2 : 1}
             id="status"
-            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[full] p-2.5 "
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[full] p-2.5 "
           >
             <option value={2}>Active</option>
             <option value={1}>Inactive</option>
@@ -104,7 +110,7 @@ function AccountClient({ accounts }) {
   return (
     <div className="max-w-[1200px] mx-auto px-4">
       {!isLoading && (
-        <Table>
+        <Table aria-label="Account Table">
           <TableHeader columns={columns}>
             {(column) => (
               <TableColumn
@@ -117,7 +123,7 @@ function AccountClient({ accounts }) {
           </TableHeader>
           <TableBody>
             {accounts.map((account) => (
-              <TableRow key={account.key}>
+              <TableRow key={account.id}>
                 {(columnKey) => (
                   <TableCell>{renderCell(account, columnKey)}</TableCell>
                 )}
