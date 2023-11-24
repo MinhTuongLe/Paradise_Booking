@@ -51,6 +51,7 @@ function LoginModal({}) {
         Cookie.set("expiresAt", callback.data.expiresAt, {});
         dispatch(setAuthState(true));
         setIsLoading(false);
+        reset();
         router.refresh();
         loginModel.onClose();
 

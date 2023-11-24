@@ -14,9 +14,13 @@ import { useCallback, useState } from "react";
 import { Form, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Button from "@/components/Button";
+import { API_URL } from "@/const";
+import Cookie from "js-cookie";
+import { useDispatch } from "react-redux";
 
 function ChangePasswordClient() {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -27,11 +31,40 @@ function ChangePasswordClient() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      currentPassword: "",
-      newPassword: "",
-      confirmedPassword: "",
+      old_password: "",
+      new_password: "",
+      confirmed_password: "",
     },
   });
+
+  const onSubmit = (data) => {
+    setIsLoading(true);
+
+    if (data.new_password !== data.confirmed_password) {
+      toast.error("Passwords not match");
+      setIsLoading(false);
+    } else {
+      const accessToken = Cookie.get("accessToken");
+      const config = {
+        headers: {
+          "content-type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      };
+      const { confirmed_password, ...rest } = data;
+      axios
+        .post(`${API_URL}/change/password`, rest, config)
+        .then(() => {
+          setIsLoading(false);
+          toast.success("Change password Successfully");
+          reset();
+        })
+        .catch((err) => {
+          toast.error("Change password Failed");
+          setIsLoading(false);
+        });
+    }
+  };
 
   return (
     <div className="max-w-[768px] mx-auto px-4">
@@ -39,15 +72,16 @@ function ChangePasswordClient() {
         <div className="p-8 col-span-12 space-y-6">
           <h1 className="text-2xl font-bold my-3">Change Password</h1>
           <Input
-            id="currentPassword"
+            id="old_password"
             label="Current Password"
             disabled={isLoading}
             register={register}
             errors={errors}
             required
+            type="password"
           />
           <Input
-            id="newPassword"
+            id="new_password"
             label="New Password"
             disabled={isLoading}
             register={register}
@@ -56,7 +90,7 @@ function ChangePasswordClient() {
             type="password"
           />
           <Input
-            id="confirmedPassword"
+            id="confirmed_password"
             label="Confirmed Password"
             disabled={isLoading}
             register={register}
@@ -72,7 +106,7 @@ function ChangePasswordClient() {
               <Button
                 disabled={isLoading}
                 label="Save"
-                onClick={handleSubmit}
+                onClick={handleSubmit(onSubmit)}
               />
             </div>
           </div>

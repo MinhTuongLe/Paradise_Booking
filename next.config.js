@@ -4,13 +4,8 @@ const nextConfig = {
     appDir: true,
   },
   images: {
-    domains: [
-      "lh3.googleusercontent.com",
-      "www.generationsforpeace.org",
-      "res.cloudinary.com",
-    ],
+    domains: ["lh3.googleusercontent.com", "www.generationsforpeace.org"],
   },
-  swcMinify: true,
 };
 
 module.exports = nextConfig;

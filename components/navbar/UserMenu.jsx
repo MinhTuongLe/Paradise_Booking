@@ -59,6 +59,7 @@ function UserMenu({ authState, loggedUser }) {
     Cookie.remove("accessToken");
     Cookie.remove("expiresAt");
     dispatch(reset());
+    router.refresh();
   };
 
   // console.log(loggedUser.id);
@@ -154,7 +155,6 @@ function UserMenu({ authState, loggedUser }) {
                   onClick={() => menuItemSelect(`/users/${loggedUser.id}`)}
                   label="My profile"
                 />
-                <hr />
                 <MenuItem
                   onClick={() => menuItemSelect("/change-password")}
                   label="Change Password"

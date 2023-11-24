@@ -51,8 +51,9 @@ function RegisterModal({}) {
       .then(() => {
         setIsLoading(false);
         toast.success("Register Successfully");
-        loginModel.onOpen();
+        reset();
         registerModel.onClose();
+        loginModel.onOpen();
       })
       .catch((err) => {
         toast.error("Something Went Wrong");
@@ -118,11 +119,7 @@ function RegisterModal({}) {
   const footerContent = (
     <div className="flex flex-col gap-4 mt-3">
       <hr />
-      <Button
-        outline
-        label="Continue with Google"
-        icon={FcGoogle}
-      />
+      <Button outline label="Continue with Google" icon={FcGoogle} />
       {/* <Button
         outline
         label="Continue with Facebook"

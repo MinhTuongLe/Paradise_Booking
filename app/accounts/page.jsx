@@ -4,9 +4,6 @@ import AccountClient from "./AccountClient";
 import { cookies } from "next/headers";
 import getUserById from "@/app/actions/getUserById";
 import getAccounts from "@/app/actions/getAccounts";
-import getPlaceByVendorId from "@/app/actions/getPlaceByVendorId";
-import RoomsModal from "@/components/models/RoomsModal";
-import { accounts_data } from "../../mock-data/accounts";
 
 export const dynamic = "force-dynamic";
 
