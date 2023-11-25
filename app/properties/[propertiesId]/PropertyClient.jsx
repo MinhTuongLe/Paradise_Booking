@@ -11,7 +11,7 @@ import FormItem from "@/components/inputs/FormItem";
 import ListingCard from "@/components/listing/ListingCard";
 import axios from "axios";
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Button from "@/components/Button";
@@ -30,6 +30,7 @@ import Cookie from "js-cookie";
 import { useRouter } from "next/navigation";
 import CountrySelect from "@/components/inputs/CountrySelect";
 import Counter from "@/components/inputs/Counter";
+import dynamic from "next/dynamic";
 
 function PropertyClient({ place }) {
   const dispatch = useDispatch();
@@ -44,27 +45,34 @@ function PropertyClient({ place }) {
     handleSubmit,
     reset,
     setValue,
+    getValue,
     watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      // location: null,
-      // guestCount: 1,
-      // price_per_night: 1,
-      // name: "",
-      // description: "",
-
-      location: null,
-      guestCount: place?.capacity,
       price_per_night: place?.price_per_night,
       name: place?.name,
       description: place?.description,
+      capacity: place?.capacity,
+      address: place?.address,
+      lat: place?.lat,
+      lng: place?.lng,
+      country: place?.country,
+      state: place?.city,
+      city: place?.city,
     },
   });
 
   const guestCount = watch("guestCount");
   const location = watch("location");
   const imageSrc = watch("avatar");
+  const address = place?.address;
+  const lat = place?.lat;
+  const lng = place?.lng;
+  const country = place?.country;
+  const state = place?.city;
+  const city = place?.city;
+
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
 
@@ -76,22 +84,59 @@ function PropertyClient({ place }) {
     });
   };
 
+  const Map = useMemo(
+    () =>
+      dynamic(() => import("../../../components/Map"), {
+        ssr: false,
+      }),
+    [location]
+  );
+
+  const [searchResult, setSearchResult] = useState(null);
+  const handleSearchResult = (result) => {
+    setSearchResult(result);
+    console.log(result);
+  };
+
+  function processSearchResult(searchResult) {
+    const numberRegex = /^[0-9]+$/;
+    const array = searchResult.split(", ");
+    let country = "";
+    let city = "";
+    let address = "";
+
+    if (array) {
+      const length = array.length;
+      country = array[length - 1];
+      city = numberRegex.test(array[length - 2])
+        ? array[length - 3]
+        : array[length - 2];
+      const temp = numberRegex.test(array[length - 2])
+        ? array.slice(0, length - 3)
+        : array.slice(0, length - 2);
+      address = temp && temp.length > 1 ? temp.join(", ") : temp.join("");
+    }
+    return { country, city, address };
+  }
+
   const onSubmit = (data) => {
     setIsLoading(true);
+    const { country, city, address } = processSearchResult(searchResult.label);
 
     const submitValues = {
       name: data?.name || "",
       description: data?.description || "",
       price_per_night: Number(data?.price_per_night) || 0,
-      address: data?.location.label || "Vietnam",
-      capacity: data?.guestCount || 1,
-      lat: data?.location.latlng[0] || "16.1667",
-      lng: data?.location.latlng[1] || "107.833",
-      country: data?.location.region || "Asia",
-      state: data?.location.label || "Vietnam",
-      city: data?.location.label || "Vietnam",
+      address: address,
+      capacity: data?.capacity || 1,
+      lat: searchResult.x,
+      lng: searchResult.y,
+      country: country,
+      state: city,
+      city: city,
     };
 
+    // console.log(submitValues);
     const accessToken = Cookie.get("accessToken");
     const config = {
       params: {
@@ -102,7 +147,6 @@ function PropertyClient({ place }) {
         Authorization: `Bearer ${accessToken}`,
       },
     };
-
     axios
       .put(`${API_URL}/places`, submitValues, config)
       .then(() => {
@@ -138,15 +182,14 @@ function PropertyClient({ place }) {
               errors={errors}
               required
             />
-            <CountrySelect
-              value={location}
-              onChange={(value) => setCustomValue("location", value)}
-            />
-            <Counter
-              title="Guests"
-              subtitle="How many guest do you allow?"
-              value={guestCount}
-              onChange={(value) => setCustomValue("guestCount", value)}
+            <Input
+              id="capacity"
+              label="Capacity"
+              type="number"
+              disabled={isLoading}
+              register={register}
+              errors={errors}
+              required
             />
             <Input
               id="price_per_night"
@@ -158,6 +201,8 @@ function PropertyClient({ place }) {
               errors={errors}
               required
             />
+            <Map center={[lat, lng]} onSearchResult={handleSearchResult} />
+
             <div className="grid grid-cols-12 gap-8">
               <div className="col-span-6">
                 <Button

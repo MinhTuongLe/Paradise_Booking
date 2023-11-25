@@ -50,11 +50,11 @@ function RentModal({}) {
   } = useForm({
     defaultValues: {
       category: "",
-      guestCount: 1,
-      roomCount: 1,
-      bathroomCount: 1,
+      guestCount: 0,
+      roomCount: 0,
+      bathroomCount: 0,
       imageSrc: "",
-      price: 1,
+      price_per_night: 0,
       title: "",
       description: "",
       location: null,
@@ -88,26 +88,49 @@ function RentModal({}) {
     setStep((value) => value + 1);
   };
 
+  function processSearchResult(searchResult) {
+    const numberRegex = /^[0-9]+$/;
+    const array = searchResult.split(", ");
+    let country = "";
+    let city = "";
+    let address = "";
+
+    if (array) {
+      const length = array.length;
+      country = array[length - 1];
+      city = numberRegex.test(array[length - 2])
+        ? array[length - 3]
+        : array[length - 2];
+      const temp = numberRegex.test(array[length - 2])
+        ? array.slice(0, length - 3)
+        : array.slice(0, length - 2);
+      address = temp && temp.length > 1 ? temp.join(", ") : temp.join("");
+    }
+    return { country, city, address };
+  }
+
   const onSubmit = (data) => {
     if (step !== STEPS.PRICE) {
       return onNext();
     }
 
-    // setIsLoading(true);
-    console.log(searchResult);
+    setIsLoading(true);
+    const { country, city, address } = processSearchResult(searchResult.label);
 
     const submitValues = {
       name: data.name,
       description: data.description,
       price_per_night: Number(data.price_per_night),
-      address: searchResult.label,
+      address: address,
       capacity: data.guestCount,
       lat: searchResult.x,
       lng: searchResult.y,
-      country: searchResult.label,
-      state: searchResult.label,
-      city: searchResult.label,
+      country: country,
+      state: city,
+      city: city,
     };
+
+    // console.log(submitValues);
 
     const accessToken = Cookie.get("accessToken");
     const config = {
@@ -152,8 +175,6 @@ function RentModal({}) {
   const [searchResult, setSearchResult] = useState(null);
 
   const handleSearchResult = (result) => {
-    // Update the state with the search result value
-    console.log(result);
     setSearchResult(result);
   };
 
