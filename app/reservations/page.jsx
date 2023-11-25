@@ -2,8 +2,6 @@ import ClientOnly from "@/components/ClientOnly";
 import EmptyState from "@/components/EmptyState";
 import React from "react";
 import ReservationsClient from "./ReservationsClient";
-import { mock_data } from "../../mock-data/listing";
-import { mock_data_2 } from "../../mock-data/reservation";
 
 export const dynamic = "force-dynamic";
 

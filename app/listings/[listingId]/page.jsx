@@ -3,7 +3,6 @@ import getUserById from "@/app/actions/getUserById";
 import ClientOnly from "@/components/ClientOnly";
 import EmptyState from "@/components/EmptyState";
 import ListingClient from "@/components/ListingClient";
-import { mock_data } from "../../../mock-data/listing";
 import { mock_data_2 } from "../../../mock-data/reservation";
 
 export const dynamic = "force-dynamic";

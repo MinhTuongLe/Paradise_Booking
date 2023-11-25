@@ -1,7 +1,6 @@
 import ClientOnly from "@/components/ClientOnly";
 import EmptyState from "@/components/EmptyState";
 import NotificationClient from "./NotificationClient";
-import { mock_data } from "../../mock-data/listing";
 
 export const dynamic = "force-dynamic";
 

@@ -59,7 +59,7 @@ function AccountClient({ accounts }) {
     };
 
     axios
-      .post(`${API_URL}/change/status`, config)
+      .post(`${API_URL}/change/status`, null, config)
       .then(() => {
         setIsLoading(false);
         toast.success("Update Account Status Successfully");
