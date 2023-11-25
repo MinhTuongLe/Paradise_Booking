@@ -63,16 +63,9 @@ function PropertyClient({ place }) {
     },
   });
 
-  const guestCount = watch("guestCount");
   const location = watch("location");
-  const imageSrc = watch("avatar");
-  const address = place?.address;
   const lat = place?.lat;
   const lng = place?.lng;
-  const country = place?.country;
-  const state = place?.city;
-  const city = place?.city;
-
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
 
@@ -95,7 +88,6 @@ function PropertyClient({ place }) {
   const [searchResult, setSearchResult] = useState(null);
   const handleSearchResult = (result) => {
     setSearchResult(result);
-    console.log(result);
   };
 
   function processSearchResult(searchResult) {
