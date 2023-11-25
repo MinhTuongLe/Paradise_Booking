@@ -3,33 +3,18 @@
 /* eslint-disable react/no-children-prop */
 "use client";
 
-import Avatar from "@/components/Avatar";
-import Container from "@/components/Container";
-import Heading from "@/components/Heading";
 import Input from "@/components/inputs/Input";
-import FormItem from "@/components/inputs/FormItem";
-import ListingCard from "@/components/listing/ListingCard";
 import axios from "axios";
-import Image from "next/image";
-import { useCallback, useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Button from "@/components/Button";
-import ImageUpload from "@/components/inputs/ImageUpload";
-import { AiOutlineMail, AiOutlinePhone, AiOutlineUser } from "react-icons/ai";
-import { FaRegAddressCard } from "react-icons/fa";
-import { MdOutlineDateRange } from "react-icons/md";
 import "../../../styles/globals.css";
 import { API_URL } from "@/const";
-import useCommentsModal from "@/hook/useCommentsModal";
-import useRoomsModal from "@/hook/useRoomsModal";
 import { useDispatch } from "react-redux";
-import { setLoggUser } from "@/components/slice/authSlice";
 import { useSelector } from "react-redux";
 import Cookie from "js-cookie";
 import { useRouter } from "next/navigation";
-import CountrySelect from "@/components/inputs/CountrySelect";
-import Counter from "@/components/inputs/Counter";
 import dynamic from "next/dynamic";
 
 function PropertyClient({ place }) {
@@ -64,8 +49,10 @@ function PropertyClient({ place }) {
   });
 
   const location = watch("location");
-  const lat = place?.lat;
-  const lng = place?.lng;
+  // const lat = place?.lat;
+  // const lng = place?.lng;
+  const [lat, setLat] = useState(place?.lat);
+  const [lng, setLng] = useState(place?.lng);
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
 
@@ -82,7 +69,7 @@ function PropertyClient({ place }) {
       dynamic(() => import("../../../components/Map"), {
         ssr: false,
       }),
-    [location]
+    [lat, lng]
   );
 
   const [searchResult, setSearchResult] = useState(null);
@@ -113,19 +100,19 @@ function PropertyClient({ place }) {
 
   const onSubmit = (data) => {
     setIsLoading(true);
-    const { country, city, address } = processSearchResult(searchResult.label);
+    const { country, city, address } = processSearchResult(searchResult?.label);
 
     const submitValues = {
       name: data?.name || "",
       description: data?.description || "",
       price_per_night: Number(data?.price_per_night) || 0,
-      address: address,
+      address: address || place.address,
       capacity: data?.capacity || 1,
-      lat: searchResult.x,
-      lng: searchResult.y,
-      country: country,
-      state: city,
-      city: city,
+      lat: searchResult.x || place.lat,
+      lng: searchResult.y || place.lng,
+      country: country || place.country,
+      state: city || place.city,
+      city: city || place.city,
     };
 
     // console.log(submitValues);
@@ -152,11 +139,18 @@ function PropertyClient({ place }) {
       });
   };
 
+  useEffect(() => {
+    if (searchResult) {
+      setLat(searchResult.x);
+      setLng(searchResult.y);
+    }
+  }, [searchResult]);
+
   return (
     <div className="max-w-[1200px] mx-auto px-4">
       <div className="mt-10 grid grid-cols-12 gap-8">
         <div className="col-span-8">
-          <h1 className="text-2xl font-bold my-3">Profile Settings</h1>
+          <h1 className="text-2xl font-bold my-3">Property Information</h1>
           <div className="px-8 pb-8 space-y-6">
             <Input
               id="name"
@@ -193,8 +187,27 @@ function PropertyClient({ place }) {
               errors={errors}
               required
             />
-            <Map center={[lat, lng]} onSearchResult={handleSearchResult} />
+            <div className="w-full relative">
+              <input
+                value={
+                  searchResult
+                    ? searchResult.label
+                    : `${place?.address ? place?.address + ", " : ""} ${
+                        place?.city ? place?.city + ", " : ""
+                      } ${place?.country || "-"}`
+                }
+                id="_location"
+                readOnly={true}
+                className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition opacity-70 cursor-not-allowed border-neutral-300 focus:outline-none`}
+              />
 
+              <label
+                className={`absolute text-md duration-150 transform -translate-y-3 top-5 z-10 origin-[0] left-4 text-zinc-400`}
+              >
+                Location
+              </label>
+            </div>
+            <Map center={[lat, lng]} onSearchResult={handleSearchResult} />
             <div className="grid grid-cols-12 gap-8">
               <div className="col-span-6">
                 <Button

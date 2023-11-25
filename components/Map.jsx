@@ -12,6 +12,7 @@ import "leaflet/dist/leaflet.css";
 import Flag from "react-world-flags";
 import { OpenStreetMapProvider, GeoSearchControl } from "leaflet-geosearch";
 import "node_modules/leaflet-geosearch/dist/geosearch.css";
+import "../styles/globals.css";
 
 // @ts-ignore
 delete L.Icon.Default.prototype._getIconUrl;
