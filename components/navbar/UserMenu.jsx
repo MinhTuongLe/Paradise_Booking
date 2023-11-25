@@ -73,7 +73,7 @@ function UserMenu({ authState, loggedUser }) {
       }}
     >
       <div className="flex flex-row items-center gap-6">
-        {loggedUser.role !== 3 && (
+        {loggedUser.role === 2 && (
           <div
             className="hidden md:block text-sm font-semibold py-3 rounded-full hover:bg-neutral-100 transition cursor-pointer"
             onClick={onRent}
