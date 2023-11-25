@@ -786,7 +786,7 @@
     "@react-stately/utils" "^3.8.0"
     react-remove-scroll "^2.5.6"
 
-"@nextui-org/pagination@2.0.26":
+"@nextui-org/pagination@2.0.26", "@nextui-org/pagination@^2.0.26":
   version "2.0.26"
   resolved "https://registry.yarnpkg.com/@nextui-org/pagination/-/pagination-2.0.26.tgz#279023882beba4891a22b6d24ff69d264718bc90"
   integrity sha512-OVpkpXqUKRuMRIcYESBAL95d3pqZ17SKAyNINMiJ/DwWnrzJu/LXGmFwTuYRoBdqHFlm7guGqZbHmAkcS/Fgow==
