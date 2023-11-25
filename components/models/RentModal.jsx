@@ -50,7 +50,6 @@ function RentModal({}) {
   } = useForm({
     defaultValues: {
       category: "",
-      location: null,
       guestCount: 1,
       roomCount: 1,
       bathroomCount: 1,
@@ -58,6 +57,7 @@ function RentModal({}) {
       price: 1,
       title: "",
       description: "",
+      location: null,
     },
   });
 
@@ -77,11 +77,7 @@ function RentModal({}) {
   );
 
   const setCustomValue = (id, value) => {
-    setValue(id, value, {
-      shouldValidate: true,
-      shouldDirty: true,
-      shouldTouch: true,
-    });
+    setValue(id, value);
   };
 
   const onBack = () => {
@@ -97,22 +93,22 @@ function RentModal({}) {
       return onNext();
     }
 
-    setIsLoading(true);
+    // setIsLoading(true);
+    console.log(searchResult);
 
     const submitValues = {
       name: data.name,
       description: data.description,
       price_per_night: Number(data.price_per_night),
-      address: data.location.label,
+      address: searchResult.label,
       capacity: data.guestCount,
-      lat: data.location.latlng[0],
-      lng: data.location.latlng[1],
-      country: data.location.region,
-      state: data.location.label,
-      city: data.location.label,
+      lat: searchResult.x,
+      lng: searchResult.y,
+      country: searchResult.label,
+      state: searchResult.label,
+      city: searchResult.label,
     };
 
-    // console.log(submitValues);
     const accessToken = Cookie.get("accessToken");
     const config = {
       headers: {
@@ -152,6 +148,14 @@ function RentModal({}) {
 
     return "Back";
   }, [step]);
+
+  const [searchResult, setSearchResult] = useState(null);
+
+  const handleSearchResult = (result) => {
+    // Update the state with the search result value
+    console.log(result);
+    setSearchResult(result);
+  };
 
   let bodyContent = (
     <div className="flex flex-col gap-8">
@@ -254,11 +258,11 @@ function RentModal({}) {
           title="Where is your place located?"
           subtitle="Help guests find you!"
         />
-        <CountrySelect
+        {/* <CountrySelect
           value={location}
           onChange={(value) => setCustomValue("location", value)}
-        />
-        <Map center={location?.latlng} />
+        /> */}
+        <Map center={location?.latlng} onSearchResult={handleSearchResult} />
       </div>
     );
   }

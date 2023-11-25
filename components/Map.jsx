@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import L from "leaflet";
@@ -20,12 +21,14 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow.src,
 });
 
-function Map({ center, locationValue }) {
+function Map({ center, locationValue, onSearchResult }) {
   const [showSearchControl, setShowSearchControl] = useState(false);
+  function searchEventHandler(result) {
+    onSearchResult(result.location);
+  }
   useEffect(() => {
     const map = L.map("map");
 
-    // Initialize the map with or without the search control based on showSearchControl state
     const searchControl = new GeoSearchControl({
       provider: new OpenStreetMapProvider(),
       style: "bar",
@@ -33,6 +36,7 @@ function Map({ center, locationValue }) {
     if (showSearchControl) {
       map.addControl(searchControl);
     }
+    map.on("geosearch/showlocation", searchEventHandler);
 
     return () => {
       map.remove();
@@ -40,9 +44,9 @@ function Map({ center, locationValue }) {
   }, [showSearchControl]);
 
   useEffect(() => {
-    // Show the search control when the map is mounted
     setShowSearchControl(true);
   }, []);
+
   return (
     <div id="map">
       <MapContainer
