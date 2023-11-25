@@ -48,16 +48,18 @@ function AccountClient({ accounts }) {
 
     const accessToken = Cookie.get("accessToken");
     const config = {
+      params: {
+        id: accountId,
+        status: Number(newStatus),
+      },
       headers: {
+        "content-type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
     };
 
     axios
-      .post(
-        `${API_URL}/change/status?id=${accountId}&status=${newStatus}`,
-        config
-      )
+      .post(`${API_URL}/change/status`, config)
       .then(() => {
         setIsLoading(false);
         toast.success("Update Account Status Successfully");
