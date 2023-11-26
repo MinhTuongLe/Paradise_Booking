@@ -68,12 +68,15 @@ function RentModal({}) {
   const bathroomCount = watch("bathroomCount");
   const cover = watch("cover");
 
+  const [lat, setLat] = useState(51);
+  const [lng, setLng] = useState(-0.09);
+
   const Map = useMemo(
     () =>
       dynamic(() => import("../Map"), {
         ssr: false,
       }),
-    [location]
+    [lat, lng]
   );
 
   const setCustomValue = (id, value) => {
@@ -88,23 +91,26 @@ function RentModal({}) {
     setStep((value) => value + 1);
   };
 
-  function processSearchResult(searchResult) {
+  function processSearchResult() {
     const numberRegex = /^[0-9]+$/;
-    const array = searchResult.split(", ");
     let country = "";
     let city = "";
     let address = "";
 
-    if (array) {
-      const length = array.length;
-      country = array[length - 1];
-      city = numberRegex.test(array[length - 2])
-        ? array[length - 3]
-        : array[length - 2];
-      const temp = numberRegex.test(array[length - 2])
-        ? array.slice(0, length - 3)
-        : array.slice(0, length - 2);
-      address = temp && temp.length > 1 ? temp.join(", ") : temp.join("");
+    if (searchResult) {
+      const array = searchResult?.label.split(", ");
+
+      if (array) {
+        const length = array.length;
+        country = array[length - 1];
+        city = numberRegex.test(array[length - 2])
+          ? array[length - 3]
+          : array[length - 2];
+        const temp = numberRegex.test(array[length - 2])
+          ? array.slice(0, length - 3)
+          : array.slice(0, length - 2);
+        address = temp && temp.length > 1 ? temp.join(", ") : temp.join("");
+      }
     }
     return { country, city, address };
   }
@@ -124,9 +130,7 @@ function RentModal({}) {
         imageUrl = await handleFileUpload(file);
       }
 
-      const { country, city, address } = processSearchResult(
-        searchResult.label
-      );
+      const { country, city, address } = processSearchResult();
 
       const submitValues = {
         name: data.name,
@@ -134,8 +138,8 @@ function RentModal({}) {
         price_per_night: Number(data.price_per_night),
         address: address,
         capacity: data.guestCount,
-        lat: searchResult.x,
-        lng: searchResult.y,
+        lat: lat,
+        lng: lng,
         country: country,
         state: city,
         city: city,
@@ -221,6 +225,13 @@ function RentModal({}) {
   const handleSearchResult = (result) => {
     setSearchResult(result);
   };
+
+  useEffect(() => {
+    if (searchResult) {
+      setLat(searchResult.y);
+      setLng(searchResult.x);
+    }
+  }, [searchResult]);
 
   let bodyContent = (
     <div className="flex flex-col gap-8">
@@ -327,7 +338,21 @@ function RentModal({}) {
           value={location}
           onChange={(value) => setCustomValue("location", value)}
         /> */}
-        <Map center={location?.latlng} onSearchResult={handleSearchResult} />
+        <div className="w-full relative">
+          <input
+            value={searchResult ? searchResult.label : ""}
+            id="_location"
+            readOnly={true}
+            className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition opacity-70 cursor-not-allowed border-neutral-300 focus:outline-none`}
+          />
+
+          <label
+            className={`absolute text-md duration-150 transform -translate-y-3 top-5 z-10 origin-[0] left-4 text-zinc-400`}
+          >
+            Location
+          </label>
+        </div>
+        <Map center={[lat, lng]} onSearchResult={handleSearchResult} />
       </div>
     );
   }

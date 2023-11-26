@@ -29,6 +29,8 @@ function Map({ center, locationValue, onSearchResult }) {
   }
   useEffect(() => {
     const map = L.map("map");
+    map.clearAllEventListeners();
+    map.setView(center);
 
     const searchControl = new GeoSearchControl({
       provider: new OpenStreetMapProvider(),

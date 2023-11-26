@@ -187,8 +187,8 @@ function PropertyClient({ place }) {
 
   useEffect(() => {
     if (searchResult) {
-      setLat(searchResult.x);
-      setLng(searchResult.y);
+      setLat(searchResult.y);
+      setLng(searchResult.x);
     }
   }, [searchResult]);
 
@@ -262,7 +262,6 @@ function PropertyClient({ place }) {
               readOnly={true}
               className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition opacity-70 cursor-not-allowed border-neutral-300 focus:outline-none`}
             />
-
             <label
               className={`absolute text-md duration-150 transform -translate-y-3 top-5 z-10 origin-[0] left-4 text-zinc-400`}
             >
