@@ -4,22 +4,26 @@ import useForgotPasswordModal from "@/hook/useForgotPasswordModal";
 import useLoginModal from "@/hook/useLoginModal";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
-import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
-import { AiFillFacebook } from "react-icons/ai";
-import { FcGoogle } from "react-icons/fc";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-
-import Button from "../Button";
 import Heading from "../Heading";
 import Input from "../inputs/Input";
 import Modal from "./Modal";
-import Link from "next/link";
+import axios from "axios";
+import { API_URL } from "@/const";
+
+const STEPS = {
+  SEND_CODE: 1,
+  VERIFY: 2,
+  RESET_PASSWORD: 3,
+};
 
 function ForgotPasswordModal({}) {
   const router = useRouter();
   const forgotPasswordModel = useForgotPasswordModal();
   const loginModel = useLoginModal();
   const [isLoading, setIsLoading] = useState(false);
+  const [step, setStep] = useState(STEPS.SEND_CODE);
 
   const {
     register,
@@ -29,13 +33,92 @@ function ForgotPasswordModal({}) {
   } = useForm({
     defaultValues: {
       email: "",
+      secret_code: "",
+      new_password: "",
+      confirmPassword: "",
     },
   });
 
   const onSubmit = (data) => {
-    console.log(data);
-    // setIsLoading(true);
+    setIsLoading(true);
+    if (step === 1) {
+      const config = {
+        params: {
+          email: data.email,
+        },
+        headers: {
+          "content-type": "application/json",
+        },
+      };
 
+      axios
+        .post(`${API_URL}/forgot/password`, null, config)
+        .then(() => {
+          setIsLoading(false);
+          toast.success("Check your email to get reset password code");
+          setStep(STEPS.VERIFY);
+        })
+        .catch((err) => {
+          toast.error("Something Went Wrong");
+          setIsLoading(false);
+        });
+    } else if (step === 2) {
+      const config = {
+        params: {
+          email: data.email,
+          secret_code: data.secret_code,
+        },
+        headers: {
+          "content-type": "application/json",
+        },
+      };
+
+      axios
+        .get(`${API_URL}/verify_reset_password`, config)
+        .then(() => {
+          setIsLoading(false);
+          toast.success("Verify successfully");
+          setStep(STEPS.RESET_PASSWORD);
+        })
+        .catch((err) => {
+          toast.error("Something Went Wrong");
+          setIsLoading(false);
+        });
+    } else if (step === 3) {
+      if (data.new_password !== data.confirmPassword) {
+        toast.error("Password and Confirm Password do not match");
+        setIsLoading(false);
+        return;
+      }
+
+      const config = {
+        params: {
+          email: data.email,
+        },
+        headers: {
+          "content-type": "application/json",
+        },
+      };
+
+      axios
+        .post(
+          `${API_URL}/reset/password`,
+          { new_password: data.new_password },
+          config
+        )
+        .then(() => {
+          setIsLoading(false);
+          toast.success("Reset Password Successfully");
+          reset();
+          setStep(STEPS.SEND_CODE);
+          forgotPasswordModel.onClose();
+          loginModel.onOpen();
+        })
+        .catch((err) => {
+          toast.error("Something Went Wrong");
+          setIsLoading(false);
+        });
+    }
   };
 
   const onKeyPress = (event) => {
@@ -52,15 +135,49 @@ function ForgotPasswordModal({}) {
   const bodyContent = (
     <div className="flex flex-col gap-4" onKeyDown={onKeyPress}>
       <Heading title="Welcome Back" subtitle="Reset your password!" center />
-      <Input
-        id="email"
-        label="Email Address"
-        disabled={isLoading}
-        register={register}
-        errors={errors}
-        required
-        type="email"
-      />
+      {step === 1 && (
+        <Input
+          id="email"
+          label="Email Address"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+          type="email"
+        />
+      )}
+      {step === 2 && (
+        <Input
+          id="secret_code"
+          label="Secret Code"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
+      )}
+      {step === 3 && (
+        <>
+          <Input
+            id="new_password"
+            label="New Password"
+            disabled={isLoading}
+            register={register}
+            errors={errors}
+            required
+            type="password"
+          />
+          <Input
+            id="confirmPassword"
+            label="Confirm Password"
+            disabled={isLoading}
+            register={register}
+            errors={errors}
+            required
+            type="password"
+          />
+        </>
+      )}
     </div>
   );
 
@@ -80,12 +197,15 @@ function ForgotPasswordModal({}) {
       </div>
     </div>
   );
+
   return (
     <Modal
       disabled={isLoading}
       isOpen={forgotPasswordModel.isOpen}
       title="Forgot Password"
-      actionLabel="Reset password"
+      actionLabel={
+        step === 1 ? "Send Code" : step === 2 ? "Verify" : "Reset Password"
+      }
       onClose={forgotPasswordModel.onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
