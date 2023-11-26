@@ -10,16 +10,17 @@ function RoomsModal({ currentUser, places }) {
 
   const bodyContent = (
     <div className="grid grid-cols-3 gap-12 overflow-x-hidden p-4">
-      {places.map((list) => {
-        return (
-          <ListingCard
-            key={list.id}
-            data={list}
-            currentUser={currentUser}
-            shrink={true}
-          />
-        );
-      })}
+      {places &&
+        places.map((list) => {
+          return (
+            <ListingCard
+              key={list.id}
+              data={list}
+              currentUser={currentUser}
+              shrink={true}
+            />
+          );
+        })}
     </div>
   );
 
@@ -40,7 +41,7 @@ function RoomsModal({ currentUser, places }) {
   return (
     <Modal
       isOpen={roomsModal.isOpen}
-      title={`${places.length} rooms`}
+      title={`${places?.length || 0} rooms`}
       onClose={roomsModal.onClose}
       body={bodyContent}
       footer={footerContent}

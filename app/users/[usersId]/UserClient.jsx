@@ -146,7 +146,7 @@ function UserClient({ places, currentUser, role }) {
         .then(() => {
           setIsLoading(false);
           setIsEditMode(false);
-          dispatch(setLoggUser(data));
+          dispatch(setLoggUser(submitValues));
           toast.success("Update Profile Successfully");
         })
         .catch((err) => {
@@ -189,7 +189,7 @@ function UserClient({ places, currentUser, role }) {
               </>
             )}
           </div>
-          {isEditMode && (
+          {isEditMode ? (
             <>
               <h1 className="text-xl font-bold my-3">Your Bio</h1>
               <textarea
@@ -198,6 +198,18 @@ function UserClient({ places, currentUser, role }) {
                 placeholder="Add your bio here ..."
                 value={data.bio}
               ></textarea>
+            </>
+          ) : (
+            <>
+              <h1 className="text-xl font-bold my-3">
+                Your verified Information
+              </h1>
+              {/* <textarea
+                className="resize-none border border-solid p-8 rounded-[24px] w-full focus:outline-none"
+                rows={5}
+                placeholder="Add your bio here ..."
+                value={data.bio}
+              ></textarea> */}
             </>
           )}
         </div>

@@ -80,7 +80,7 @@ function AccountClient({ accounts }) {
             <Image
               width={40}
               height={40}
-              src={emptyImageSrc}
+              src={user?.avatar || emptyImageSrc}
               alt="Avatar"
               className="rounded-full h-[40px] w-[40px]"
             />
