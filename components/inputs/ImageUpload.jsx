@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 
-function ImageUpload({ onChange, value, circle, cover, fill }) {
+function ImageUpload({ onChange, value, circle, cover, fill, classname }) {
   const [preview, setPreview] = useState(value);
 
   const handleFileChange = async (event) => {
@@ -34,7 +34,7 @@ function ImageUpload({ onChange, value, circle, cover, fill }) {
         id="imageUpload"
       />
       <div
-        className={`relative cursor-pointer transition p-20 flex flex-col justify-center items-center gap-4 text-neutral-600 ${
+        className={`${classname} relative cursor-pointer transition p-20 flex flex-col justify-center items-center gap-4 text-neutral-600 ${
           circle ? "rounded-full aspect-square w-full h-full" : "w-full h-full"
         } ${cover && "object-cover"} ${fill && "object-fill aspect-video"}`}
       >
