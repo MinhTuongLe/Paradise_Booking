@@ -51,12 +51,8 @@ function PropertyClient({ place }) {
 
   const cover = watch("cover");
   const location = watch("location");
-  // const lat = place?.lat;
-  // const lng = place?.lng;
   const [lat, setLat] = useState(place?.lat);
   const [lng, setLng] = useState(place?.lng);
-  const emptyImageSrc =
-    "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
 
   const setCustomValue = (id, value) => {
     setValue(id, value, {
@@ -81,21 +77,23 @@ function PropertyClient({ place }) {
 
   function processSearchResult(searchResult) {
     const numberRegex = /^[0-9]+$/;
-    const array = searchResult.split(", ");
-    let country = "";
-    let city = "";
-    let address = "";
+    let country = place.country;
+    let city = place.city;
+    let address = place.address;
+    if (Array.isArray(searchResult)) {
+      const array = searchResult.split(", ");
 
-    if (array) {
-      const length = array.length;
-      country = array[length - 1];
-      city = numberRegex.test(array[length - 2])
-        ? array[length - 3]
-        : array[length - 2];
-      const temp = numberRegex.test(array[length - 2])
-        ? array.slice(0, length - 3)
-        : array.slice(0, length - 2);
-      address = temp && temp.length > 1 ? temp.join(", ") : temp.join("");
+      if (array) {
+        const length = array.length;
+        country = array[length - 1];
+        city = numberRegex.test(array[length - 2])
+          ? array[length - 3]
+          : array[length - 2];
+        const temp = numberRegex.test(array[length - 2])
+          ? array.slice(0, length - 3)
+          : array.slice(0, length - 2);
+        address = temp && temp.length > 1 ? temp.join(", ") : temp.join("");
+      }
     }
     return { country, city, address };
   }
@@ -126,45 +124,67 @@ function PropertyClient({ place }) {
     }
   };
 
-  const onSubmit = (data) => {
-    setIsLoading(true);
-    const { country, city, address } = processSearchResult(searchResult?.label);
+  const onSubmit = async (data) => {
+    try {
+      setIsLoading(true);
 
-    const submitValues = {
-      name: data?.name || "",
-      description: data?.description || "",
-      price_per_night: Number(data?.price_per_night) || 0,
-      address: address || place.address,
-      capacity: data?.capacity || 1,
-      lat: searchResult.x || place.lat,
-      lng: searchResult.y || place.lng,
-      country: country || place.country,
-      state: city || place.city,
-      city: city || place.city,
-    };
+      // upload photo
+      let imageUrl = "";
+      if (data.cover) {
+        const file = data.cover;
+        if (typeof file === "string") {
+          imageUrl = place?.cover;
+        } else {
+          imageUrl = await handleFileUpload(file);
+        }
+      }
 
-    // console.log(submitValues);
-    const accessToken = Cookie.get("accessToken");
-    const config = {
-      params: {
-        place_id: place.id,
-      },
-      headers: {
-        "content-type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    };
-    axios
-      .put(`${API_URL}/places`, submitValues, config)
-      .then(() => {
-        setIsLoading(false);
-        toast.success("Update Room Successfully");
-        router.refresh();
-      })
-      .catch((err) => {
-        toast.error("Update Room Failed");
-        setIsLoading(false);
-      });
+      const { country, city, address } = processSearchResult(
+        searchResult?.label
+      );
+
+      const submitValues = {
+        name: data?.name || "",
+        description: data?.description || "",
+        price_per_night: Number(data?.price_per_night) || 0,
+        address: address || place.address,
+        capacity: data?.capacity || 1,
+        lat: searchResult.x || place.lat,
+        lng: searchResult.y || place.lng,
+        country: country || place.country,
+        state: city || place.city,
+        city: city || place.city,
+        cover: imageUrl || "",
+      };
+
+      console.log(submitValues);
+      // const accessToken = Cookie.get("accessToken");
+      // const config = {
+      //   params: {
+      //     place_id: place.id,
+      //   },
+      //   headers: {
+      //     "content-type": "application/json",
+      //     Authorization: `Bearer ${accessToken}`,
+      //   },
+      // };
+      // axios
+      //   .put(`${API_URL}/places`, submitValues, config)
+      //   .then(() => {
+      //     setIsLoading(false);
+      //     toast.success("Update Room Successfully");
+      //     router.refresh();
+      //   })
+      //   .catch((err) => {
+      //     toast.error("Update Room Failed");
+      //     setIsLoading(false);
+      //   });
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -239,7 +259,6 @@ function PropertyClient({ place }) {
             <ImageUpload
               onChange={(value) => setCustomValue("cover", value)}
               value={cover || ""}
-              circle={true}
             />
             <div className="grid grid-cols-12 gap-8">
               <div className="col-span-6">
