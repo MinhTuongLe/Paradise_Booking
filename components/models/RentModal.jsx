@@ -53,7 +53,7 @@ function RentModal({}) {
       guestCount: 0,
       roomCount: 0,
       bathroomCount: 0,
-      imageSrc: "",
+      cover: null,
       price_per_night: 0,
       title: "",
       description: "",
@@ -66,7 +66,7 @@ function RentModal({}) {
   const guestCount = watch("guestCount");
   const roomCount = watch("roomCount");
   const bathroomCount = watch("bathroomCount");
-  const imageSrc = watch("imageSrc");
+  const cover = watch("cover");
 
   const Map = useMemo(
     () =>
@@ -109,51 +109,88 @@ function RentModal({}) {
     return { country, city, address };
   }
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     if (step !== STEPS.PRICE) {
       return onNext();
     }
 
-    setIsLoading(true);
-    const { country, city, address } = processSearchResult(searchResult.label);
+    // setIsLoading(true);
+    // const { country, city, address } = processSearchResult(searchResult.label);
 
-    const submitValues = {
-      name: data.name,
-      description: data.description,
-      price_per_night: Number(data.price_per_night),
-      address: address,
-      capacity: data.guestCount,
-      lat: searchResult.x,
-      lng: searchResult.y,
-      country: country,
-      state: city,
-      city: city,
-    };
+    // const submitValues = {
+    //   name: data.name,
+    //   description: data.description,
+    //   price_per_night: Number(data.price_per_night),
+    //   address: address,
+    //   capacity: data.guestCount,
+    //   lat: searchResult.x,
+    //   lng: searchResult.y,
+    //   country: country,
+    //   state: city,
+    //   city: city,
+    // };
 
-    // console.log(submitValues);
+    // // console.log(submitValues);
 
-    const accessToken = Cookie.get("accessToken");
-    const config = {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    };
+    try {
+      // setIsLoading(true);
 
-    axios
-      .post(`${API_URL}/places`, submitValues, config)
-      .then(() => {
-        toast.success("Create place successfully");
-        router.refresh();
-        reset();
-        setStep(STEPS.BECOME_VENDOR);
-        rentModel.onClose();
-      })
-      .catch(() => {
-        toast.error("Something Went Wrong");
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+      // Process the form data or perform any other actions here
+
+      // If you want to submit the file using ImageUpload component
+      const file = data.cover;
+      if (file) {
+        // Handle the file submission logic here
+        // For example, you can use axios to upload the file to the server
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const accessToken = Cookie.get("accessToken");
+
+        const response = await axios.post(`${API_URL}/upload`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+
+        const imageUrl = "https://" + response.data.data.url;
+        console.log(imageUrl);
+
+        // Do something with the imageUrl if needed
+      }
+
+      // Continue with the rest of your form submission logic
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      setIsLoading(false);
+    }
+
+    // const accessToken = Cookie.get("accessToken");
+    // const config = {
+    //   headers: {
+    //     Authorization: `Bearer ${accessToken}`,
+    //   },
+    // };
+
+    // console.log(data.cover);
+
+    // axios
+    //   .post(`${API_URL}/places`, submitValues, config)
+    //   .then(() => {
+    //     toast.success("Create place successfully");
+    //     router.refresh();
+    //     reset();
+    //     setStep(STEPS.BECOME_VENDOR);
+    //     rentModel.onClose();
+    //   })
+    //   .catch(() => {
+    //     toast.error("Something Went Wrong");
+    //   })
+    //   .finally(() => {
+    //     setIsLoading(false);
+    //   });
   };
 
   const actionLabel = useMemo(() => {
@@ -327,8 +364,8 @@ function RentModal({}) {
           subtitle="Show guests what your place looks like!"
         />
         <ImageUpload
-          onChange={(value) => setCustomValue("imageSrc", value)}
-          value={imageSrc}
+          onChange={(value) => setCustomValue("cover", value)}
+          value={cover}
         />
       </div>
     );

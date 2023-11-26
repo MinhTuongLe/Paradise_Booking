@@ -294,7 +294,7 @@ function UserClient({ places, currentUser, role }) {
                     </div>
                     {role === 2 && (
                       <>
-                        <div className="border-b-[1px] pb-4">
+                        <div className="pb-4">
                           <div className="flex justify-between items-center w-full">
                             <h1 className="text-xl font-bold space-y-3">
                               {currentUser.full_name || "User"}' Comments
@@ -346,7 +346,7 @@ function UserClient({ places, currentUser, role }) {
                           </div>
                         </div>
                         {places && places.length > 0 && (
-                          <div className="w-full mt-4">
+                          <div className="w-full mt-4 border-t-[1px]">
                             <div className="flex justify-between items-center w-full">
                               <h1 className="text-xl font-bold space-y-3">
                                 Le Minh Tuong's Rooms

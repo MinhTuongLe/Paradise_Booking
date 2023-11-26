@@ -62,8 +62,6 @@ function UserMenu({ authState, loggedUser }) {
     router.refresh();
   };
 
-  // console.log(loggedUser.id);
-
   return (
     <div
       className="relative"

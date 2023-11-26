@@ -7,36 +7,36 @@ import UserMenu from "./UserMenu";
 import Categories from "./Categories";
 import AdminNavBar from "./AdminNavbar";
 import { useSelector } from "react-redux";
+import Cookie from "js-cookie";
 
 function Navbar() {
   const authState = useSelector((state) => state.authSlice.authState);
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
-  // const expiredAt = localStorage.getItem("expiresAt");
-  // if (expiredAt) {
-  //   const parsedValue = JSON.parse(expiredAt);
-  //   const currentTimestamp = Math.floor(Date.now() / 1000);
+  // remove cookie if expired
+  const expiredAt = Cookie.get("expiresAt");
+  if (expiredAt) {
+    const currentTimestamp = Math.floor(Date.now() / 1000);
 
-  //   if (currentTimestamp >= parsedValue) {
-  //     localStorage.removeItem("accessToken");
-  //     localStorage.removeItem("expiresAt");
+    if (currentTimestamp >= expiredAt) {
+      if (isOpen) toggleOpen();
+      Cookie.remove("loggedUser");
+      Cookie.remove("accessToken");
+      Cookie.remove("expiresAt");
+      dispatch(reset());
+      router.push("/");
+      console.log("ACCESS TOKEN IS EXPIRED!!!");
+    }
+  }
 
-  //     signOut();
-
-  //     localStorage.removeItem("accessToken");
-  //     localStorage.removeItem("expiresAt");
-  //     dispatch(reset());
-  //     router.push("/");
-  //   }
-  // }
   return (
     <div className="fixed w-full bg-white z-10 shadow-sm h-[10vh]">
       <div className="py-4 border-b-[1px] h-full">
         <Container>
           <div className="flex flex-row items-center justify-between gap-3 md:gap-0 h-full">
             <Logo />
-            {loggedUser.role !== 3 && <Search />}
-            {loggedUser.role === 3 && <AdminNavBar />}
+            {loggedUser?.role !== 3 && <Search />}
+            {loggedUser?.role === 3 && <AdminNavBar />}
             <UserMenu authState={authState} loggedUser={loggedUser} />
           </div>
         </Container>

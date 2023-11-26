@@ -7,7 +7,8 @@
     "open-browser": "start http://localhost:3000",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "serve": "next preview"
   },
   "dependencies": {
     "@nextui-org/pagination": "^2.0.26",
