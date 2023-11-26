@@ -114,83 +114,90 @@ function RentModal({}) {
       return onNext();
     }
 
-    // setIsLoading(true);
-    // const { country, city, address } = processSearchResult(searchResult.label);
-
-    // const submitValues = {
-    //   name: data.name,
-    //   description: data.description,
-    //   price_per_night: Number(data.price_per_night),
-    //   address: address,
-    //   capacity: data.guestCount,
-    //   lat: searchResult.x,
-    //   lng: searchResult.y,
-    //   country: country,
-    //   state: city,
-    //   city: city,
-    // };
-
-    // // console.log(submitValues);
-
     try {
-      // setIsLoading(true);
+      setIsLoading(true);
 
-      // Process the form data or perform any other actions here
-
-      // If you want to submit the file using ImageUpload component
+      // upload photo
       const file = data.cover;
+      let imageUrl = "";
       if (file) {
-        // Handle the file submission logic here
-        // For example, you can use axios to upload the file to the server
-        const formData = new FormData();
-        formData.append("file", file);
-
-        const accessToken = Cookie.get("accessToken");
-
-        const response = await axios.post(`${API_URL}/upload`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        const imageUrl = "https://" + response.data.data.url;
-        console.log(imageUrl);
-
-        // Do something with the imageUrl if needed
+        imageUrl = await handleFileUpload(file);
       }
 
-      // Continue with the rest of your form submission logic
+      const { country, city, address } = processSearchResult(
+        searchResult.label
+      );
+
+      const submitValues = {
+        name: data.name,
+        description: data.description,
+        price_per_night: Number(data.price_per_night),
+        address: address,
+        capacity: data.guestCount,
+        lat: searchResult.x,
+        lng: searchResult.y,
+        country: country,
+        state: city,
+        city: city,
+        cover: imageUrl,
+      };
+
+      // console.log(submitValues);
+
+      // create place
+      const accessToken = Cookie.get("accessToken");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      };
+
+      axios
+        .post(`${API_URL}/places`, submitValues, config)
+        .then(() => {
+          toast.success("Create place successfully");
+          router.refresh();
+          reset();
+          setStep(STEPS.BECOME_VENDOR);
+          rentModel.onClose();
+        })
+        .catch(() => {
+          toast.error("Something Went Wrong");
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     } catch (error) {
       toast.error("Something went wrong");
     } finally {
       setIsLoading(false);
     }
+  };
 
-    // const accessToken = Cookie.get("accessToken");
-    // const config = {
-    //   headers: {
-    //     Authorization: `Bearer ${accessToken}`,
-    //   },
-    // };
+  const handleFileUpload = async (file) => {
+    try {
+      setIsLoading(true);
 
-    // console.log(data.cover);
+      const formData = new FormData();
+      formData.append("file", file);
 
-    // axios
-    //   .post(`${API_URL}/places`, submitValues, config)
-    //   .then(() => {
-    //     toast.success("Create place successfully");
-    //     router.refresh();
-    //     reset();
-    //     setStep(STEPS.BECOME_VENDOR);
-    //     rentModel.onClose();
-    //   })
-    //   .catch(() => {
-    //     toast.error("Something Went Wrong");
-    //   })
-    //   .finally(() => {
-    //     setIsLoading(false);
-    //   });
+      const accessToken = Cookie.get("accessToken");
+
+      const response = await axios.post(`${API_URL}/upload`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const imageUrl = "https://" + response.data.data.url;
+      toast.success("Uploading photo successfully");
+      return imageUrl;
+    } catch (error) {
+      toast.error("Uploading photo failed");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const actionLabel = useMemo(() => {

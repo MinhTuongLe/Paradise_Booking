@@ -1,11 +1,7 @@
 "use client";
 
-import { API_URL } from "@/const";
-import axios from "axios";
 import Image from "next/image";
 import { useState } from "react";
-import { toast } from "react-toastify";
-import Cookie from "js-cookie";
 
 function ImageUpload({ onChange, value, circle }) {
   const [preview, setPreview] = useState(value);
@@ -13,40 +9,13 @@ function ImageUpload({ onChange, value, circle }) {
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
 
-    console.log(file);
-
     if (file) {
-      try {
-        const formData = new FormData();
-        formData.append("file", file);
-        console.log(formData);
-
-        const accessToken = Cookie.get("accessToken");
-
-        const response = await axios.post(`${API_URL}/upload`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        toast.success("Upload photo successfully");
-
-        const imageUrl = "https://" + response.data.data.url;
-
-        setPreview(imageUrl);
-        onChange(imageUrl);
-      } catch (error) {
-        toast.error("Uploading photo failed");
-      }
-
-      // if (file) {
-      //   const reader = new FileReader();
-      //   reader.onloadend = () => {
-      //     setPreview(reader.result);
-      //     onChange(reader.result);
-      //   };
-      //   reader.readAsDataURL(file);
-      // }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+        onChange(file);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
