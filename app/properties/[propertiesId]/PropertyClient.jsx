@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import Cookie from "js-cookie";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
+import ImageUpload from "@/components/inputs/ImageUpload";
 
 function PropertyClient({ place }) {
   const dispatch = useDispatch();
@@ -30,7 +31,6 @@ function PropertyClient({ place }) {
     handleSubmit,
     reset,
     setValue,
-    getValue,
     watch,
     formState: { errors },
   } = useForm({
@@ -45,9 +45,11 @@ function PropertyClient({ place }) {
       country: place?.country,
       state: place?.city,
       city: place?.city,
+      cover: place?.cover || "",
     },
   });
 
+  const cover = watch("cover");
   const location = watch("location");
   // const lat = place?.lat;
   // const lng = place?.lng;
@@ -97,6 +99,32 @@ function PropertyClient({ place }) {
     }
     return { country, city, address };
   }
+
+  const handleFileUpload = async (file) => {
+    try {
+      setIsLoading(true);
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const accessToken = Cookie.get("accessToken");
+
+      const response = await axios.post(`${API_URL}/upload`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const imageUrl = "https://" + response.data.data.url;
+      toast.success("Uploading photo successfully");
+      return imageUrl;
+    } catch (error) {
+      toast.error("Uploading photo failed");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const onSubmit = (data) => {
     setIsLoading(true);
@@ -208,6 +236,11 @@ function PropertyClient({ place }) {
               </label>
             </div>
             <Map center={[lat, lng]} onSearchResult={handleSearchResult} />
+            <ImageUpload
+              onChange={(value) => setCustomValue("cover", value)}
+              value={cover || ""}
+              circle={true}
+            />
             <div className="grid grid-cols-12 gap-8">
               <div className="col-span-6">
                 <Button

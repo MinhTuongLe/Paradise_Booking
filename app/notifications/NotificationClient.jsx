@@ -48,70 +48,70 @@ function NotificationClient() {
               content={
                 "Thông báo từ Lê Minh Tường mới nhất Thông báo từ Lê Minh Tường mới nhất Thông báo từ Lê Minh Tường mới nhất Thông báo từ Lê Minh Tường mới nhất Thông báo từ Lê Minh Tường mới nhất Thông báo từ Lê Minh Tường mới nhất Thông báo từ Lê Minh Tường mới nhất "
               }
-              avatar={""}
+              avatar=""
               date={"11/11/2011"}
               closeIcon={true}
             />
             <Notification
               id={1}
               content={"Thông báo từ Lê Minh Tường mới nhất"}
-              avatar={""}
+              avatar=""
               date={"11/11/2011"}
               closeIcon={true}
             />
             <Notification
               id={1}
               content={"Thông báo từ Lê Minh Tường mới nhất"}
-              avatar={""}
+              avatar=""
               date={"11/11/2011"}
               closeIcon={true}
             />
             <Notification
               id={1}
               content={"Thông báo từ Lê Minh Tường mới nhất"}
-              avatar={""}
+              avatar=""
               date={"11/11/2011"}
               closeIcon={true}
             />
             <Notification
               id={1}
               content={"Thông báo từ Lê Minh Tường mới nhất"}
-              avatar={""}
+              avatar=""
               date={"11/11/2011"}
               closeIcon={true}
             />
             <Notification
               id={1}
               content={"Thông báo từ Lê Minh Tường mới nhất"}
-              avatar={""}
+              avatar=""
               date={"11/11/2011"}
               closeIcon={true}
             />
             <Notification
               id={1}
               content={"Thông báo từ Lê Minh Tường mới nhất"}
-              avatar={""}
+              avatar=""
               date={"11/11/2011"}
               closeIcon={true}
             />
             <Notification
               id={1}
               content={"Thông báo từ Lê Minh Tường mới nhất"}
-              avatar={""}
+              avatar=""
               date={"11/11/2011"}
               closeIcon={true}
             />
             <Notification
               id={1}
               content={"Thông báo từ Lê Minh Tường mới nhất"}
-              avatar={""}
+              avatar=""
               date={"11/11/2011"}
               closeIcon={true}
             />
             <Notification
               id={1}
               content={"Thông báo từ Lê Minh Tường mới nhất"}
-              avatar={""}
+              avatar=""
               date={"11/11/2011"}
               closeIcon={true}
             />

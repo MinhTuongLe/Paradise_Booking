@@ -11,7 +11,6 @@ import { Range } from "react-date-range";
 import { toast } from "react-toastify";
 import dynamic from "next/dynamic";
 
-import useCountries from "@/hook/useCountries";
 import Container from "./Container";
 import ListingHead from "./listing/ListingHead";
 import ListingInfo from "./listing/ListingInfo";
@@ -35,8 +34,7 @@ const initialDateRange = {
 function ListingClient({ reservations = [], place, currentUser }) {
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
-  const { getByValue } = useCountries();
-  const coordinates = getByValue(place.country).latlng;
+  const coordinates = [place.lat, place.lng];
 
   const router = useRouter();
   const loginModal = useLoginModel();
@@ -132,7 +130,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
                 bathroomCount={place.bathroomCount || 0}
                 locationValue={place.country}
               />
-              {/* <div className="order-first mb-10 md:order-last md:col-span-3 space-y-6">
+              <div className="order-first mb-10 md:order-last md:col-span-3 space-y-6">
                 <ListingReservation
                   price={place.price_per_night}
                   totalPrice={totalPrice}
@@ -151,7 +149,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
                     <span className="underline">Report this room</span>
                   </div>
                 </div>
-              </div> */}
+              </div>
             </div>
             <hr />
             <ListingComments />

@@ -35,7 +35,7 @@ function ImageUpload({ onChange, value, circle }) {
       />
       <div
         className={`relative cursor-pointer transition p-20 flex flex-col justify-center items-center gap-4 text-neutral-600 ${
-          circle ? "rounded-full h-[300px] w-[300px]" : "w-full h-full"
+          circle ? "rounded-full aspect-square w-full h-full" : "w-full h-full"
         }`}
       >
         <label
@@ -51,7 +51,7 @@ function ImageUpload({ onChange, value, circle }) {
                 alt="upload"
                 fill
                 style={{
-                  objectFit: "contain",
+                  objectFit: circle ? "covert" : "contain",
                   borderRadius: circle ? "100%" : "",
                 }}
                 src={preview}

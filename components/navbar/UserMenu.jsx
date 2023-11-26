@@ -26,6 +26,9 @@ function UserMenu({ authState, loggedUser }) {
   const [isOpenNotification, setIsOpenNotification] = useState(false);
   const [language, setLanguage] = useState("vi");
 
+  const emptyImageSrc =
+    "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
+
   const toggleOpen = useCallback(() => {
     setIsOpen((value) => !value);
   }, []);
@@ -64,16 +67,16 @@ function UserMenu({ authState, loggedUser }) {
 
   return (
     <div
-      className="relative"
+      className="relative h-full"
       onClick={(e) => {
         e.stopPropagation();
         if (isOpenNotification) setIsOpenNotification(false);
       }}
     >
-      <div className="flex flex-row items-center gap-6">
+      <div className="flex flex-row items-center gap-6 h-full">
         {loggedUser.role === 2 && (
           <div
-            className="hidden md:block text-sm font-semibold py-3 rounded-full hover:bg-neutral-100 transition cursor-pointer"
+            className="hidden md:block text-sm font-semibold rounded-full hover:bg-neutral-100 transition cursor-pointer"
             onClick={onRent}
           >
             Paradise your Home
@@ -104,12 +107,12 @@ function UserMenu({ authState, loggedUser }) {
         )}
         <div
           onClick={toggleOpen}
-          className="md:py-1 md:px-2 border-[1px] flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md transition"
+          className="h-full md:px-5 border-[1px] flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md transition"
         >
           <AiOutlineMenu />
-          <div className="hidden md:block">
-            {loggedUser ? (
-              <Avatar src={loggedUser.cover} userName={loggedUser.full_name} />
+          <div className="hidden md:flex md:justify-center md:items-center md:h-full">
+            {loggedUser && loggedUser.avatar ? (
+              <Avatar src={loggedUser.avatar} userName={loggedUser.full_name} />
             ) : (
               <Image
                 className="rounded-full"
@@ -205,70 +208,70 @@ function UserMenu({ authState, loggedUser }) {
               <Notification
                 id={1}
                 content={"Thông báo từ Lê Minh Tường mới nhất"}
-                avatar={""}
+                avatar=""
                 date={"11/11/2011"}
                 closeIcon={false}
               />
               <Notification
                 id={1}
                 content={"Thông báo từ Lê Minh Tường mới nhất"}
-                avatar={""}
+                avatar=""
                 date={"11/11/2011"}
                 closeIcon={false}
               />
               <Notification
                 id={1}
                 content={"Thông báo từ Lê Minh Tường mới nhất"}
-                avatar={""}
+                avatar=""
                 date={"11/11/2011"}
                 closeIcon={false}
               />
               <Notification
                 id={1}
                 content={"Thông báo từ Lê Minh Tường mới nhất"}
-                avatar={""}
+                avatar=""
                 date={"11/11/2011"}
                 closeIcon={false}
               />
               <Notification
                 id={1}
                 content={"Thông báo từ Lê Minh Tường mới nhất"}
-                avatar={""}
+                avatar=""
                 date={"11/11/2011"}
                 closeIcon={false}
               />
               <Notification
                 id={1}
                 content={"Thông báo từ Lê Minh Tường mới nhất"}
-                avatar={""}
+                avatar=""
                 date={"11/11/2011"}
                 closeIcon={false}
               />
               <Notification
                 id={1}
                 content={"Thông báo từ Lê Minh Tường mới nhất"}
-                avatar={""}
+                avatar=""
                 date={"11/11/2011"}
                 closeIcon={false}
               />
               <Notification
                 id={1}
                 content={"Thông báo từ Lê Minh Tường mới nhất"}
-                avatar={""}
+                avatar=""
                 date={"11/11/2011"}
                 closeIcon={false}
               />
               <Notification
                 id={1}
                 content={"Thông báo từ Lê Minh Tường mới nhất"}
-                avatar={""}
+                avatar=""
                 date={"11/11/2011"}
                 closeIcon={false}
               />
               <Notification
                 id={1}
                 content={"Thông báo từ Lê Minh Tường mới nhất"}
-                avatar={""}
+                avatar=""
                 date={"11/11/2011"}
                 closeIcon={false}
               />

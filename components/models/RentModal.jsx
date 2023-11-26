@@ -53,7 +53,7 @@ function RentModal({}) {
       guestCount: 0,
       roomCount: 0,
       bathroomCount: 0,
-      cover: null,
+      cover: "",
       price_per_night: 0,
       title: "",
       description: "",

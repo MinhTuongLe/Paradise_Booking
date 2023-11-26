@@ -26,6 +26,7 @@ import useRoomsModal from "@/hook/useRoomsModal";
 import { useDispatch } from "react-redux";
 import { setLoggUser } from "@/components/slice/authSlice";
 import { useSelector } from "react-redux";
+import Cookie from "js-cookie";
 
 const data = {
   name: "Le Minh Tuong",
@@ -59,7 +60,7 @@ function UserClient({ places, currentUser, role }) {
         ? {
             username: currentUser.username || "",
             full_name: currentUser.full_name || "",
-            // avatar: currentUser.avatar || "",
+            avatar: currentUser.avatar || "",
             address: currentUser.address || "",
             phone: currentUser.phone || "",
             dob: currentUser.dob || "",
@@ -68,7 +69,7 @@ function UserClient({ places, currentUser, role }) {
         : {
             username: loggedUser.username || "",
             full_name: loggedUser.full_name || "",
-            // avatar:  loggedUser.avatar : "",
+            avatar: loggedUser.avatar || "",
             address: loggedUser.address || "",
             phone: loggedUser.phone || "",
             dob: loggedUser.dob || "",
@@ -76,7 +77,7 @@ function UserClient({ places, currentUser, role }) {
           },
   });
 
-  const imageSrc = watch("avatar");
+  const avatar = watch("avatar");
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
 
@@ -88,26 +89,75 @@ function UserClient({ places, currentUser, role }) {
     });
   };
 
-  const onSubmit = (data) => {
-    setIsLoading(true);
-    const config = {
-      headers: {
-        "content-type": "application/json",
-      },
-    };
+  const handleFileUpload = async (file) => {
+    try {
+      setIsLoading(true);
 
-    axios
-      .patch(`${API_URL}/account/${currentUser.id}`, data, config)
-      .then(() => {
-        setIsLoading(false);
-        setIsEditMode(false);
-        dispatch(setLoggUser(data));
-        toast.success("Update Profile Successfully");
-      })
-      .catch((err) => {
-        toast.error("Something Went Wrong");
-        setIsLoading(false);
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const accessToken = Cookie.get("accessToken");
+
+      const response = await axios.post(`${API_URL}/upload`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
+
+      const imageUrl = "https://" + response.data.data.url;
+      toast.success("Uploading photo successfully");
+      return imageUrl;
+    } catch (error) {
+      toast.error("Uploading photo failed");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onSubmit = async (data) => {
+    try {
+      setIsLoading(true);
+
+      // upload photo
+      const file = data.avatar;
+      let imageUrl = "";
+      if (file) {
+        imageUrl = await handleFileUpload(file);
+      }
+
+      const { avatar, ...omitData } = data;
+      const submitValues = {
+        ...omitData,
+        avatar: imageUrl,
+      };
+
+      // console.log(submitValues);
+
+      // update profile
+      const config = {
+        headers: {
+          "content-type": "application/json",
+        },
+      };
+
+      axios
+        .patch(`${API_URL}/account/${currentUser.id}`, submitValues, config)
+        .then(() => {
+          setIsLoading(false);
+          setIsEditMode(false);
+          dispatch(setLoggUser(data));
+          toast.success("Update Profile Successfully");
+        })
+        .catch((err) => {
+          toast.error("Something Went Wrong");
+          setIsLoading(false);
+        });
+    } catch (error) {
+      toast.error("Something went wrong");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -119,18 +169,18 @@ function UserClient({ places, currentUser, role }) {
               <>
                 <ImageUpload
                   onChange={(value) => setCustomValue("avatar", value)}
-                  value={imageSrc ? imageSrc : emptyImageSrc}
+                  value={avatar || ""}
                   circle={true}
                 />
               </>
             ) : (
               <>
                 <Image
-                  width={120}
-                  height={120}
-                  src={emptyImageSrc}
+                  width={200}
+                  height={200}
+                  src={loggedUser.avatar || currentUser.avatar || emptyImageSrc}
                   alt="Avatar"
-                  className="rounded-full h-[120px] w-[120px]"
+                  className="rounded-full h-[200px] w-[200px]"
                 />
                 <h1 className="text-2xl font-bold my-3">
                   {loggedUser.username || currentUser.username}
