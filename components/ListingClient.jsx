@@ -35,6 +35,11 @@ function ListingClient({ reservations = [], place, currentUser }) {
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
   const coordinates = [place.lat, place.lng];
+  const location = {
+    address: place.address,
+    city: place.city,
+    country: place.country,
+  };
 
   const router = useRouter();
   const loginModal = useLoginModel();
@@ -116,7 +121,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
             <ListingHead
               title={place.name}
               imageSrc={place.cover || emptyImageSrc}
-              locationValue={place.country}
+              locationValue={location}
               id={place.id}
               currentUser={currentUser}
             />
@@ -128,7 +133,6 @@ function ListingClient({ reservations = [], place, currentUser }) {
                 roomCount={place.roomCount || 0}
                 guestCount={place.guestCount || 0}
                 bathroomCount={place.bathroomCount || 0}
-                locationValue={place.country}
               />
               <div className="order-first mb-10 md:order-last md:col-span-3 space-y-6">
                 <ListingReservation

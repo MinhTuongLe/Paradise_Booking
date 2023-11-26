@@ -9,11 +9,11 @@ import Offers from "../Offers";
 
 function ListingInfo({
   user,
-  description,
-  guestCount,
-  roomCount,
-  bathroomCount,
   category,
+  description,
+  roomCount,
+  guestCount,
+  bathroomCount,
 }) {
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
@@ -38,13 +38,15 @@ function ListingInfo({
       </div>
       <hr />
       {category && (
-        <ListingCategory
-          icon={category.icon}
-          label={category.label}
-          description={category.description}
-        />
+        <>
+          <ListingCategory
+            icon={category.icon}
+            label={category.label}
+            description={category.description}
+          />
+          <hr />
+        </>
       )}
-      <hr />
       <div className="flex flex-col">
         <p className="text-4xl font-bold text-[#FF5A5F]">
           air<span className="text-black">cover</span>

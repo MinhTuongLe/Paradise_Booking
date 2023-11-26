@@ -373,6 +373,7 @@ function RentModal({}) {
         <ImageUpload
           onChange={(value) => setCustomValue("cover", value)}
           value={cover}
+          cover={true}
         />
       </div>
     );

@@ -79,7 +79,7 @@ function ListingCard({
         <div className="aspect-square w-full relative oerflow-hidden rounded-xl">
           <Image
             fill
-            className="object-cover h-full w-full group-hover:scale-110 transition  rounded-xl"
+            className="object-cover aspect-square h-full w-full group-hover:scale-110 transition  rounded-xl"
             src={data.cover || emptyImageSrc}
             alt="listing"
           />

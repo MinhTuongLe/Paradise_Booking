@@ -12,7 +12,6 @@ import { BASE_URL } from "../../const";
 
 function ListingHead({ title, locationValue, imageSrc, id, currentUser }) {
   const { getByValue } = useCountries();
-  const location = getByValue(locationValue);
   const currentUrl = usePathname();
 
   const handleCopyToClipboard = () => {
@@ -24,7 +23,9 @@ function ListingHead({ title, locationValue, imageSrc, id, currentUser }) {
       <div className="flex justify-between items-end mb-4">
         <Heading
           title={title}
-          subtitle={`${location?.region}, ${location?.label}`}
+          subtitle={`${
+            locationValue?.address ? locationValue?.address + ", " : ""
+          } ${locationValue.city}, ${locationValue.country}`}
         />
         <div className="flex justify-between items-end gap-6">
           <div

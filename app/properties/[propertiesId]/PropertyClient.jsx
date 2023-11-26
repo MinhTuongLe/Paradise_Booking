@@ -75,13 +75,13 @@ function PropertyClient({ place }) {
     setSearchResult(result);
   };
 
-  function processSearchResult(searchResult) {
+  function processSearchResult() {
     const numberRegex = /^[0-9]+$/;
     let country = place.country;
     let city = place.city;
     let address = place.address;
-    if (Array.isArray(searchResult)) {
-      const array = searchResult.split(", ");
+    if (searchResult) {
+      const array = searchResult?.label.split(", ");
 
       if (array) {
         const length = array.length;
@@ -139,9 +139,7 @@ function PropertyClient({ place }) {
         }
       }
 
-      const { country, city, address } = processSearchResult(
-        searchResult?.label
-      );
+      const { country, city, address } = processSearchResult();
 
       const submitValues = {
         name: data?.name || "",
@@ -149,36 +147,36 @@ function PropertyClient({ place }) {
         price_per_night: Number(data?.price_per_night) || 0,
         address: address || place.address,
         capacity: data?.capacity || 1,
-        lat: searchResult.x || place.lat,
-        lng: searchResult.y || place.lng,
+        lat: lat || place.lat,
+        lng: lng || place.lng,
         country: country || place.country,
         state: city || place.city,
         city: city || place.city,
         cover: imageUrl || "",
       };
 
-      console.log(submitValues);
-      // const accessToken = Cookie.get("accessToken");
-      // const config = {
-      //   params: {
-      //     place_id: place.id,
-      //   },
-      //   headers: {
-      //     "content-type": "application/json",
-      //     Authorization: `Bearer ${accessToken}`,
-      //   },
-      // };
-      // axios
-      //   .put(`${API_URL}/places`, submitValues, config)
-      //   .then(() => {
-      //     setIsLoading(false);
-      //     toast.success("Update Room Successfully");
-      //     router.refresh();
-      //   })
-      //   .catch((err) => {
-      //     toast.error("Update Room Failed");
-      //     setIsLoading(false);
-      //   });
+      // console.log(submitValues);
+      const accessToken = Cookie.get("accessToken");
+      const config = {
+        params: {
+          place_id: place.id,
+        },
+        headers: {
+          "content-type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      };
+      axios
+        .put(`${API_URL}/places`, submitValues, config)
+        .then(() => {
+          setIsLoading(false);
+          toast.success("Update Room Successfully");
+          router.refresh();
+        })
+        .catch((err) => {
+          toast.error("Update Room Failed");
+          setIsLoading(false);
+        });
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");
@@ -196,9 +194,9 @@ function PropertyClient({ place }) {
 
   return (
     <div className="max-w-[1200px] mx-auto px-4">
-      <div className="mt-10 grid grid-cols-12 gap-8">
-        <div className="col-span-8">
-          <h1 className="text-2xl font-bold my-3">Property Information</h1>
+      <h1 className="text-2xl font-bold mt-10 mb-3">Property Information</h1>
+      <div className="grid grid-cols-12 gap-8">
+        <div className="col-span-6">
           <div className="px-8 pb-8 space-y-6">
             <Input
               id="name"
@@ -216,68 +214,79 @@ function PropertyClient({ place }) {
               errors={errors}
               required
             />
-            <Input
-              id="capacity"
-              label="Capacity"
-              type="number"
-              disabled={isLoading}
-              register={register}
-              errors={errors}
-              required
-            />
-            <Input
-              id="price_per_night"
-              label="Price per Night"
-              formatPrice
-              type="number"
-              disabled={isLoading}
-              register={register}
-              errors={errors}
-              required
-            />
-            <div className="w-full relative">
-              <input
-                value={
-                  searchResult
-                    ? searchResult.label
-                    : `${place?.address ? place?.address + ", " : ""} ${
-                        place?.city ? place?.city + ", " : ""
-                      } ${place?.country || "-"}`
-                }
-                id="_location"
-                readOnly={true}
-                className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition opacity-70 cursor-not-allowed border-neutral-300 focus:outline-none`}
+            {!isLoading && (
+              <ImageUpload
+                onChange={(value) => setCustomValue("cover", value)}
+                value={cover || ""}
+                fill={true}
               />
-
-              <label
-                className={`absolute text-md duration-150 transform -translate-y-3 top-5 z-10 origin-[0] left-4 text-zinc-400`}
-              >
-                Location
-              </label>
+            )}
+          </div>
+        </div>
+        <div className="col-span-6 space-y-6">
+          <div className="grid grid-cols-2 gap-6">
+            <div className="col-span-1">
+              <Input
+                id="capacity"
+                label="Capacity"
+                type="number"
+                disabled={isLoading}
+                register={register}
+                errors={errors}
+                required
+              />
             </div>
-            <Map center={[lat, lng]} onSearchResult={handleSearchResult} />
-            <ImageUpload
-              onChange={(value) => setCustomValue("cover", value)}
-              value={cover || ""}
+            <div className="col-span-1">
+              <Input
+                id="price_per_night"
+                label="Price per Night"
+                formatPrice
+                type="number"
+                disabled={isLoading}
+                register={register}
+                errors={errors}
+                required
+              />
+            </div>
+          </div>
+          <div className="w-full relative">
+            <input
+              value={
+                searchResult
+                  ? searchResult.label
+                  : `${place?.address ? place?.address + ", " : ""} ${
+                      place?.city ? place?.city + ", " : ""
+                    } ${place?.country || "-"}`
+              }
+              id="_location"
+              readOnly={true}
+              className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition opacity-70 cursor-not-allowed border-neutral-300 focus:outline-none`}
             />
-            <div className="grid grid-cols-12 gap-8">
-              <div className="col-span-6">
-                <Button
-                  outline
-                  label="Cancel"
-                  onClick={() => {
-                    reset();
-                    router.push("/properties");
-                  }}
-                />
-              </div>
-              <div className="col-span-6">
-                <Button
-                  disabled={isLoading}
-                  label="Update"
-                  onClick={handleSubmit(onSubmit)}
-                />
-              </div>
+
+            <label
+              className={`absolute text-md duration-150 transform -translate-y-3 top-5 z-10 origin-[0] left-4 text-zinc-400`}
+            >
+              Location
+            </label>
+          </div>
+          <Map center={[lat, lng]} onSearchResult={handleSearchResult} />
+          <div className="grid grid-cols-12 gap-8">
+            <div className="col-span-6">
+              <Button
+                outline
+                label="Cancel"
+                onClick={() => {
+                  reset();
+                  router.push("/properties");
+                }}
+              />
+            </div>
+            <div className="col-span-6">
+              <Button
+                disabled={isLoading}
+                label="Update"
+                onClick={handleSubmit(onSubmit)}
+              />
             </div>
           </div>
         </div>

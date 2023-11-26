@@ -9,7 +9,7 @@ function Avatar({ src, userName }) {
     <div className="h-[42px] w-[42px]">
       {src ? (
         <Image
-          className="rounded-full object- h-full w-full"
+          className="rounded-full object-cover h-full w-full"
           height="56"
           width="56"
           alt="hasImag"
