@@ -13,8 +13,9 @@ const UserPage = async ({ params }) => {
 
   const user = await getUserById(params?.usersId);
 
-  let places = [];
-  if (user.id === 2) places = await getPlaceByVendorId(user.id);
+  // let places = [];
+  // if (user.id === 2) places = await getPlaceByVendorId(user.id);
+  const places = await getPlaceByVendorId(user.id);
 
   if (!accessToken && user.role !== 2) {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;
