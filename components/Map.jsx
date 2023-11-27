@@ -28,22 +28,25 @@ function Map({ center, locationValue, onSearchResult }) {
     onSearchResult(result.location);
   }
   useEffect(() => {
-    const map = L.map("map");
-    map.clearAllEventListeners();
-    map.setView(center);
-
-    const searchControl = new GeoSearchControl({
-      provider: new OpenStreetMapProvider(),
-      style: "bar",
-    });
     if (showSearchControl) {
-      map.addControl(searchControl);
-    }
-    map.on("geosearch/showlocation", searchEventHandler);
+      const map = L.map("map");
+      map.clearAllEventListeners();
+      map.setView(center, 13);
 
-    return () => {
-      map.remove();
-    };
+      L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+      const searchControl = new GeoSearchControl({
+        provider: new OpenStreetMapProvider(),
+        style: "bar",
+      });
+      if (showSearchControl) {
+        map.addControl(searchControl);
+      }
+      map.on("geosearch/showlocation", searchEventHandler);
+
+      return () => {
+        map.remove();
+      };
+    }
   }, [showSearchControl]);
 
   useEffect(() => {
@@ -51,11 +54,12 @@ function Map({ center, locationValue, onSearchResult }) {
   }, []);
 
   return (
-    <div id="map">
+    <>
+      <div id="map"></div>
       <MapContainer
         center={center || [51, -0.09]}
-        zoom={center ? 4 : 2}
-        scrollWheelZoom={false}
+        zoom={center ? 13 : 2}
+        scrollWheelZoom={true}
         className="h-[35vh] rounded-lg"
       >
         <TileLayer
@@ -78,7 +82,7 @@ function Map({ center, locationValue, onSearchResult }) {
           <>{center && <Marker position={center} />}</>
         )}
       </MapContainer>
-    </div>
+    </>
   );
 }
 
