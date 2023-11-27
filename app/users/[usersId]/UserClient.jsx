@@ -122,8 +122,13 @@ function UserClient({ places, currentUser, role }) {
       // upload photo
       const file = data.avatar;
       let imageUrl = "";
-      if (file) {
-        imageUrl = await handleFileUpload(file);
+      if (data.avatar) {
+        const file = data.avatar;
+        if (typeof file === "string") {
+          imageUrl = loggedUser?.avatar;
+        } else {
+          imageUrl = await handleFileUpload(file);
+        }
       }
 
       const { avatar, ...omitData } = data;
@@ -146,7 +151,12 @@ function UserClient({ places, currentUser, role }) {
         .then(() => {
           setIsLoading(false);
           setIsEditMode(false);
-          dispatch(setLoggUser(submitValues));
+          dispatch(
+            setLoggUser({
+              id: currentUser.id,
+              ...submitValues,
+            })
+          );
           toast.success("Update Profile Successfully");
         })
         .catch((err) => {

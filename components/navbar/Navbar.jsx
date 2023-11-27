@@ -14,7 +14,7 @@ function Navbar() {
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
   // remove cookie if expired
-  const expiredAt = Cookie.get("expiresAt");
+  const expiredAt = Number(Cookie.get("expiresAt"));
   if (expiredAt) {
     const currentTimestamp = Math.floor(Date.now() / 1000);
 

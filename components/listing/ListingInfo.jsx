@@ -28,7 +28,7 @@ function ListingInfo({
           >
             Hosted by {user.full_name}
           </div>
-          <Avatar src={user.image || emptyImageSrc} userName={user.full_name} />
+          <Avatar src={user.avatar || emptyImageSrc} userName={user.full_name} />
         </div>
         <div className="flex flex-row items-center gap-4 font-light text-neutral-500">
           <p>{guestCount} guests</p>

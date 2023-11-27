@@ -21,6 +21,8 @@ import { IoChevronBack } from "react-icons/io5";
 import Image from "next/image";
 import { FaBusinessTime, FaFlag, FaStar } from "react-icons/fa";
 import Button from "./Button";
+import { useForm } from "react-hook-form";
+import Input from "./inputs/Input";
 const Map = dynamic(() => import("./Map"), {
   ssr: false,
 });
@@ -60,39 +62,78 @@ function ListingClient({ reservations = [], place, currentUser }) {
     return dates;
   }, [reservations]);
 
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      full_name: "",
+      phone: "",
+      email: "",
+      guest_name: "",
+    },
+  });
+
   const [isLoading, setIsLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useState(place.price_per_night);
   const [dateRange, setDateRange] = useState(initialDateRange);
   const [paymentMode, setPaymentMode] = useState(false);
   const [dayCount, setDayCount] = useState(1);
+  const [bookingMode, setBookingMode] = useState(1);
 
-  const onCreateReservation = useCallback(() => {
-    if (!currentUser) {
-      return loginModal.onOpen();
+  const onCreateReservation = (data) => {
+    try {
+      setIsLoading(true);
+
+      const submitValues = {
+        full_name: data.full_name,
+        phone: data.phone,
+        email: data.email,
+      };
+
+      if (bookingMode === 1) {
+        console.log(submitValues);
+      } else if (bookingMode === 2) {
+        console.log({
+          guest_name: data.guest_name,
+          ...submitValues,
+        });
+      }
+
+      // // console.log(submitValues);
+      // const accessToken = Cookie.get("accessToken");
+      // const config = {
+      //   params: {
+      //     place_id: place.id,
+      //   },
+      //   headers: {
+      //     "content-type": "application/json",
+      //     Authorization: `Bearer ${accessToken}`,
+      //   },
+      // };
+
+      // axios
+      //   .put(`${API_URL}/places`, submitValues, config)
+      //   .then(() => {
+      //     setIsLoading(false);
+      //     toast.success("Update Room Successfully");
+      //     router.refresh();
+      //   })
+      //   .catch((err) => {
+      //     toast.error("Update Room Failed");
+      //     setIsLoading(false);
+      //   });
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong");
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(true);
-
-    axios
-      .post("/api/reservations", {
-        totalPrice,
-        startDate: dateRange.startDate,
-        endDate: dateRange.endDate,
-        placeId: place.id,
-      })
-      .then(() => {
-        toast.success("Success!");
-        setDateRange(initialDateRange);
-        router.push("/trips");
-      })
-      .catch(() => {
-        toast.error("Something Went Wrong");
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }, [totalPrice, dateRange, place.id, router, currentUser, loginModal]);
-
+  };
   useEffect(() => {
     if (dateRange.startDate && dateRange.endDate) {
       const count = differenceInCalendarDays(
@@ -226,7 +267,97 @@ function ListingClient({ reservations = [], place, currentUser }) {
           <div className="grid grid-cols-12 w-full mt-8 space-x-16">
             <div className="col-span-7">
               <div className="mb-6">
-                <span className="text-lg font-bold">Your booking info</span>
+                <span className="text-lg font-bold mb-6 block">
+                  Your booking info
+                </span>
+                <Input
+                  id="full_name"
+                  label="Full Name"
+                  disabled={isLoading}
+                  register={register}
+                  errors={errors}
+                  required
+                />
+                <div className="flex gap-6 my-6">
+                  <div className="flex-1">
+                    <Input
+                      id="phone"
+                      label="Phone"
+                      disabled={isLoading}
+                      register={register}
+                      errors={errors}
+                      required
+                      type="tel"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <Input
+                      id="email"
+                      label="Email"
+                      disabled={isLoading}
+                      register={register}
+                      errors={errors}
+                      required
+                      type="email"
+                    />
+                  </div>
+                </div>
+              </div>
+              <hr />
+              <div className="my-6">
+                <div className="flex gap-6 my-6">
+                  <div className="flex-1 flex gap-6 justify-start items-center">
+                    <input
+                      type="radio"
+                      id="forMyself"
+                      name="bookingMode"
+                      value={bookingMode}
+                      onChange={() => setBookingMode(1)}
+                      defaultChecked={bookingMode === 1}
+                      className="w-[20px] h-[20px]"
+                      required
+                    />
+                    <label htmlFor="forMyself">Booking for myself</label>
+                  </div>
+                  <div className="flex-1 flex gap-6 justify-start items-center">
+                    <input
+                      type="radio"
+                      id="forOther"
+                      name="bookingMode"
+                      value={bookingMode}
+                      onChange={() => setBookingMode(2)}
+                      defaultChecked={bookingMode === 2}
+                      className="w-[20px] h-[20px]"
+                      required
+                    />
+                    <label htmlFor="forOther">Booking for other</label>
+                  </div>
+                </div>
+                {bookingMode === 2 && (
+                  <Input
+                    id="guest_name"
+                    label="Guest Name"
+                    disabled={isLoading}
+                    register={register}
+                    errors={errors}
+                    required
+                  />
+                )}
+              </div>
+
+              <hr />
+              <div className="my-6">
+                <div className="flex flex-col justify-between items-start mt-4">
+                  <span className="text-md font-bold">Date</span>
+                  <span className="text-md font-thin">November 15 - 20</span>
+                </div>
+                <div className="flex flex-col justify-between items-start">
+                  <span className="text-md font-bold">Guest</span>
+                  <span className="text-md font-thin">1 guest</span>
+                </div>
+              </div>
+              <hr />
+              <div className="my-6">
                 <div className="flex flex-col justify-between items-start mt-4">
                   <span className="text-md font-bold">Date</span>
                   <span className="text-md font-thin">November 15 - 20</span>
@@ -245,12 +376,14 @@ function ListingClient({ reservations = [], place, currentUser }) {
                   <Image
                     width={40}
                     height={40}
-                    src={emptyImageSrc}
+                    src={currentUser?.avatar || emptyImageSrc}
                     alt="Avatar"
                     className="rounded-full h-[40px] w-[40px]"
                   />
                   <div>
-                    <h1 className="text-md font-bold space-y-3">Conal</h1>
+                    <h1 className="text-md font-bold space-y-3">
+                      {currentUser?.full_name || "User"}
+                    </h1>
                     <p>tháng 11 năm 2023</p>
                   </div>
                 </div>
@@ -289,7 +422,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
                 <Button
                   disabled={isLoading}
                   label="Reservation"
-                  onClick={onCreateReservation}
+                  onClick={handleSubmit(onCreateReservation)}
                 />
               </div>
             </div>
@@ -300,7 +433,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
                     <Image
                       width={500}
                       height={500}
-                      src={place.imageSrc || emptyImageSrc}
+                      src={place?.cover || emptyImageSrc}
                       alt="room image"
                       className="rounded-xl"
                     />
@@ -308,7 +441,9 @@ function ListingClient({ reservations = [], place, currentUser }) {
                   <div className="w-[70%]">
                     <div className="space-y-1">
                       <p className="text-sm font-thin">Room type</p>
-                      <p className="text-md font-bold">Room name</p>
+                      <p className="text-md font-bold">
+                        {place?.name || "Room Name"}
+                      </p>
                     </div>
                     <div className="flex items-center justify-start space-x-2">
                       <FaStar size={8} />
