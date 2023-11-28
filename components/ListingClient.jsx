@@ -379,6 +379,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
                     src={currentUser?.avatar || emptyImageSrc}
                     alt="Avatar"
                     className="rounded-full h-[40px] w-[40px]"
+                    priority
                   />
                   <div>
                     <h1 className="text-md font-bold space-y-3">
@@ -436,6 +437,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
                       src={place?.cover || emptyImageSrc}
                       alt="room image"
                       className="rounded-xl"
+                      priority
                     />
                   </div>
                   <div className="w-[70%]">

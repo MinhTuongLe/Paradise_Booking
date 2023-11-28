@@ -85,6 +85,7 @@ function CommentsModal({}) {
               src={emptyImageSrc}
               alt="Avatar"
               className="rounded-xl h-[60px] w-[80px]"
+              priority
             />
           </div>
           <div className="flex justify-start items-center space-x-6">
@@ -94,6 +95,7 @@ function CommentsModal({}) {
               src={emptyImageSrc}
               alt="Avatar"
               className="rounded-full h-[40px] w-[40px]"
+              priority
             />
             <div>
               <h1 className="text-md font-bold space-y-3">Conal</h1>
@@ -110,6 +112,7 @@ function CommentsModal({}) {
               src={emptyImageSrc}
               alt="Avatar"
               className="rounded-full h-[40px] w-[40px]"
+              priority
             />
             <div>
               <h1 className="text-md font-bold space-y-3">Conal</h1>
@@ -130,6 +133,7 @@ function CommentsModal({}) {
               src={emptyImageSrc}
               alt="Avatar"
               className="rounded-xl h-[60px] w-[80px]"
+              priority
             />
           </div>
           <div className="flex justify-start items-center space-x-6">
@@ -137,6 +141,7 @@ function CommentsModal({}) {
               width={40}
               height={40}
               src={emptyImageSrc}
+              priority
               alt="Avatar"
               className="rounded-full h-[40px] w-[40px]"
             />
@@ -153,6 +158,7 @@ function CommentsModal({}) {
               width={40}
               height={40}
               src={emptyImageSrc}
+              priority
               alt="Avatar"
               className="rounded-full h-[40px] w-[40px]"
             />

@@ -15,6 +15,8 @@ function Logo({}) {
         height={100}
         width={100}
         src="/assets/logo.png"
+        style={{ width: "auto", height: "auto" }}
+        priority
       />
     </div>
   );

@@ -14,6 +14,7 @@ function Notification({ id, content, avatar, date, closeIcon }) {
         className="rounded-full w-[56px] h-[56px]"
         width={56}
         height={56}
+        priority
       />
       <div className="block max-w-[70%]">
         <div className="text-lg font-bold truncate ">{content}</div>

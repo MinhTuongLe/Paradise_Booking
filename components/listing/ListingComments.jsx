@@ -33,6 +33,7 @@ function ListingComments({}) {
                   src={emptyImageSrc}
                   alt="Avatar"
                   className="rounded-full h-[40px] w-[40px]"
+                  priority
                 />
                 <div>
                   <h1 className="text-md font-bold space-y-3">Conal</h1>

@@ -82,6 +82,7 @@ function ListingCard({
             className="object-cover aspect-square h-full w-full group-hover:scale-110 transition  rounded-xl"
             src={data.cover || emptyImageSrc}
             alt="listing"
+            priority
           />
           {/* {shrink === false && (
             <div className="absolute top-3 right-3">
