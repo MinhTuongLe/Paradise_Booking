@@ -179,7 +179,9 @@ function UserClient({ places, currentUser, role }) {
               <>
                 <ImageUpload
                   onChange={(value) => setCustomValue("avatar", value)}
-                  value={avatar || ""}
+                  value={
+                    loggedUser.avatar || currentUser.avatar || avatar || ""
+                  }
                   circle={true}
                 />
               </>
