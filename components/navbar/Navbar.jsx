@@ -8,6 +8,7 @@ import Categories from "./Categories";
 import AdminNavBar from "./AdminNavbar";
 import { useSelector } from "react-redux";
 import Cookie from "js-cookie";
+import { reset } from "../slice/authSlice";
 
 function Navbar() {
   const authState = useSelector((state) => state.authSlice.authState);
@@ -30,7 +31,7 @@ function Navbar() {
   }
 
   return (
-    <div className="fixed w-full bg-white z-10 shadow-sm h-[10vh]">
+    <div className="fixed w-full bg-white z-10 shadow-sm h-[10vh] min-h-[82px]">
       <div className="py-4 border-b-[1px] h-full">
         <Container>
           <div className="flex flex-row items-center justify-between gap-3 md:gap-0 h-full">

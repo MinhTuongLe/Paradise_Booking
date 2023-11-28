@@ -55,13 +55,13 @@ function Map({ center, locationValue, onSearchResult }) {
 
   return (
     <>
-      <div id="map"></div>
       <MapContainer
         center={center || [51, -0.09]}
         zoom={center ? 13 : 2}
         scrollWheelZoom={true}
         className="h-[35vh] rounded-lg"
       >
+        <div id="map"></div>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMapa> contributors'
