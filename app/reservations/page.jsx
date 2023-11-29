@@ -44,11 +44,10 @@ const ReservationsPage = async (props) => {
 
   return (
     <ClientOnly>
-      {/* <ReservationsClient
-        reservations={reservations}
-        currentUser={currentUser}
-      /> */}
-      Reservation page
+      <ReservationsClient
+      // reservations={reservations}
+      // currentUser={currentUser}
+      />
     </ClientOnly>
   );
 };

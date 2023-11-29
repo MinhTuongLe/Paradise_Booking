@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import Container from "../Container";
@@ -6,29 +7,34 @@ import Search from "./Search";
 import UserMenu from "./UserMenu";
 import Categories from "./Categories";
 import AdminNavBar from "./AdminNavbar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Cookie from "js-cookie";
 import { reset } from "../slice/authSlice";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 function Navbar() {
   const authState = useSelector((state) => state.authSlice.authState);
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
+  const dispatch = useDispatch();
+  const router = useRouter();
 
-  // remove cookie if expired
-  const expiredAt = Number(Cookie.get("expiresAt"));
-  if (expiredAt) {
-    const currentTimestamp = Math.floor(Date.now() / 1000);
+  useEffect(() => {
+    // remove cookie if expired
+    const expiredAt = Number(Cookie.get("expiresAt"));
+    if (expiredAt) {
+      const currentTimestamp = Math.floor(Date.now() / 1000);
 
-    if (currentTimestamp >= expiredAt) {
-      if (isOpen) toggleOpen();
-      Cookie.remove("loggedUser");
-      Cookie.remove("accessToken");
-      Cookie.remove("expiresAt");
-      dispatch(reset());
-      router.push("/");
-      console.log("ACCESS TOKEN IS EXPIRED!!!");
+      if (currentTimestamp >= expiredAt) {
+        Cookie.remove("loggedUser");
+        Cookie.remove("accessToken");
+        Cookie.remove("expiresAt");
+        dispatch(reset());
+        router.push("/");
+        console.log("ACCESS TOKEN IS EXPIRED!!!");
+      }
     }
-  }
+  }, []);
 
   return (
     <div className="fixed w-full bg-white z-10 shadow-sm h-[10vh] min-h-[82px]">

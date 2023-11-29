@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import axios from "axios";
@@ -8,8 +9,11 @@ import { toast } from "react-toastify";
 import Container from "@/components/Container";
 import Heading from "@/components/Heading";
 import ListingCard from "@/components/listing/ListingCard";
+import ReservationItem from "@/components/ReservationItem";
+import Button from "@/components/Button";
 
-function ReservationsClient({ reservations, currentUser }) {
+function ReservationsClient() {
+  // function ReservationsClient({ reservations, currentUser }) {
   const router = useRouter();
   const [deletingId, setDeletingId] = useState("");
 
@@ -35,20 +39,27 @@ function ReservationsClient({ reservations, currentUser }) {
 
   return (
     <Container>
-      <Heading title="Reservations" subtitle="Bookings on your properties" />
+      <div className="mt-10">
+        <Heading title="Reservations" subtitle="Your reservation list" />
+      </div>
+      {/* <div className="mt-6 space-y-6">
+        <span className="text-[24px] font-bold">
+          You don't have any reservation to display
+        </span>
+        <div className="max-w-[160px]">
+          <Button label="Booking now" onClick={() => router.push("/")} />
+        </div>
+      </div> */}
       <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
-        {reservations.map((reservation) => (
-          <ListingCard
-            key={reservation.id}
-            data={reservation.listing}
-            reservation={reservation}
-            actionId={reservation.id}
-            onAction={onCancel}
-            disabled={deletingId === reservation.id}
-            actionLabel="Cancel reservation"
-            currentUser={currentUser}
-          />
-        ))}
+        <ReservationItem />
+        <ReservationItem />
+        <ReservationItem />
+        <ReservationItem />
+        <ReservationItem />
+        <ReservationItem />
+        <ReservationItem />
+        <ReservationItem />
+        <ReservationItem />
       </div>
     </Container>
   );
