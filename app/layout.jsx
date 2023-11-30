@@ -9,7 +9,6 @@ import SearchModal from "@/components/models/SearchModal";
 import FiltersModal from "@/components/models/FiltersModal";
 import CommentsModal from "@/components/models/CommentsModal";
 import RoomCommentsModal from "@/components/models/RoomCommentsModal";
-import DeleteModal from "@/components/models/DeleteModal";
 import ReportModal from "@/components/models/ReportModal";
 import Navbar from "@/components/navbar/Navbar";
 import { Nunito } from "next/font/google";
@@ -42,7 +41,6 @@ export default async function RootLayout({ children }) {
             <RentModal />
             <CommentsModal />
             <RoomCommentsModal />
-            <DeleteModal />
             <ReportModal />
             <Navbar />
           </ClientOnly>

@@ -30,6 +30,7 @@ function Navbar() {
         Cookie.remove("accessToken");
         Cookie.remove("expiresAt");
         dispatch(reset());
+        localStorage.removeItem("persist:root");
         router.push("/");
         console.log("ACCESS TOKEN IS EXPIRED!!!");
       }

@@ -181,7 +181,10 @@ function ListingClient({ reservations = [], place, currentUser }) {
                   totalPrice={totalPrice}
                   onChangeDate={(value) => setDateRange(value)}
                   dateRange={dateRange}
-                  onSubmit={() => setPaymentMode(true)}
+                  onSubmit={() => {
+                    setPaymentMode(true);
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
                   disabled={isLoading}
                   disabledDates={disableDates}
                 />
@@ -259,7 +262,10 @@ function ListingClient({ reservations = [], place, currentUser }) {
           <div className="flex justify-start items-start space-x-6">
             <IoChevronBack
               size={16}
-              onClick={() => setPaymentMode(false)}
+              onClick={() => {
+                setPaymentMode(false);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
               className="cursor-pointer"
             />
             <span className="text-xl font-extrabold">Finish your booking</span>

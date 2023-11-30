@@ -96,12 +96,12 @@ function ListingCard({
           )}
         </div>
         {shrink === false && (
-          <div className="font-semibold text-lg">
+          <div className="font-semibold text-lg text-ellipsis line-clamp-1">
             {data.address || ""} {data.country ? `, ${data.country}` : ""}
           </div>
         )}
-        <div className="flex justify-between items-center">
-          <div className="font-light text-neutral-500">
+        <div className="flex justify-between items-center space-x-4">
+          <div className="font-light text-neutral-500 text-ellipsis line-clamp-1">
             {/* {reservationDate || data.category} */}
             {data.city || ""} {data.state ? `, ${data.state}` : ""}
           </div>

@@ -13,7 +13,7 @@ const ReservationPage = async ({}) => {
   const userId = cookies().get("userId")?.value;
   const user = await getUserById(userId);
   let place;
-  if (accessToken && user.role === 2) {
+  if (accessToken && user.role !== 3) {
     const { place: fetchedPlace, vendor_id } = await getPlaceById(41);
     place = fetchedPlace;
   } else {
@@ -23,7 +23,7 @@ const ReservationPage = async ({}) => {
 
   return (
     <ClientOnly>
-      <ReservationClient place={place} />
+      <ReservationClient place={place} currentUser={user} />
     </ClientOnly>
   );
 };

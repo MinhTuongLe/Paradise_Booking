@@ -125,7 +125,7 @@ function AccountClient({ accounts }) {
             )}
           </TableHeader>
           <TableBody>
-            {accounts.map((account) => (
+            {accounts?.map((account) => (
               <TableRow key={account.id}>
                 {(columnKey) => (
                   <TableCell>{renderCell(account, columnKey)}</TableCell>

@@ -20,7 +20,6 @@ import CategoryBox from "../CategoryBox";
 import Container from "../Container";
 import { BiFilterAlt } from "react-icons/bi";
 import useFiltersModal from "../../hook/useFiltersModal";
-import useDeleteModal from "../../hook/useDeleteModal";
 
 export const categories = [
   {
@@ -105,7 +104,6 @@ function Categories({}) {
   const category = params?.get("category");
   const pathname = usePathname();
   const filtersModal = useFiltersModal();
-  const deleteModal = useDeleteModal();
 
   const functionDelete = () => {
     console.log(123123123);

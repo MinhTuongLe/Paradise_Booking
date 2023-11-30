@@ -142,7 +142,11 @@ function UserMenu({ authState, loggedUser }) {
                     />
                     <MenuItem
                       onClick={() => menuItemSelect("/reservations")}
-                      label="My reservations"
+                      label={
+                        loggedUser.role === 1
+                          ? "My reservations"
+                          : "Reservation list"
+                      }
                     />
                   </>
                 )}
