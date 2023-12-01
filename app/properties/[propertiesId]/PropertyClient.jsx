@@ -232,10 +232,10 @@ function PropertyClient({ place }) {
 
   return (
     <div className="max-w-[1200px] mx-auto px-4">
-      <h1 className="text-2xl font-bold mt-10 mb-3">Property Information</h1>
-      <div className="grid grid-cols-12 gap-8 mb-8">
+      <h1 className="text-2xl font-bold mt-10 mb-4">Property Information</h1>
+      <div className="grid grid-cols-12 gap-8 mb-16">
         <div className="col-span-6">
-          <div className="px-8 pb-8 space-y-6">
+          <div className="pb-8 space-y-6">
             <Input
               id="name"
               label="Name"
@@ -329,7 +329,7 @@ function PropertyClient({ place }) {
         </div>
       </div>
       <hr />
-      <div className="mt-6">
+      <div className="mt-12">
         <div>
           <div className="flex justify-between items-center">
             <span className="font-bold text-[16px]">HCM City</span>
@@ -418,7 +418,10 @@ function PropertyClient({ place }) {
                   </>
                 )}
               </Listbox>
-              <div className="font-extrabold text-[20px]">$9999</div>
+              <div className="font-extrabold text-[20px]">
+                Total Price:
+                <span className="pl-2 font-bold text-[18px]">$9999</span>
+              </div>
             </div>
             {loggedUser.role === 2 && (
               <div className="border-b-[#cdcdcd] border-b-[1px] p-4 w-full">
