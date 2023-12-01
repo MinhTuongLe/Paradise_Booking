@@ -28,6 +28,29 @@ const STEPS = {
   DETAILS: 1,
 };
 
+const types = [
+  {
+    name: "Content that is dishonest or inaccurate",
+    value: 1,
+  },
+  {
+    name: "This place is not real",
+    value: 2,
+  },
+  {
+    name: "It's a scam",
+    value: 3,
+  },
+  {
+    name: "Offensive content",
+    value: 4,
+  },
+  {
+    name: "Other problems",
+    value: 5,
+  },
+];
+
 function ReportModal({}) {
   const router = useRouter();
   const reportModal = useReportModal();
@@ -43,32 +66,10 @@ function ReportModal({}) {
     reset,
   } = useForm({
     defaultValues: {
-      category: "",
-      location: null,
-      guestCount: 1,
-      roomCount: 1,
-      bathroomCount: 1,
-      imageSrc: "",
-      price: 1,
-      title: "",
+      type: 1,
       description: "",
     },
   });
-
-  const category = watch("category");
-  const location = watch("location");
-  const guestCount = watch("guestCount");
-  const roomCount = watch("roomCount");
-  const bathroomCount = watch("bathroomCount");
-  const imageSrc = watch("imageSrc");
-
-  const Map = useMemo(
-    () =>
-      dynamic(() => import("../Map"), {
-        ssr: false,
-      }),
-    [location]
-  );
 
   const setCustomValue = (id, value) => {
     setValue(id, value, {
@@ -91,23 +92,25 @@ function ReportModal({}) {
       return onNext();
     }
 
-    setIsLoading(true);
+    console.log(data);
 
-    axios
-      .post("/api/listings", data)
-      .then(() => {
-        toast.success("Listing Created!");
-        router.refresh();
-        reset();
-        setStep(STEPS.DETAILS);
-        reportModal.onClose();
-      })
-      .catch(() => {
-        toast.error("Something Went Wrong");
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    // setIsLoading(true);
+
+    // axios
+    //   .post("/api/listings", data)
+    //   .then(() => {
+    //     toast.success("Listing Created!");
+    //     router.refresh();
+    //     reset();
+    //     setStep(STEPS.DETAILS);
+    //     reportModal.onClose();
+    //   })
+    //   .catch(() => {
+    //     toast.error("Something Went Wrong");
+    //   })
+    //   .finally(() => {
+    //     setIsLoading(false);
+    //   });
   };
 
   const actionLabel = useMemo(() => {
@@ -132,81 +135,32 @@ function ReportModal({}) {
         title="Why do you report this room?"
         subtitle="This report isn't shared with vendor"
       />
-      <div className="w-full flex justify-between items-center cursor-pointer">
-        <label
-          htmlFor="dishonest"
-          className="text-lg text-zinc-600 font-thin cursor-pointer"
-        >
-          Content that is dishonest or inaccurate
-        </label>
-        <input
-          id="dishonest"
-          type="checkbox"
-          value=""
-          className="w-6 h-6 rounded-full cursor-pointer"
-        />
-      </div>
-      <hr />
-      <div className="w-full flex justify-between items-center cursor-pointer">
-        <label
-          htmlFor="dishonest"
-          className="text-lg text-zinc-600 font-thin cursor-pointer"
-        >
-          This place is not real
-        </label>
-        <input
-          id="dishonest"
-          type="checkbox"
-          value=""
-          className="w-6 h-6 rounded-full cursor-pointer"
-        />
-      </div>
-      <hr />
-      <div className="w-full flex justify-between items-center cursor-pointer">
-        <label
-          htmlFor="dishonest"
-          className="text-lg text-zinc-600 font-thin cursor-pointer"
-        >
-          It's a scam
-        </label>
-        <input
-          id="dishonest"
-          type="checkbox"
-          value=""
-          className="w-6 h-6 rounded-full cursor-pointer"
-        />
-      </div>
-      <hr />
-      <div className="w-full flex justify-between items-center cursor-pointer">
-        <label
-          htmlFor="dishonest"
-          className="text-lg text-zinc-600 font-thin cursor-pointer"
-        >
-          Offensive content
-        </label>
-        <input
-          id="dishonest"
-          type="checkbox"
-          value=""
-          className="w-6 h-6 rounded-full cursor-pointer"
-        />
-      </div>
-      <hr />
-      <div className="w-full flex justify-between items-center cursor-pointer">
-        <label
-          htmlFor="dishonest"
-          className="text-lg text-zinc-600 font-thin cursor-pointer"
-        >
-          Other problems
-        </label>
-        <input
-          id="dishonest"
-          type="checkbox"
-          value=""
-          className="w-6 h-6 rounded-full cursor-pointer"
-        />
-      </div>
-      <hr />
+      {types.map((type, index) => {
+        return (
+          <>
+            <div
+              key={index}
+              className="w-full flex justify-between items-center cursor-pointer"
+            >
+              <label
+                htmlFor={`type-${index}`}
+                className="text-lg text-zinc-600 font-thin cursor-pointer"
+              >
+                {type.name}
+              </label>
+              <input
+                id={`type-${index}`}
+                name="type"
+                type="radio"
+                value={type.value}
+                className="w-6 h-6 rounded-full cursor-pointer"
+                onChange={(e) => setCustomValue("type", Number(e.target.value))}
+              />
+            </div>
+            <hr />
+          </>
+        );
+      })}
     </div>
   );
 
@@ -217,6 +171,7 @@ function ReportModal({}) {
         <textarea
           className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none"
           rows={5}
+          onChange={(e) => setCustomValue("description", e.target.value)}
         ></textarea>
         <hr />
       </div>
