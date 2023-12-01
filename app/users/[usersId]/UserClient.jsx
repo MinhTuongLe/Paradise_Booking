@@ -173,7 +173,7 @@ function UserClient({ places, currentUser, role }) {
   return (
     <div className="max-w-[1200px] mx-auto px-4">
       <div className="mt-10 grid grid-cols-12 gap-8">
-        <div className="col-span-4">
+        <div className="sm:col-span-12 xl:col-span-4">
           <div className="p-8 rounded-[24px] flex flex-col items-center justify-center shadow-2xl">
             {isEditMode ? (
               <>
@@ -212,7 +212,7 @@ function UserClient({ places, currentUser, role }) {
               ></textarea>
             </>
           ) : (
-            <>
+            <div className="mt-10">
               <h1 className="text-xl font-bold my-3">
                 Your verified Information
               </h1>
@@ -222,10 +222,10 @@ function UserClient({ places, currentUser, role }) {
                 placeholder="Add your bio here ..."
                 value={data.bio}
               ></textarea> */}
-            </>
+            </div>
           )}
         </div>
-        <div className="col-span-8">
+        <div className="sm:col-span-12 lg:col-span-8">
           <div className="px-8 pb-8 space-y-6">
             {isEditMode ? (
               <>

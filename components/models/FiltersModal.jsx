@@ -12,10 +12,13 @@ import Heading from "../Heading";
 import Modal from "./Modal";
 import { BiDollar } from "react-icons/bi";
 import RangeSlider from "@/components/RangeSlider";
+import Search from "../navbar/Search";
+import { useSelector } from "react-redux";
 
 function FiltersModal({}) {
   const filtersModal = useFiltersModal();
   const [isLoading, setIsLoading] = useState(false);
+  const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
   const {
     register,
@@ -81,6 +84,9 @@ function FiltersModal({}) {
         </div>
       </div> */}
       {/* <Heading title="Price range" subtitle="Price per night." /> */}
+      <div className="xs:block lg:hidden">
+        {loggedUser.role !== 3 && <Search />}
+      </div>
       <RangeSlider
         initialMin={2500}
         initialMax={7500}

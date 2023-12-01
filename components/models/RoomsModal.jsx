@@ -9,7 +9,7 @@ function RoomsModal({ currentUser, places }) {
   const roomsModal = useRoomsModal();
 
   const bodyContent = (
-    <div className="grid grid-cols-3 gap-12 overflow-x-hidden p-4">
+    <div className="grid gap-12  sm:grid-cols-2 xl:grid-cols-3 overflow-x-hidden p-4">
       {places &&
         places.map((list) => {
           return (

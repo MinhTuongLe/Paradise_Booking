@@ -141,7 +141,7 @@ function Categories({}) {
   return (
     <Container>
       <div className="flex flex-row items-center justify-center z-10 bg-white gap-16">
-        <div className="pt-4 flex flex-row items-center justify-between w-[992px] relative">
+        <div className="pt-4 flex flex-row items-center justify-between w-[60vw] relative">
           <button
             className="absolute left-0 top-0 h-full p-2 mr-4 translate-x-[-100%]"
             onClick={() => scroll("left")}

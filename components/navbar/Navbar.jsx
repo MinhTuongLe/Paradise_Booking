@@ -41,9 +41,11 @@ function Navbar() {
     <div className="fixed w-full bg-white z-10 shadow-sm h-[10vh] min-h-[82px]">
       <div className="py-4 border-b-[1px] h-full">
         <Container>
-          <div className="flex flex-row items-center justify-between gap-3 md:gap-0 h-full">
+          <div className="flex flex-row items-center justify-between gap-3 h-full">
             <Logo />
-            {loggedUser?.role !== 3 && <Search />}
+            <div className="xs:hidden sm:hidden md:hidden lg:block">
+              {loggedUser?.role !== 3 && <Search />}
+            </div>
             {loggedUser?.role === 3 && <AdminNavBar />}
             <UserMenu authState={authState} loggedUser={loggedUser} />
           </div>

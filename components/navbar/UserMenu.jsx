@@ -67,7 +67,7 @@ function UserMenu({ authState, loggedUser }) {
 
   return (
     <div
-      className="relative h-full"
+      className="relative h-full md:h-[60%]"
       onClick={(e) => {
         e.stopPropagation();
         if (isOpenNotification) setIsOpenNotification(false);
@@ -107,7 +107,7 @@ function UserMenu({ authState, loggedUser }) {
         )}
         <div
           onClick={toggleOpen}
-          className="h-full md:px-5 border-[1px] flex flex-row items-center gap-3 rounded-full cursor-pointer hover:shadow-md transition"
+          className="h-full md:px-5 border-[1px] flex flex-row items-center gap-3 rounded-2xl cursor-pointer hover:shadow-md transition"
         >
           <AiOutlineMenu />
           <div className="hidden md:flex md:justify-center md:items-center md:h-full">
