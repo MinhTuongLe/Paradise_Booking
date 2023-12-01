@@ -7,11 +7,31 @@ import ListingCard from "@/components/listing/ListingCard";
 import { API_URL } from "@/const";
 import axios from "axios";
 import { Fragment, useRef, useState } from "react";
-import { Dialog, Transition } from "@headlessui/react";
+import { Dialog, Transition, Listbox } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { toast } from "react-toastify";
 import Cookie from "js-cookie";
 import { useRouter } from "next/navigation";
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+
+const place_status = [
+  {
+    id: 0,
+    name: "All",
+  },
+  {
+    id: 1,
+    name: "Empty",
+  },
+  {
+    id: 2,
+    name: "Reserved",
+  },
+];
+
+function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}
 
 function PropertiesClient({ listings, currentUser }) {
   const router = useRouter();
@@ -19,6 +39,7 @@ function PropertiesClient({ listings, currentUser }) {
   const [deletingId, setDeletingId] = useState("");
   const [id, setId] = useState();
   const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState(place_status[0]);
 
   const cancelButtonRef = useRef(null);
 
@@ -131,7 +152,89 @@ function PropertiesClient({ listings, currentUser }) {
           </div>
         </Dialog>
       </Transition.Root>
-      <Heading title="Properties" subtitle="List of your properties" />
+      <div className="mt-10 mb-6">
+        <Heading title="Properties" subtitle="List of your properties" />
+      </div>
+      {
+        <div className="flex items-center space-x-6">
+          <span className="font-bold text-[16px]">Place status</span>
+          <Listbox value={selected} onChange={setSelected}>
+            {({ open }) => (
+              <>
+                <div className="relative">
+                  <Listbox.Button className="relative w-[180px] cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6">
+                    <span className="flex items-center">
+                      {/* {selected.icon} */}
+                      <span className="ml-3 block truncate">
+                        {selected.name}
+                      </span>
+                    </span>
+                    <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
+                      <ChevronUpDownIcon
+                        className="h-5 w-5 text-gray-400"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </Listbox.Button>
+
+                  <Transition
+                    show={open}
+                    as={Fragment}
+                    leave="transition ease-in duration-100"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                  >
+                    <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                      {place_status.map((person) => (
+                        <Listbox.Option
+                          key={person.id}
+                          className={({ active }) =>
+                            classNames(
+                              active ? "bg-rose-100" : "text-gray-900",
+                              "relative cursor-default select-none py-2 pl-3 pr-9"
+                            )
+                          }
+                          value={person}
+                        >
+                          {({ selected, active }) => (
+                            <>
+                              <div className="flex items-center">
+                                {/* {person.icon} */}
+                                <span
+                                  className={classNames(
+                                    selected ? "font-semibold" : "font-normal",
+                                    "ml-3 block truncate"
+                                  )}
+                                >
+                                  {person.name}
+                                </span>
+                              </div>
+
+                              {selected ? (
+                                <span
+                                  className={classNames(
+                                    active ? "text-gray-900" : "text-rose-500",
+                                    "absolute inset-y-0 right-0 flex items-center pr-4"
+                                  )}
+                                >
+                                  <CheckIcon
+                                    className="h-5 w-5"
+                                    aria-hidden="true"
+                                  />
+                                </span>
+                              ) : null}
+                            </>
+                          )}
+                        </Listbox.Option>
+                      ))}
+                    </Listbox.Options>
+                  </Transition>
+                </div>
+              </>
+            )}
+          </Listbox>
+        </div>
+      }
       <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
         {!isLoading &&
           listings.map((listing) => (

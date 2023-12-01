@@ -11,7 +11,7 @@ const ReservationsPage = async (props) => {
   const accessToken = cookies().get("accessToken")?.value;
   const userId = cookies().get("userId")?.value;
   const user = await getUserById(userId);
-  if (!accessToken || user.role === 3) {
+  if (!accessToken || user.role !== 1) {
     return (
       <ClientOnly>
         <EmptyState title="Unauthorized" subtitle="Please login" />
@@ -50,8 +50,8 @@ const ReservationsPage = async (props) => {
   return (
     <ClientOnly>
       <ReservationsClient
-        // reservations={reservations}
-        currentUser={user}
+      // reservations={reservations}
+      // currentUser={user}
       />
     </ClientOnly>
   );

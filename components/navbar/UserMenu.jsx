@@ -126,7 +126,7 @@ function UserMenu({ authState, loggedUser }) {
         </div>
       </div>
       {isOpen && (
-        <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm z-20">
+        <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm z-30">
           <div className="flex flex-col cursor-pointer">
             {authState && loggedUser ? (
               <>
@@ -140,15 +140,13 @@ function UserMenu({ authState, loggedUser }) {
                       onClick={() => menuItemSelect("/favorites")}
                       label="My favorites"
                     />
-                    <MenuItem
-                      onClick={() => menuItemSelect("/reservations")}
-                      label={
-                        loggedUser.role === 1
-                          ? "My reservations"
-                          : "Reservation list"
-                      }
-                    />
                   </>
+                )}
+                {loggedUser.role === 1 && (
+                  <MenuItem
+                    onClick={() => menuItemSelect("/reservations")}
+                    label="My reservations"
+                  />
                 )}
                 {loggedUser.role === 2 && (
                   <MenuItem

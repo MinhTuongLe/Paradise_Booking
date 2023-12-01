@@ -11,7 +11,7 @@ import Container from "@/components/Container";
 import Heading from "@/components/Heading";
 import ReservationItem from "@/components/ReservationItem";
 
-function ReservationsClient({ currentUser }) {
+function ReservationsClient() {
   // function ReservationsClient({ reservations, currentUser }) {
   const router = useRouter();
   const [deletingId, setDeletingId] = useState("");
@@ -162,15 +162,15 @@ function ReservationsClient({ currentUser }) {
         </div>
       </div> */}
       <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
-        <ReservationItem currentUser={currentUser} onDelete={onDelete} />
-        <ReservationItem currentUser={currentUser} onDelete={onDelete} />
-        <ReservationItem currentUser={currentUser} onDelete={onDelete} />
-        <ReservationItem currentUser={currentUser} onDelete={onDelete} />
-        <ReservationItem currentUser={currentUser} onDelete={onDelete} />
-        <ReservationItem currentUser={currentUser} onDelete={onDelete} />
-        <ReservationItem currentUser={currentUser} onDelete={onDelete} />
-        <ReservationItem currentUser={currentUser} onDelete={onDelete} />
-        <ReservationItem currentUser={currentUser} onDelete={onDelete} />
+        <ReservationItem onDelete={onDelete} />
+        <ReservationItem onDelete={onDelete} />
+        <ReservationItem onDelete={onDelete} />
+        <ReservationItem onDelete={onDelete} />
+        <ReservationItem onDelete={onDelete} />
+        <ReservationItem onDelete={onDelete} />
+        <ReservationItem onDelete={onDelete} />
+        <ReservationItem onDelete={onDelete} />
+        <ReservationItem onDelete={onDelete} />
       </div>
     </Container>
   );
