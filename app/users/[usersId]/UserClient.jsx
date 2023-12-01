@@ -17,7 +17,7 @@ import { toast } from "react-toastify";
 import Button from "@/components/Button";
 import ImageUpload from "@/components/inputs/ImageUpload";
 import { AiOutlineMail, AiOutlinePhone, AiOutlineUser } from "react-icons/ai";
-import { FaRegAddressCard } from "react-icons/fa";
+import { FaCheck, FaRegAddressCard } from "react-icons/fa";
 import { MdOutlineDateRange } from "react-icons/md";
 import "../../../styles/globals.css";
 import { API_URL } from "@/const";
@@ -27,6 +27,7 @@ import { useDispatch } from "react-redux";
 import { setLoggUser } from "@/components/slice/authSlice";
 import { useSelector } from "react-redux";
 import Cookie from "js-cookie";
+import { IoBriefcaseOutline, IoClose } from "react-icons/io5";
 
 const data = {
   name: "Le Minh Tuong",
@@ -170,6 +171,10 @@ function UserClient({ places, currentUser, role }) {
     }
   };
 
+  const handleBecomeVendor = () => {
+    console.log(currentUser.id);
+  };
+
   return (
     <div className="max-w-[1200px] mx-auto px-4">
       <div className="mt-10 grid grid-cols-12 gap-8">
@@ -212,16 +217,25 @@ function UserClient({ places, currentUser, role }) {
               ></textarea>
             </>
           ) : (
-            <div className="mt-10">
-              <h1 className="text-xl font-bold my-3">
+            <div className="mt-12 p-8 rounded-[24px] border-[1px] border-[#cdcdcd]">
+              <h1 className="text-xl font-bold mb-3">
                 Your verified Information
               </h1>
-              {/* <textarea
-                className="resize-none border border-solid p-8 rounded-[24px] w-full focus:outline-none"
-                rows={5}
-                placeholder="Add your bio here ..."
-                value={data.bio}
-              ></textarea> */}
+              <div className="flex items-center space-x-4 mb-8 mt-4">
+                <FaCheck className="text-[16px]" />
+                {/* <IoClose className="text-[28px] font-bold" /> */}
+                <span>Email Verification</span>
+              </div>
+              <hr />
+              <div className="my-8">
+                You need to verify the above information if you want to start
+                listing your place for rent
+              </div>
+              <Button
+                disabled={false}
+                label="Become A Vendor"
+                onClick={handleSubmit(handleBecomeVendor)}
+              />
             </div>
           )}
         </div>
@@ -306,44 +320,51 @@ function UserClient({ places, currentUser, role }) {
                     </h1>
                     {authState && currentUser?.email === loggedUser?.email && (
                       <button
-                        className="mt-8 px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
+                        className="mt-6 px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
                         onClick={() => setIsEditMode(true)}
                       >
                         Edit profile
                       </button>
                     )}
-                    <div className="space-y-3 mt-6 ">
-                      <div className="flex justify-start items-center space-x-2">
+                    <div className="space-y-3 mt-4">
+                      <div className="flex justify-start items-center space-x-3">
                         <AiOutlineUser size={18} />
                         <p className="text-md">
                           Name:{" "}
                           {loggedUser.full_name || currentUser.full_name || "-"}
                         </p>
                       </div>
-                      <div className="flex justify-start items-center space-x-2">
-                        <AiOutlineMail />
+                      <div className="flex justify-start items-center space-x-3">
+                        <AiOutlineMail size={18} />
                         <p className="text-md">
                           Email: {loggedUser.email || currentUser.email || "-"}
                         </p>
                       </div>
-                      <div className="flex justify-start items-center space-x-2">
-                        <AiOutlinePhone />
+                      <div className="flex justify-start items-center space-x-3">
+                        <AiOutlinePhone size={18} />
                         <p className="text-md">
                           Phone: {loggedUser.phone || currentUser.phone || "-"}
                         </p>
                       </div>
-                      <div className="flex justify-start items-center space-x-2">
-                        <MdOutlineDateRange />
+                      <div className="flex justify-start items-center space-x-3">
+                        <MdOutlineDateRange size={18} />
                         <p className="text-md">
                           Date of Birth:{" "}
                           {loggedUser.dob || currentUser.dob || "-"}
                         </p>
                       </div>
-                      <div className="flex justify-start items-center space-x-2">
-                        <FaRegAddressCard />
+                      <div className="flex justify-start items-center space-x-3">
+                        <FaRegAddressCard size={18} />
                         <p className="text-md">
                           Address:{" "}
                           {loggedUser.address || currentUser.address || "-"}
+                        </p>
+                      </div>
+                      <div className="flex justify-start items-center space-x-3">
+                        <IoBriefcaseOutline size={18} />
+                        <p className="text-md">
+                          Job: Developer
+                          {/* {loggedUser.address || currentUser.address || "-"} */}
                         </p>
                       </div>
                     </div>

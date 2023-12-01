@@ -33,7 +33,7 @@ function Map({ center, locationValue, onSearchResult }) {
       map.clearAllEventListeners();
       map.setView(center, 13);
 
-      L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+      // L.tileLayer("//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
       const searchControl = new GeoSearchControl({
         provider: new OpenStreetMapProvider(),
         style: "bar",

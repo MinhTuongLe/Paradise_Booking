@@ -98,6 +98,9 @@ function ReservationClient({ place, currentUser }) {
   const [lat, setLat] = useState(place?.lat);
   const [lng, setLng] = useState(place?.lng);
 
+  const emptyImageSrc =
+    "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
+
   const setCustomValue = (id, value) => {
     setValue(id, value, {
       shouldValidate: true,
@@ -239,11 +242,9 @@ function ReservationClient({ place, currentUser }) {
   return (
     <div className="max-w-[768px] mx-auto px-4">
       <h1 className="text-2xl font-bold mt-10 mb-3">Reservation Details</h1>
-      {currentUser.role === 2 && (
+      {loggedUser.role === 2 && (
         <div className="mt-6">
-          <span className="font-bold text-[16px] text-[#828080]">
-            Place Details
-          </span>
+          <span className="font-bold text-[16px]">Place Details</span>
           <div className="rounded-xl border-[#cdcdcd] border-[1px] p-4 flex justify-start items-start space-x-6 mt-3">
             <Image
               height={100}
@@ -284,7 +285,7 @@ function ReservationClient({ place, currentUser }) {
           </div>
           <div className="mt-3 rounded-xl border-[#cdcdcd] border-[1px]">
             <div className="flex justify-between items-center border-b-[#cdcdcd] border-b-[1px] p-4">
-              {currentUser.role === 2 ? (
+              {loggedUser.role === 2 ? (
                 <Listbox value={selected} onChange={setSelected}>
                   {({ open }) => (
                     <>
@@ -317,9 +318,7 @@ function ReservationClient({ place, currentUser }) {
                                 key={person.id}
                                 className={({ active }) =>
                                   classNames(
-                                    active
-                                      ? "bg-rose-500 text-white"
-                                      : "text-gray-900",
+                                    active ? "bg-rose-100" : "text-gray-900",
                                     "relative cursor-default select-none py-2 pl-3 pr-9"
                                   )
                                 }
@@ -345,7 +344,7 @@ function ReservationClient({ place, currentUser }) {
                                       <span
                                         className={classNames(
                                           active
-                                            ? "text-white"
+                                            ? "text-gray-900"
                                             : "text-rose-500",
                                           "absolute inset-y-0 right-0 flex items-center pr-4"
                                         )}
@@ -412,6 +411,52 @@ function ReservationClient({ place, currentUser }) {
               )}
               <div className="font-extrabold text-[20px]">$9999</div>
             </div>
+            {loggedUser.role === 2 && (
+              <div className="border-b-[#cdcdcd] border-b-[1px] p-4 w-full">
+                <div className="text-[#828080] font-bold text-[14px] mb-2">
+                  USER INFORMATION
+                </div>
+                <div className="flex justify-start items-start space-x-6 w-full">
+                  <Image
+                    src={loggedUser.avatar || emptyImageSrc}
+                    width={64}
+                    height={64}
+                    className="rounded-full"
+                    alt="Avatar"
+                  />
+                  <div className="flex justify-between items-start w-[60%]">
+                    <div>
+                      <div className="text-[16px] font-semibold">
+                        Fullname:{" "}
+                        <span className="ml-1 font-normal">
+                          {loggedUser.full_name || "-"}
+                        </span>
+                      </div>
+                      <div className="text-[16px] font-semibold">
+                        Email:
+                        <span className="ml-1 font-normal">
+                          {loggedUser.email || "-"}
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-[16px] font-semibold">
+                        Guestname:
+                        <span className="ml-1 font-normal">
+                          {loggedUser.full_name || "-"}
+                        </span>
+                      </div>
+                      <div className="text-[16px] font-semibold">
+                        Phone:
+                        <span className="ml-1 font-normal">
+                          {loggedUser.phone || "-"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="flex justify-start items-center space-x-[100px] border-b-[#cdcdcd] border-b-[1px] p-4">
               <div className="text-[16px] font-semibold">
                 To: Fri, 2 Dec 2023
@@ -436,7 +481,7 @@ function ReservationClient({ place, currentUser }) {
             </div>
           </div>
         </div>
-        {currentUser.role === 1 && (
+        {loggedUser.role === 1 && (
           <div className="mt-6">
             <span className="font-bold text-[16px] text-[#828080]">
               Place Details
