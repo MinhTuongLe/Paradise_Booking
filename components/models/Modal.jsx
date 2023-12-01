@@ -23,7 +23,7 @@ function Modal({
 
   useEffect(() => {
     setShowModal(isOpen);
-  }, [isOpen]);
+  }, [isOpen, reset]);
 
   const handleClose = useCallback(() => {
     if (disabled) {

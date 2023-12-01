@@ -9,9 +9,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import Container from "@/components/Container";
 import Heading from "@/components/Heading";
-import ListingCard from "@/components/listing/ListingCard";
 import ReservationItem from "@/components/ReservationItem";
-import Button from "@/components/Button";
 
 function ReservationsClient({ currentUser }) {
   // function ReservationsClient({ reservations, currentUser }) {

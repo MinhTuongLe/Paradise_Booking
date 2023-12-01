@@ -11,6 +11,7 @@ import Heading from "../Heading";
 // import Input from "../inputs/Input";
 import Modal from "./Modal";
 import { BiDollar } from "react-icons/bi";
+import RangeSlider from "@/components/RangeSlider";
 
 function FiltersModal({}) {
   const filtersModal = useFiltersModal();
@@ -60,7 +61,7 @@ function FiltersModal({}) {
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
-      <Heading
+      {/* <Heading
         title="Place type"
         subtitle="Find rooms, houses or any type of accommodation."
       />
@@ -78,10 +79,17 @@ function FiltersModal({}) {
             </div>
           </div>
         </div>
-      </div>
-
-      <Heading title="Price range" subtitle="Price per night." />
-      <div className="flex justify-center items-center">
+      </div> */}
+      {/* <Heading title="Price range" subtitle="Price per night." /> */}
+      <RangeSlider
+        initialMin={2500}
+        initialMax={7500}
+        min={0}
+        max={10000}
+        step={100}
+        priceCap={1000}
+      />
+      {/* <div className="flex justify-center items-center">
         <div className="w-full relative">
           <BiDollar
             size={24}
@@ -128,8 +136,7 @@ function FiltersModal({}) {
             Max price
           </label>
         </div>
-      </div>
-
+      </div> */}
       {/* <Heading title="Rooms" />
       <div className="flex flex-col border-b-[1px] pb-6 space-y-3">
         <div className="flex flex-col items-start justify-start">
@@ -209,13 +216,8 @@ function FiltersModal({}) {
     <>
       <hr />
       <div className="flex flex-row gap-4">
-        <Button
-          outline
-          label="Remove all"
-        />
-        <Button
-          label={`Display ${7} Result(s)`}
-        />
+        <Button outline label="Remove all" />
+        <Button label={`Display ${7} Result(s)`} />
       </div>
     </>
   );
