@@ -162,6 +162,10 @@ function UserMenu({ authState, loggedUser }) {
                   onClick={() => menuItemSelect("/change-password")}
                   label="Change Password"
                 />
+                <MenuItem
+                  onClick={() => menuItemSelect("/statistics")}
+                  label="Statistics"
+                />
                 <hr />
                 <MenuItem
                   className=" px-4 py-3 hover:bg-neutral-100 transition font-semibold"

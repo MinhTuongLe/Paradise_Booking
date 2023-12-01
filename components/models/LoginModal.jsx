@@ -47,14 +47,15 @@ function LoginModal({}) {
       .post(`${API_URL}/login`, data)
       .then((callback) => {
         toast.success("Login Successfully");
-        Cookie.set("accessToken", callback.data.accessToken, {});
-        Cookie.set("expiresAt", callback.data.expiresAt, {});
+        Cookie.set("accessToken", callback.data.accessToken, {
+          expires: 1 / 2,
+        });
+        Cookie.set("expiresAt", callback.data.expiresAt, { expires: 1 / 2 });
         dispatch(setAuthState(true));
         setIsLoading(false);
         reset();
         router.refresh();
         loginModel.onClose();
-
         const config = {
           params: {
             email: data.email,
@@ -64,7 +65,7 @@ function LoginModal({}) {
           .get(`${API_URL}/profile`, config)
           .then((callback) => {
             dispatch(setLoggUser(callback.data.data));
-            Cookie.set("userId", callback.data.data.id, {});
+            Cookie.set("userId", callback.data.data.id, { expires: 1 / 2 });
           })
           .catch((err) => {
             toast.error("Get user information failed");

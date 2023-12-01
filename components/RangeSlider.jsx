@@ -39,10 +39,10 @@ const RangeSlider = ({ initialMin, initialMax, min, max, step, priceCap }) => {
 
   return (
     <div className="flex flex-col w-full bg-white shadow-xl rounded-lg px-6 py-4">
-      <h1 className="text-3xl font-bold text-gray-800 mb-1"> Price Range</h1>
+      <h1 className="text-3xl font-bold text-gray-800 mb-1">Price Range</h1>
       <p className="font-semibold text-lg text-gray-700">Price Per Night</p>
 
-      <div className="flex justify-between items-center my-6 ">
+      <div className="flex justify-evenly items-center my-6 ">
         <div className="rounded-md">
           <span className="p-2 font-semibold"> Min</span>
           <input
@@ -67,7 +67,7 @@ const RangeSlider = ({ initialMin, initialMax, min, max, step, priceCap }) => {
       <div className="mb-4">
         <div className="slider relative h-1 rounded-md bg-gray-300">
           <div
-            className="progress absolute h-1 bg-green-300 rounded "
+            className="progress absolute h-1 bg-[#82cdff] rounded "
             ref={progressRef}
           ></div>
         </div>

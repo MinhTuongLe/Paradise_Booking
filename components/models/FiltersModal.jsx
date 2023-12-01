@@ -220,9 +220,9 @@ function FiltersModal({}) {
 
   const footerContent = (
     <>
-      <hr />
+      {/* <hr /> */}
       <div className="flex flex-row gap-4">
-        <Button outline label="Remove all" />
+        <Button outline label="Cancel" onClick={filtersModal.onClose} />
         <Button label={`Display ${7} Result(s)`} />
       </div>
     </>

@@ -34,6 +34,11 @@ function Navbar() {
         router.push("/");
         console.log("ACCESS TOKEN IS EXPIRED!!!");
       }
+    } else {
+      dispatch(reset());
+      localStorage.removeItem("persist:root");
+      router.push("/");
+      console.log("ACCESS TOKEN IS EXPIRED!!!");
     }
   }, []);
 

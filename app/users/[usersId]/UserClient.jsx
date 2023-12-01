@@ -221,15 +221,20 @@ function UserClient({ places, currentUser, role }) {
               <h1 className="text-xl font-bold mb-3">
                 Your verified Information
               </h1>
-              <div className="flex items-center space-x-4 mb-8 mt-4">
+              <div className="flex items-center space-x-4 mb-4 mt-4">
                 <FaCheck className="text-[16px]" />
                 {/* <IoClose className="text-[28px] font-bold" /> */}
                 <span>Email Verification</span>
               </div>
+              <div className="flex items-center space-x-4 mb-8 mt-4">
+                <FaCheck className="text-[16px]" />
+                {/* <IoClose className="text-[28px] font-bold" /> */}
+                <span>Profile Verification</span>
+              </div>
               <hr />
               <div className="my-8">
                 You need to verify the above information if you want to start
-                listing your place for rent
+                listing your place for rent.
               </div>
               <Button
                 disabled={false}
@@ -379,13 +384,15 @@ function UserClient({ places, currentUser, role }) {
                           currentUser.full_name ||
                           "user"}
                       </h1>
-                      <p
-                        className="profile-bio resize-none border border-solid p-8 rounded-[24px] w-full focus:outline-none h-[30vh] overflow-auto"
-                        rows={5}
-                        placeholder="Add your bio here ..."
-                      >
-                        {data.bio}
-                      </p>
+                      <div className="border border-solid rounded-[24px] w-full p-6">
+                        <p
+                          className="line-clamp-5 text-ellipsis"
+                          rows={5}
+                          placeholder="Add your bio here ..."
+                        >
+                          {data.bio}
+                        </p>
+                      </div>
                     </div>
                     {role === 2 && (
                       <>
@@ -403,7 +410,7 @@ function UserClient({ places, currentUser, role }) {
                           </div>
                           <div className="vendor-room-places flex w-full space-x-4 mt-3">
                             <div className="w-1/2 p-2 space-y-6 border-[1px] rounded-xl">
-                              <p className="line-clamp-5">{`"...${data.bio}`}</p>
+                              <p className="line-clamp-5 text-ellipsis">{`"...${data.bio}`}</p>
                               <div className="flex justify-start items-center space-x-6">
                                 <Image
                                   width={40}
@@ -422,7 +429,7 @@ function UserClient({ places, currentUser, role }) {
                               </div>
                             </div>
                             <div className="w-1/2 p-2 space-y-6 border-[1px] rounded-xl">
-                              <p className="line-clamp-5">{`"...${data.bio}`}</p>
+                              <p className="line-clamp-5 text-ellipsis">{`"...${data.bio}`}</p>
                               <div className="flex justify-start items-center space-x-6">
                                 <Image
                                   width={40}
