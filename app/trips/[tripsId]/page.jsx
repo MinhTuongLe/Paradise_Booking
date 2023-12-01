@@ -1,13 +1,13 @@
 import ClientOnly from "@/components/ClientOnly";
 import EmptyState from "@/components/EmptyState";
-import ReservationClient from "./ReservationClient";
+import TripClient from "./TripClient";
 import { cookies } from "next/headers";
 import getUserById from "@/app/actions/getUserById";
 import getPlaceById from "@/app/actions/getPlaceById";
 
 export const dynamic = "force-dynamic";
 
-const ReservationPage = async ({}) => {
+const TripPage = async ({}) => {
   const accessToken = cookies().get("accessToken")?.value;
   const userId = cookies().get("userId")?.value;
   const user = await getUserById(userId);
@@ -22,9 +22,9 @@ const ReservationPage = async ({}) => {
 
   return (
     <ClientOnly>
-      <ReservationClient place={place} />
+      <TripClient place={place} />
     </ClientOnly>
   );
 };
 
-export default ReservationPage;
+export default TripPage;

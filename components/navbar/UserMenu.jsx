@@ -140,13 +140,11 @@ function UserMenu({ authState, loggedUser }) {
                       onClick={() => menuItemSelect("/favorites")}
                       label="My favorites"
                     />
+                    <MenuItem
+                      onClick={() => menuItemSelect("/reservations")}
+                      label="My reservations"
+                    />
                   </>
-                )}
-                {loggedUser.role === 1 && (
-                  <MenuItem
-                    onClick={() => menuItemSelect("/reservations")}
-                    label="My reservations"
-                  />
                 )}
                 {loggedUser.role === 2 && (
                   <MenuItem

@@ -130,7 +130,7 @@ function ReportModal({}) {
   }, [step]);
 
   let bodyContent = (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
       <Heading
         title="Why do you report this room?"
         subtitle="This report isn't shared with vendor"

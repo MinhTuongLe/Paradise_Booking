@@ -1,17 +1,16 @@
 import ClientOnly from "@/components/ClientOnly";
 import EmptyState from "@/components/EmptyState";
 import React from "react";
-import ReservationsClient from "./ReservationsClient";
-import { cookies } from "next/headers";
+import ChatClient from "./ChatClient";
 import getUserById from "@/app/actions/getUserById";
+import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
-const ReservationsPage = async (props) => {
-  const accessToken = cookies().get("accessToken")?.value;
+const ChatPage = async () => {
   const userId = cookies().get("userId")?.value;
   const user = await getUserById(userId);
-  if (!accessToken || user.role === 3) {
+  if (!user) {
     return (
       <ClientOnly>
         <EmptyState title="Unauthorized" subtitle="Please login" />
@@ -20,7 +19,7 @@ const ReservationsPage = async (props) => {
   }
 
   // // const reservations = await getReservation({
-  // //   authorId: currentUser.id,
+  // //   userId: currentUser.id,
   // // });
 
   // const _reservations = mock_data_2.reservations.filter(
@@ -40,8 +39,8 @@ const ReservationsPage = async (props) => {
   //   return (
   //     <ClientOnly>
   //       <EmptyState
-  //         title="No Reservation found"
-  //         subtitle="Looks like you have no reservations on your properties."
+  //         title="No trips found"
+  //         subtitle="Looks like you havent reserved any trips."
   //       />
   //     </ClientOnly>
   //   );
@@ -49,12 +48,10 @@ const ReservationsPage = async (props) => {
 
   return (
     <ClientOnly>
-      <ReservationsClient
-      // reservations={reservations}
-      // currentUser={user}
-      />
+      {/* <TripsClient reservations={reservations} currentUser={currentUser} /> */}
+      <ChatClient />
     </ClientOnly>
   );
 };
 
-export default ReservationsPage;
+export default ChatPage;
