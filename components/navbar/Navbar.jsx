@@ -156,9 +156,13 @@ function Navbar() {
     <div className="fixed w-full bg-white z-10 shadow-sm h-[10vh] min-h-[82px]">
       <div className="py-4 border-b-[1px] h-full">
         <Container>
-          <div className="flex flex-row items-center justify-between gap-3 h-full">
+          <div className="flex flex-row items-center justify-between gap-3 h-full ">
             <Logo />
-            <div className="xs:hidden sm:hidden md:hidden lg:block">
+            <div
+              className={`${
+                loggedUser.role === 3 && "w-full"
+              } xs:hidden sm:hidden md:hidden lg:block`}
+            >
               {loggedUser.role === 3 ? <AdminNavbar /> : <Search />}
             </div>
             <UserMenu authState={authState} loggedUser={loggedUser} />
