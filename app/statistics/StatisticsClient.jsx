@@ -68,7 +68,7 @@ function StatisticsClient() {
           subtitle="The chart shows statistics from the website"
         />
       </div>
-      <Bar options={options} data={data} />;
+      <Bar options={options} data={data} />
     </Container>
   );
 }
