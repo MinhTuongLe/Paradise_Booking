@@ -4,34 +4,15 @@
 import Container from "@/components/Container";
 import Heading from "@/components/Heading";
 import ListingCard from "@/components/listing/ListingCard";
-import { API_URL } from "@/const";
+import { API_URL, classNames, place_status } from "@/const";
 import axios from "axios";
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition, Listbox } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { toast } from "react-toastify";
 import Cookie from "js-cookie";
 import { useRouter } from "next/navigation";
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
-
-const place_status = [
-  {
-    id: 0,
-    name: "All",
-  },
-  {
-    id: 1,
-    name: "Empty",
-  },
-  {
-    id: 2,
-    name: "Reserved",
-  },
-];
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 
 function PropertiesClient({ listings, currentUser }) {
   const router = useRouter();

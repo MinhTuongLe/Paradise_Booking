@@ -4,12 +4,17 @@
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useState, Fragment, useRef } from "react";
-import { toast } from "react-toastify";
-import { Dialog, Transition } from "@headlessui/react";
+import { Dialog, Transition, Listbox } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import { toast } from "react-toastify";
 import Container from "@/components/Container";
 import Heading from "@/components/Heading";
 import ReservationItem from "@/components/ReservationItem";
+import { useForm } from "react-hook-form";
+import Input from "@/components/inputs/Input";
+import Button from "@/components/Button";
+import { classNames, place_status } from "@/const";
 
 function ReservationsClient() {
   // function ReservationsClient({ reservations, currentUser }) {
@@ -17,8 +22,33 @@ function ReservationsClient() {
   const [deletingId, setDeletingId] = useState("");
   const [id, setId] = useState();
   const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selected, setSelected] = useState(place_status[0]);
 
   const cancelButtonRef = useRef(null);
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      date_from: "",
+      date_to: "",
+      status: selected,
+    },
+  });
+
+  const setCustomValue = (id, value) => {
+    setValue(id, value, {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    });
+  };
 
   const onCancel = useCallback(
     (id) => {
@@ -39,6 +69,15 @@ function ReservationsClient() {
     },
     [router]
   );
+
+  const handleFilter = (data) => {
+    console.log(data);
+  };
+
+  const handleClearAllFilters = () => {
+    reset();
+    setSelected(place_status[0]);
+  };
 
   const onDelete = (id) => {
     setId(id);
@@ -153,6 +192,129 @@ function ReservationsClient() {
       <div className="mt-10">
         <Heading title="Reservations" subtitle="Your reservation list" />
       </div>
+      <div className="mt-10 flex justify-between items-center w-full">
+        <div className="flex items-center w-[75%] space-x-16">
+          <div className="w-[20%] space-y-2">
+            <div className="font-bold text-[16px]">Reservation status</div>
+            <Listbox value={selected} onChange={setSelected}>
+              {({ open }) => (
+                <>
+                  <div className="relative">
+                    <Listbox.Button className="relative w-[180px] cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6">
+                      <span className="flex items-center">
+                        {/* {selected.icon} */}
+                        <span className="ml-3 block truncate">
+                          {selected.name}
+                        </span>
+                      </span>
+                      <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
+                        <ChevronUpDownIcon
+                          className="h-5 w-5 text-gray-400"
+                          aria-hidden="true"
+                        />
+                      </span>
+                    </Listbox.Button>
+
+                    <Transition
+                      show={open}
+                      as={Fragment}
+                      leave="transition ease-in duration-100"
+                      leaveFrom="opacity-100"
+                      leaveTo="opacity-0"
+                    >
+                      <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                        {place_status.map((person) => (
+                          <Listbox.Option
+                            key={person.id}
+                            className={({ active }) =>
+                              classNames(
+                                active ? "bg-rose-100" : "text-gray-900",
+                                "relative cursor-default select-none py-2 pl-3 pr-9"
+                              )
+                            }
+                            value={person}
+                          >
+                            {({ selected, active }) => (
+                              <>
+                                <div className="flex items-center">
+                                  {/* {person.icon} */}
+                                  <span
+                                    className={classNames(
+                                      selected
+                                        ? "font-semibold"
+                                        : "font-normal",
+                                      "ml-3 block truncate"
+                                    )}
+                                  >
+                                    {person.name}
+                                  </span>
+                                </div>
+
+                                {selected ? (
+                                  <span
+                                    className={classNames(
+                                      active
+                                        ? "text-gray-900"
+                                        : "text-rose-500",
+                                      "absolute inset-y-0 right-0 flex items-center pr-4"
+                                    )}
+                                  >
+                                    <CheckIcon
+                                      className="h-5 w-5"
+                                      aria-hidden="true"
+                                    />
+                                  </span>
+                                ) : null}
+                              </>
+                            )}
+                          </Listbox.Option>
+                        ))}
+                      </Listbox.Options>
+                    </Transition>
+                  </div>
+                </>
+              )}
+            </Listbox>
+          </div>
+          <div className="flex items-center space-x-8">
+            <div className="space-y-2">
+              <div className="font-bold text-[16px]">From</div>
+
+              <Input
+                id="date_from"
+                disabled={isLoading}
+                register={register}
+                errors={errors}
+                type="date"
+              />
+            </div>
+            <div className="space-y-2">
+              <div className="font-bold text-[16px]">To</div>
+              <Input
+                id="date_to"
+                disabled={isLoading}
+                register={register}
+                errors={errors}
+                type="date"
+              />
+            </div>
+          </div>
+        </div>
+        <div className="w-[25%] flex justify-between items-center space-x-8">
+          <Button
+            outline={true}
+            disabled={isLoading}
+            label="Clear All"
+            onClick={handleSubmit(handleClearAllFilters)}
+          />
+          <Button
+            disabled={isLoading}
+            label="Filter"
+            onClick={handleSubmit(handleFilter)}
+          />
+        </div>
+      </div>
+
       {/* <div className="mt-6 space-y-6">
         <span className="text-[24px] font-bold">
           You don't have any reservation to display

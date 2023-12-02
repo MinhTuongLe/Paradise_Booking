@@ -50,7 +50,7 @@ function RentModal({}) {
   } = useForm({
     defaultValues: {
       category: "",
-      guestCount: 0,
+      max_guest: 0,
       roomCount: 0,
       bathroomCount: 0,
       cover: "",
@@ -63,7 +63,7 @@ function RentModal({}) {
 
   const category = watch("category");
   const location = watch("location");
-  const guestCount = watch("guestCount");
+  const guestCount = watch("max_guest");
   const roomCount = watch("roomCount");
   const bathroomCount = watch("bathroomCount");
   const cover = watch("cover");
@@ -137,7 +137,7 @@ function RentModal({}) {
         description: data.description,
         price_per_night: Number(data.price_per_night),
         address: address,
-        capacity: data.guestCount,
+        capacity: data.max_guest,
         lat: lat,
         lng: lng,
         country: country,
@@ -368,7 +368,7 @@ function RentModal({}) {
           title="Guests"
           subtitle="How many guest do you allow?"
           value={guestCount}
-          onChange={(value) => setCustomValue("guestCount", value)}
+          onChange={(value) => setCustomValue("max_guest", value)}
         />
         <hr />
         <Counter

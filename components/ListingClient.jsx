@@ -11,6 +11,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Range } from "react-date-range";
 import { toast } from "react-toastify";
 import dynamic from "next/dynamic";
+import Cookie from "js-cookie";
 
 import Container from "./Container";
 import ListingHead from "./listing/ListingHead";
@@ -24,6 +25,7 @@ import { FaBusinessTime, FaFlag, FaStar } from "react-icons/fa";
 import Button from "./Button";
 import { useForm } from "react-hook-form";
 import Input from "./inputs/Input";
+import { API_URL } from "@/const";
 
 const initialDateRange = {
   startDate: new Date(),
@@ -82,6 +84,8 @@ function ListingClient({ reservations = [], place, currentUser }) {
       phone: "",
       email: "",
       guest_name: "",
+      content_to_vendor: "",
+      number_of_guest: place.max_guest || 0,
     },
   });
 
@@ -97,50 +101,66 @@ function ListingClient({ reservations = [], place, currentUser }) {
     setSearchResult(result);
   };
 
+  const setCustomValue = (id, value) => {
+    setValue(id, value, {
+      shouldValidate: true,
+      shouldDirty: true,
+      shouldTouch: true,
+    });
+  };
+
   const onCreateReservation = (data) => {
     try {
       setIsLoading(true);
+      const checkin_date = `${dateRange.startDate.getDate()}-${dateRange.startDate.getMonth()}-${dateRange.startDate.getFullYear()}`;
+      const checkout_date = `${dateRange.endDate.getDate()}-${dateRange.endDate.getMonth()}-${dateRange.endDate.getFullYear()}`;
 
       const submitValues = {
-        full_name: data.full_name,
-        phone: data.phone,
-        email: data.email,
+        user_id: currentUser.id,
+        place_id: place.id,
+        checkin_date,
+        checkout_date,
+        booking_info: {
+          ...data,
+          type: bookingMode,
+          total_price: totalPrice,
+          number_of_guest: Number(data.number_of_guest),
+        },
       };
 
-      if (bookingMode === 1) {
-        console.log(submitValues);
-      } else if (bookingMode === 2) {
-        console.log({
-          guest_name: data.guest_name,
-          ...submitValues,
-        });
+      if (data.number_of_guest > place.max_guest) {
+        toast.error(
+          "No guest must be less or equal to max guest(s) of this place"
+        );
+        return;
       }
 
-      // // console.log(submitValues);
-      // const accessToken = Cookie.get("accessToken");
-      // const config = {
-      //   params: {
-      //     place_id: place.id,
-      //   },
-      //   headers: {
-      //     "content-type": "application/json",
-      //     Authorization: `Bearer ${accessToken}`,
-      //   },
-      // };
+      // console.log(submitValues);
+      const accessToken = Cookie.get("accessToken");
+      const config = {
+        headers: {
+          "content-type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      };
 
-      // axios
-      //   .put(`${API_URL}/places`, submitValues, config)
-      //   .then(() => {
-      //     setIsLoading(false);
-      //     toast.success("Update Room Successfully");
-      //     router.refresh();
-      //   })
-      //   .catch((err) => {
-      //     toast.error("Update Room Failed");
-      //     setIsLoading(false);
-      //   });
+      axios
+        .post(`${API_URL}/bookings`, submitValues, config)
+        .then((response) => {
+          setIsLoading(false);
+          toast.success(
+            "Booking Successfully! Please check your email in 12 hours to confirm."
+          );
+          console.log(response.data);
+          router.refresh();
+          reset();
+          // router.push(`/reservations/41`)
+        })
+        .catch((err) => {
+          toast.error("Booking Failed");
+          setIsLoading(false);
+        });
     } catch (error) {
-      console.log(error);
       toast.error("Something went wrong");
     } finally {
       setIsLoading(false);
@@ -191,7 +211,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
                 category={category}
                 description={place.description}
                 roomCount={place.roomCount || 0}
-                guestCount={place.guestCount || 0}
+                guestCount={place.max_guest || 0}
                 bathroomCount={place.bathroomCount || 0}
               />
               <div className="order-first mb-10 md:order-last md:col-span-3 space-y-6">
@@ -331,6 +351,15 @@ function ListingClient({ reservations = [], place, currentUser }) {
                     />
                   </div>
                 </div>
+                <Input
+                  id="number_of_guest"
+                  label="No Guest"
+                  disabled={isLoading}
+                  register={register}
+                  errors={errors}
+                  required
+                  type="number"
+                />
               </div>
               <hr />
               <div className="my-6">
@@ -373,27 +402,26 @@ function ListingClient({ reservations = [], place, currentUser }) {
                   />
                 )}
               </div>
-
               <hr />
               <div className="my-6">
                 <div className="flex flex-col justify-between items-start mt-4">
                   <span className="text-md font-bold">Date</span>
-                  <span className="text-md font-thin">November 15 - 20</span>
+                  <span className="text-md font-thin">
+                    {dayCount > 1
+                      ? `${dateRange.startDate.getDate()}/
+                    ${dateRange.startDate.getMonth()}/
+                    ${dateRange.startDate.getFullYear()} - ${dateRange.endDate.getDate()}/${dateRange.endDate.getMonth()}
+                    /${dateRange.endDate.getFullYear()}`
+                      : `${dateRange.startDate.getDate()}/
+                    ${dateRange.startDate.getMonth()}/
+                    ${dateRange.startDate.getFullYear()}`}
+                  </span>
                 </div>
                 <div className="flex flex-col justify-between items-start">
-                  <span className="text-md font-bold">Guest</span>
-                  <span className="text-md font-thin">1 guest</span>
-                </div>
-              </div>
-              <hr />
-              <div className="my-6">
-                <div className="flex flex-col justify-between items-start mt-4">
-                  <span className="text-md font-bold">Date</span>
-                  <span className="text-md font-thin">November 15 - 20</span>
-                </div>
-                <div className="flex flex-col justify-between items-start">
-                  <span className="text-md font-bold">Guest</span>
-                  <span className="text-md font-thin">1 guest</span>
+                  <span className="text-md font-bold">Place max guest(s)</span>
+                  <span className="text-md font-thin">
+                    {place.max_guest || 0} guest(s)
+                  </span>
                 </div>
               </div>
               <hr />
@@ -420,6 +448,10 @@ function ListingClient({ reservations = [], place, currentUser }) {
                 <textarea
                   className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none"
                   rows={5}
+                  name="content_to_vendor"
+                  onChange={(e) =>
+                    setCustomValue("content_to_vendor", e.target.value)
+                  }
                 ></textarea>
               </div>
               <hr />

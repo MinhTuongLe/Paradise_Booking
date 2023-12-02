@@ -38,3 +38,22 @@ export const booking_status = [
     icon: <MdCancel className="text-[22px] text-[#f44668]" />,
   },
 ];
+
+export const place_status = [
+  {
+    id: 0,
+    name: "All",
+  },
+  {
+    id: 1,
+    name: "Reserving",
+  },
+  {
+    id: 2,
+    name: "Reserved",
+  },
+];
+
+export function classNames(...classes) {
+  return classes.filter(Boolean).join(" ");
+}

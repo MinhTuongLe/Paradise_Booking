@@ -16,9 +16,16 @@ function Input({
   const [showPassword, setShowPassword] = useState(false);
   const emailPattern = /^\S+@\S+\.\S+$/;
   const phonePattern = /^\d{10}$/;
+  const numberPattern = /[0-9]+/;
 
   const pattern =
-    type === "email" ? emailPattern : type === "tel" ? phonePattern : null;
+    type === "email"
+      ? emailPattern
+      : type === "tel"
+      ? phonePattern
+      : type === "number"
+      ? numberPattern
+      : null;
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -38,22 +45,26 @@ function Input({
         {...register(id, { required, pattern })}
         placeholder=""
         type={showPassword ? "text" : type}
-        className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition disabled:opacity-70 disabled:cursor-not-allowed ${
+        className={`peer w-full ${
+          label ? "p-4 pt-6" : "p-1"
+        } font-light bg-white border-2 rounded-md outline-none transition disabled:opacity-70 disabled:cursor-not-allowed ${
           formatPrice ? "pl-9" : "pl-4"
         } ${errors[id] ? "border-rose-500" : "border-neutral-300"} ${
           errors[id] ? "focus:border-rose-500" : "focus:outline-none"
         }`}
       />
 
-      <label
-        className={`absolute text-md duration-150 transform -translate-y-3 top-5 ${
-          formatPrice ? "left-9" : "left-4"
-        } peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 ${
-          errors[id] ? "text-rose-500" : "text-zinc-400"
-        }`}
-      >
-        {label}
-      </label>
+      {label && (
+        <label
+          className={`absolute text-md duration-150 transform -translate-y-3 top-5 ${
+            formatPrice ? "left-9" : "left-4"
+          } peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 ${
+            errors[id] ? "text-rose-500" : "text-zinc-400"
+          }`}
+        >
+          {label}
+        </label>
+      )}
 
       {type === "password" && (
         <button

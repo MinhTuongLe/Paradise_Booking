@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Button from "@/components/Button";
 import "../../../styles/globals.css";
-import { API_URL, booking_status } from "@/const";
+import { API_URL, booking_status, classNames } from "@/const";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import Cookie from "js-cookie";
@@ -22,10 +22,6 @@ import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { MdCancel, MdIncompleteCircle, MdPending } from "react-icons/md";
 import { FaCalendarAlt, FaCalendarCheck, FaCheckCircle } from "react-icons/fa";
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
 
 function PropertyClient({ place }) {
   const emptyImageSrc = "/assets/avatar.png";
@@ -236,6 +232,15 @@ function PropertyClient({ place }) {
                 fill={true}
               />
             )}
+            <Input
+              id="max_guest"
+              label="Max Guest(s)"
+              disabled={isLoading}
+              register={register}
+              errors={errors}
+              type="number"
+              required
+            />
           </div>
         </div>
         <div className="col-span-6 space-y-6">
