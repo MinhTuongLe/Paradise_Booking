@@ -147,10 +147,16 @@ function UserMenu({ authState, loggedUser }) {
                   </>
                 )}
                 {loggedUser.role === 2 && (
-                  <MenuItem
-                    onClick={() => menuItemSelect("/properties")}
-                    label="My properties"
-                  />
+                  <>
+                    <MenuItem
+                      onClick={() => menuItemSelect("/properties")}
+                      label="My properties"
+                    />
+                    <MenuItem
+                      onClick={() => menuItemSelect("/statistics")}
+                      label="Statistics"
+                    />
+                  </>
                 )}
                 <MenuItem
                   onClick={() => menuItemSelect(`/users/${loggedUser.id}`)}
@@ -159,10 +165,6 @@ function UserMenu({ authState, loggedUser }) {
                 <MenuItem
                   onClick={() => menuItemSelect("/change-password")}
                   label="Change Password"
-                />
-                <MenuItem
-                  onClick={() => menuItemSelect("/statistics")}
-                  label="Statistics"
                 />
                 <hr />
                 <MenuItem

@@ -10,7 +10,7 @@ export const dynamic = "force-dynamic";
 const StatisticsPage = async () => {
   const userId = cookies().get("userId")?.value;
   const user = await getUserById(userId);
-  if (!user) {
+  if (!user || user.role !== 2) {
     return (
       <ClientOnly>
         <EmptyState title="Unauthorized" subtitle="Please login" />

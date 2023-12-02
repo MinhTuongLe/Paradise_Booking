@@ -37,7 +37,6 @@ const statusColorMap = {
 };
 
 function AccountClient({ accounts }) {
-  console.log(accounts);
   const [isLoading, setIsLoading] = useState(false);
   const emptyImageSrc = "/assets/avatar.png";
 

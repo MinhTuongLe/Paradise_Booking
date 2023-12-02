@@ -12,7 +12,11 @@ const ChangePasswordPage = async (props) => {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;
   }
 
-  return <ChangePasswordClient />;
+  return (
+    <ClientOnly>
+      <ChangePasswordClient />
+    </ClientOnly>
+  );
 };
 
 export default ChangePasswordPage;
