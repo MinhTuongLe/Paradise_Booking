@@ -71,7 +71,6 @@ function ListingCard({
       onClick={() => {
         if (pathName === "/properties") {
           router.push(`/properties/${data.id}`);
-          window.scrollTo({ top: 0, behavior: "smooth" });
         } else window.open(`/listings/${data.id}`, "_blank");
       }}
       className="col-span-1 cursor-pointer group"

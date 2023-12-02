@@ -6,6 +6,7 @@ import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import React, { useCallback, useMemo } from "react";
 import { MdDeleteOutline } from "react-icons/md";
+import { booking_status } from "@/const";
 
 function ReservationItem({ onDelete }) {
   const emptyImageSrc =
@@ -51,9 +52,6 @@ function ReservationItem({ onDelete }) {
           <div className="gap-1 font-semibold bg-[#05a569] text-white rounded-2xl w-[120px] h-[32px] flex items-center justify-center">
             Successfully
           </div>
-          {/* <div className="gap-1 font-semibold bg-rose-500 text-white rounded-2xl w-[120px] h-[32px] flex items-center justify-center">
-        Failed
-      </div> */}
           <span
             className="text-rose-500 font-semibold text-md cursor-pointer hover:text-rose-700"
             onClick={() => router.push(`/reservations/41`)}

@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Button from "@/components/Button";
 import "../../../styles/globals.css";
-import { API_URL } from "@/const";
+import { API_URL, booking_status } from "@/const";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import Cookie from "js-cookie";
@@ -20,36 +20,8 @@ import ImageUpload from "@/components/inputs/ImageUpload";
 import Image from "next/image";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
-import { MdIncompleteCircle, MdPending } from "react-icons/md";
+import { MdCancel, MdIncompleteCircle, MdPending } from "react-icons/md";
 import { FaCalendarAlt, FaCalendarCheck, FaCheckCircle } from "react-icons/fa";
-
-const booking_status = [
-  {
-    id: 1,
-    name: "Pending",
-    icon: <MdPending className="text-[22px] text-[#ffa700]" />,
-  },
-  {
-    id: 2,
-    name: "Successful",
-    icon: <FaCheckCircle className="text-[20px] text-[#05a569]" />,
-  },
-  {
-    id: 3,
-    name: "Checkin",
-    icon: <FaCalendarAlt className="text-[22px] text-[#55bdbf]" />,
-  },
-  {
-    id: 4,
-    name: "Checkout",
-    icon: <FaCalendarCheck className="text-[22px] text-[#58a1d8]" />,
-  },
-  {
-    id: 5,
-    name: "Completed",
-    icon: <MdIncompleteCircle className="text-[22px] text-[#1975d3]" />,
-  },
-];
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -230,6 +202,10 @@ function PropertyClient({ place }) {
       setLng(searchResult.x);
     }
   }, [searchResult]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, []);
 
   return (
     <div className="max-w-[1200px] mx-auto px-4">
