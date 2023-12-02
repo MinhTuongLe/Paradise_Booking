@@ -23,14 +23,13 @@ function TripClient({ place }) {
   const router = useRouter();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [rating, setRating] = useState(null);
   const [hover, setHover] = useState(null);
-  const [comment, setComment] = useState("");
 
   const {
     handleSubmit,
     reset,
     setValue,
+    getValues,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -242,7 +241,6 @@ function TripClient({ place }) {
                           name="rating"
                           value={currentRating}
                           onChange={() => {
-                            setRating(currentRating);
                             setCustomValue("rating", currentRating);
                           }}
                           className="hidden"
@@ -251,7 +249,7 @@ function TripClient({ place }) {
                           size={30}
                           className="cursor-pointer"
                           color={
-                            currentRating <= (hover || rating)
+                            currentRating <= (hover || getValues("rating"))
                               ? "#ffc107"
                               : "#e4e5e9"
                           }
@@ -263,15 +261,15 @@ function TripClient({ place }) {
                   })}
                 </div>
               </div>
-              <div className="mt-3">
+              <div className="my-3">
                 <textarea
                   className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none h-[120px]"
                   onChange={(e) => {
-                    setComment(e.target.value);
                     setCustomValue("comment", e.target.value);
                   }}
                   placeholder="Your comment ..."
-                  value={comment}
+                  value={getValues("comment")}
+                  id="comment"
                 ></textarea>
               </div>
               <div className="flex space-x-6 items-start justify-end">
@@ -280,9 +278,8 @@ function TripClient({ place }) {
                     outline
                     label="Cancel"
                     onClick={() => {
-                      setRating(null);
+                      reset();
                       setHover(null);
-                      setComment("");
                     }}
                   />
                 </div>

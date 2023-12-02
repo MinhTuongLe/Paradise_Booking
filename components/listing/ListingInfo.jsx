@@ -15,8 +15,7 @@ function ListingInfo({
   guestCount,
   bathroomCount,
 }) {
-  const emptyImageSrc =
-    "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
+  const emptyImageSrc = "/assets/avatar.png";
 
   return (
     <div className="col-span-4 flex flex-col gap-8">
@@ -28,7 +27,10 @@ function ListingInfo({
           >
             Hosted by {user.full_name}
           </div>
-          <Avatar src={user.avatar || emptyImageSrc} userName={user.full_name} />
+          <Avatar
+            src={user.avatar || emptyImageSrc}
+            userName={user.full_name}
+          />
         </div>
         <div className="flex flex-row items-center gap-4 font-light text-neutral-500">
           <p>{guestCount} guests</p>

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import useLoginModel from "@/hook/useLoginModal";
@@ -23,9 +24,6 @@ import { FaBusinessTime, FaFlag, FaStar } from "react-icons/fa";
 import Button from "./Button";
 import { useForm } from "react-hook-form";
 import Input from "./inputs/Input";
-const Map = dynamic(() => import("./Map"), {
-  ssr: false,
-});
 
 const initialDateRange = {
   startDate: new Date(),
@@ -36,13 +34,22 @@ const initialDateRange = {
 function ListingClient({ reservations = [], place, currentUser }) {
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
-  const coordinates = [place.lat, place.lng];
+
   const location = {
     address: place.address,
     city: place.city,
     country: place.country,
   };
+  const [lat, setLat] = useState(place?.lat);
+  const [lng, setLng] = useState(place?.lng);
 
+  const Map = useMemo(
+    () =>
+      dynamic(() => import("../components/Map"), {
+        ssr: false,
+      }),
+    [lat, lng]
+  );
   const router = useRouter();
   const loginModal = useLoginModel();
   const reportModal = useReportModal();
@@ -84,6 +91,11 @@ function ListingClient({ reservations = [], place, currentUser }) {
   const [paymentMode, setPaymentMode] = useState(false);
   const [dayCount, setDayCount] = useState(1);
   const [bookingMode, setBookingMode] = useState(1);
+
+  const [searchResult, setSearchResult] = useState(null);
+  const handleSearchResult = (result) => {
+    setSearchResult(result);
+  };
 
   const onCreateReservation = (data) => {
     try {
@@ -150,6 +162,13 @@ function ListingClient({ reservations = [], place, currentUser }) {
     }
   }, [dateRange, place.price_per_night]);
 
+  useEffect(() => {
+    if (searchResult) {
+      setLat(searchResult.y);
+      setLng(searchResult.x);
+    }
+  }, [searchResult]);
+
   const category = useMemo(() => {
     return categories.find((item) => item.label === place.category);
   }, [place.category]);
@@ -204,7 +223,11 @@ function ListingClient({ reservations = [], place, currentUser }) {
             <hr />
             <div className="my-8 w-full">
               <p className="text-xl font-semibold mb-8">{`Where you’ll be`}</p>
-              <Map center={coordinates} locationValue={place.country} />
+              <Map
+                center={[lat, lng]}
+                locationValue={place.country}
+                onSearchResult={handleSearchResult}
+              />
             </div>
             <hr />
             <div className="my-8 w-full">

@@ -79,8 +79,7 @@ function UserClient({ places, currentUser, role }) {
   });
 
   const avatar = watch("avatar");
-  const emptyImageSrc =
-    "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
+  const emptyImageSrc = "/assets/avatar.png";
 
   const setCustomValue = (id, value) => {
     setValue(id, value, {

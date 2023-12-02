@@ -6,13 +6,12 @@ import { formatISO } from "date-fns";
 import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
 import qs from "query-string";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { Range } from "react-date-range";
 
 import Heading from "../Heading";
 import Calendar from "../inputs/Calendar";
 import Counter from "../inputs/Counter";
-import CountrySelect, { CountrySelectValue } from "../inputs/CountrySelect";
 import Modal from "./Modal";
 
 const STEPS = {
@@ -36,12 +35,20 @@ function SearchModal({}) {
     endDate: new Date(),
     key: "selection",
   });
+  const [lat, setLat] = useState(51);
+  const [lng, setLng] = useState(-0.09);
+  const [searchResult, setSearchResult] = useState(null);
+
+  const handleSearchResult = (result) => {
+    setSearchResult(result);
+  };
+
   const Map = useMemo(
     () =>
       dynamic(() => import("../Map"), {
         ssr: false,
       }),
-    [location]
+    [lat, lng]
   );
 
   const onBack = () => {
@@ -120,18 +127,38 @@ function SearchModal({}) {
     return "Back";
   }, [step]);
 
+  useEffect(() => {
+    if (searchResult) {
+      setLat(searchResult.y);
+      setLng(searchResult.x);
+    }
+  }, [searchResult]);
+
   let bodyContent = (
     <div className="flex flex-col gap-8">
       <Heading
         title="Where do you wanna go?"
         subtitle="Find the perfect location!"
       />
-      <CountrySelect
+      {/* <CountrySelect
         value={location}
         onChange={(value) => setLocation(value)}
-      />
-      <hr />
-      <Map center={location?.latlng} />
+      /> */}
+      {/* <hr /> */}
+      <div className="w-full relative">
+        <input
+          value={searchResult?.label || ""}
+          id="_location"
+          readOnly={true}
+          className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition opacity-70 cursor-not-allowed border-neutral-300 focus:outline-none`}
+        />
+        <label
+          className={`absolute text-md duration-150 transform -translate-y-3 top-5 left-4 text-zinc-400`}
+        >
+          Location
+        </label>
+      </div>
+      <Map center={[lat, lng]} onSearchResult={handleSearchResult} />
     </div>
   );
 

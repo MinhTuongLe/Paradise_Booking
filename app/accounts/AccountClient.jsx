@@ -39,8 +39,7 @@ const statusColorMap = {
 function AccountClient({ accounts }) {
   console.log(accounts);
   const [isLoading, setIsLoading] = useState(false);
-  const emptyImageSrc =
-    "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
+  const emptyImageSrc = "/assets/avatar.png";
 
   const handleStatusChange = (event, accountId) => {
     const newStatus = event.target.value;

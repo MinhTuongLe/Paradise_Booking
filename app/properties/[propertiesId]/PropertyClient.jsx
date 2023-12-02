@@ -56,6 +56,7 @@ function classNames(...classes) {
 }
 
 function PropertyClient({ place }) {
+  const emptyImageSrc = "/assets/avatar.png";
   const dispatch = useDispatch();
   const router = useRouter();
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
