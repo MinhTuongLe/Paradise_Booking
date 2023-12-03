@@ -152,10 +152,6 @@ function ReservationsClient() {
     getReservations();
   }, []);
 
-  if (loggedUser.id !== reservation.user.id) {
-    return <EmptyState title="Unauthorized" subtitle="Please login" />;
-  }
-
   return (
     <Container>
       <Transition.Root show={open} as={Fragment}>

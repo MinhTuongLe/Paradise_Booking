@@ -7,7 +7,7 @@ import getUserById from "@/app/actions/getUserById";
 
 export const dynamic = "force-dynamic";
 
-const ReservationsPage = async (props) => {
+const ReservationsPage = async () => {
   const accessToken = cookies().get("accessToken")?.value;
   const userId = cookies().get("userId")?.value;
   const user = await getUserById(userId);
