@@ -3,7 +3,13 @@
 
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import React, { useCallback, useState, Fragment, useRef } from "react";
+import React, {
+  useCallback,
+  useState,
+  Fragment,
+  useRef,
+  useEffect,
+} from "react";
 import { Dialog, Transition, Listbox } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
@@ -14,7 +20,8 @@ import ReservationItem from "@/components/ReservationItem";
 import { useForm } from "react-hook-form";
 import Input from "@/components/inputs/Input";
 import Button from "@/components/Button";
-import { classNames, place_status } from "@/const";
+import { API_URL, classNames, place_status } from "@/const";
+import Cookie from "js-cookie";
 
 function ReservationsClient() {
   // function ReservationsClient({ reservations, currentUser }) {
@@ -22,8 +29,9 @@ function ReservationsClient() {
   const [deletingId, setDeletingId] = useState("");
   const [id, setId] = useState();
   const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [selected, setSelected] = useState(place_status[0]);
+  const [reservations, setReservations] = useState([]);
 
   const cancelButtonRef = useRef(null);
 
@@ -38,7 +46,7 @@ function ReservationsClient() {
     defaultValues: {
       date_from: "",
       date_to: "",
-      status: selected,
+      statuses: selected,
     },
   });
 
@@ -70,18 +78,19 @@ function ReservationsClient() {
     [router]
   );
 
-  const handleFilter = (data) => {
-    let status = selected.id === 0 ? [1, 2] : [selected.id];
+  const handleFilter = async (data) => {
+    let statuses = selected.id === 0 ? [1, 2] : [selected.id];
     const submitValues = {
       ...data,
-      status,
+      statuses,
     };
-    console.log(submitValues);
+    getReservations(submitValues);
   };
 
   const handleClearAllFilters = () => {
     reset();
     setSelected(place_status[0]);
+    getReservations();
   };
 
   const onDelete = (id) => {
@@ -114,6 +123,32 @@ function ReservationsClient() {
     console.log(123123123123);
     setOpen(false);
   };
+
+  const getReservations = async (filterValues) => {
+    setIsLoading(true);
+    const accessToken = Cookie.get("accessToken");
+    const config = {
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+
+    await axios
+      .post(`${API_URL}/booking_list`, filterValues || null, config)
+      .then((response) => {
+        setReservations(response.data.data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        toast.error("Something Went Wrong");
+        setIsLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    getReservations();
+  }, []);
 
   return (
     <Container>
@@ -319,26 +354,26 @@ function ReservationsClient() {
           />
         </div>
       </div>
-
-      {/* <div className="mt-6 space-y-6">
-        <span className="text-[24px] font-bold">
-          You don't have any reservation to display
-        </span>
-        <div className="max-w-[160px]">
-          <Button label="Booking now" onClick={() => router.push("/")} />
+      {!isLoading && reservations && reservations.length > 0 ? (
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
+          {reservations.map((item, index) => {
+            return (
+              <div key={item.id}>
+                <ReservationItem onDelete={onDelete} data={item}/>
+              </div>
+            );
+          })}
         </div>
-      </div> */}
-      <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
-        <ReservationItem onDelete={onDelete} />
-        <ReservationItem onDelete={onDelete} />
-        <ReservationItem onDelete={onDelete} />
-        <ReservationItem onDelete={onDelete} />
-        <ReservationItem onDelete={onDelete} />
-        <ReservationItem onDelete={onDelete} />
-        <ReservationItem onDelete={onDelete} />
-        <ReservationItem onDelete={onDelete} />
-        <ReservationItem onDelete={onDelete} />
-      </div>
+      ) : (
+        <div className="mt-12 space-y-4">
+          <span className="text-[24px] font-bold">
+            You don't have any reservation to display
+          </span>
+          <div className="max-w-[160px]">
+            <Button label="Booking now" onClick={() => router.push("/")} />
+          </div>
+        </div>
+      )}
     </Container>
   );
 }

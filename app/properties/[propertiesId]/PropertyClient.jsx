@@ -53,6 +53,7 @@ function PropertyClient({ place }) {
       state: place?.city,
       city: place?.city,
       cover: place?.cover || "",
+      max_guest: place?.max_guest,
     },
   });
 
@@ -153,13 +154,14 @@ function PropertyClient({ place }) {
         description: data?.description || "",
         price_per_night: Number(data?.price_per_night) || 0,
         address: address || place.address,
-        capacity: data?.capacity || 1,
+        capacity: Number(data?.capacity) || 1,
         lat: lat || place.lat,
         lng: lng || place.lng,
         country: country || place.country,
         state: city || place.city,
         city: city || place.city,
         cover: imageUrl || "",
+        max_guest: Number(data?.max_guest) || place.max_guest,
       };
 
       // console.log(submitValues);

@@ -10,15 +10,16 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Button from "@/components/Button";
 import "../../../styles/globals.css";
-import { API_URL } from "@/const";
+import { API_URL, booking_status } from "@/const";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import Cookie from "js-cookie";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { FaCheckCircle, FaStar } from "react-icons/fa";
+import { MdPending } from "react-icons/md";
 
-function ReservationClient({ place }) {
+function ReservationClient({ reservation }) {
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -40,6 +41,8 @@ function ReservationClient({ place }) {
 
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
+
+  const emptyAvatar = "/assets/avatar.png";
 
   const setCustomValue = (id, value) => {
     setValue(id, value, {
@@ -117,19 +120,36 @@ function ReservationClient({ place }) {
       <div className="mt-6">
         <div>
           <div className="flex justify-between items-center">
-            <span className="font-bold text-[16px]">HCM City</span>
+            <span className="font-bold text-[16px]">{`${
+              reservation.data.place?.address
+                ? reservation.data.place?.address + ", "
+                : ""
+            } ${reservation.data.place.city}, ${
+              reservation.data.place.country
+            }`}</span>
             <span className="text-[#828080] font-bold">
-              Booking ID: 123123123
+              Booking ID: {reservation.data.id || "-"}
             </span>
           </div>
           <div className="mt-3 rounded-xl border-[#cdcdcd] border-[1px]">
             <div className="flex justify-between items-center border-b-[#cdcdcd] border-b-[1px] p-4">
-              <div className="space-x-4 flex justify-between items-center">
-                <div className="bg-[#05a569] p-2 rounded-full text-white">
-                  <FaCheckCircle className="text-[20px]" />
-                </div>
-                <span className="font-extrabold text-[20px]">Successfully</span>
-              </div>
+              {booking_status.map(
+                (item) =>
+                  item.id === reservation.data.status_id && (
+                    <div
+                      className="space-x-2 flex justify-between items-center"
+                      key={item.id}
+                    >
+                      <div className={`bg-[#${item.color}] p-1 rounded-full`}>
+                        {item.icon}
+                      </div>
+                      <span className="font-extrabold text-[20px]">
+                        {item.name}
+                      </span>
+                    </div>
+                  )
+              )}
+
               {/* <div className="space-x-4 flex justify-between items-center">
                     <div className="bg-rose-500 p-2 rounded-full text-white">
                       <IoIosCloseCircle className="text-[22px]" />
@@ -162,14 +182,16 @@ function ReservationClient({ place }) {
                     </div>
                     <span className="font-extrabold text-[20px]">Checkout</span>
                   </div> */}
-              <div className="font-extrabold text-[20px]">$9999</div>
+              <div className="font-extrabold text-[20px]">
+                ${reservation.data.place.price_per_night || 0}
+              </div>
             </div>
             <div className="flex justify-start items-center space-x-[100px] border-b-[#cdcdcd] border-b-[1px] p-4">
               <div className="text-[16px] font-semibold">
-                To: Fri, 2 Dec 2023
+                From: {reservation.data.checkin_date}
               </div>
               <div className="text-[16px] font-semibold">
-                From: Fri, 1 Dec 2023
+                To: {reservation.data.checkout_date}
               </div>
             </div>
             <div className="flex justify-start items-center space-x-32 p-4">
@@ -177,13 +199,19 @@ function ReservationClient({ place }) {
                 <div className="text-[#828080] font-bold text-[14px]">
                   PURCHASED ON
                 </div>
-                <div className="text-[16px] font-semibold">Fri, 1 Dec 2023</div>
+                <div className="text-[16px] font-semibold">
+                  {reservation.data.created_at
+                    .split("T")[0]
+                    .split("-")
+                    .reverse()
+                    .join("-") || "-"}
+                </div>
               </div>
               <div className="">
                 <div className="text-[#828080] font-bold text-[14px]">
                   PAYMENT METHOD
                 </div>
-                <div className="text-[16px] font-semibold">Paypal</div>
+                <div className="text-[16px] font-semibold">COD</div>
               </div>
             </div>
           </div>
@@ -198,98 +226,159 @@ function ReservationClient({ place }) {
               width={100}
               alt="upload"
               className="rounded-2xl w-[100px] h-[100px]"
-              src={place?.cover || ""}
+              src={reservation.data.place?.cover || emptyImageSrc}
             />
             <div className="space-y-1 w-full">
               <div className="flex justify-between items-center">
                 <span className="font-extrabold text-[20px]">
-                  {place?.name || ""}
+                  {reservation.data.place?.name || ""}
                 </span>
                 <span
                   className="text-rose-500 font-semibold text-md cursor-pointer hover:text-rose-700"
-                  onClick={() => window.open(`/listings/41`, "_blank")}
+                  onClick={() =>
+                    window.open(
+                      `/listings/${reservation.data.place.id}`,
+                      "_blank"
+                    )
+                  }
                 >
                   Details
                 </span>
               </div>
               <div className="text-[16px] font-semibold">{`${
-                place?.address ? place?.address : ""
+                reservation.data.place?.address
+                  ? reservation.data.place?.address
+                  : ""
               }`}</div>
               <div className="text-[16px] font-semibold">{`${
-                place?.city ? place?.city + ", " : ""
-              } ${place?.country || "-"}`}</div>
+                reservation.data.place?.city
+                  ? reservation.data.place?.city + ", "
+                  : ""
+              } ${reservation.data.place?.country || "-"}`}</div>
             </div>
           </div>
         </div>
-        <div className="mt-6">
-          <div className="flex flex-col">
-            <div className="font-bold text-[16px]">
-              Please leave your comments so we can improve
-            </div>
-            <div className="rounded-xl border-[#cdcdcd] border-[1px] p-4 mt-3">
-              <div className="flex items-center justify-start space-x-3">
+        <div className="">
+          <div className="text-[#828080] font-bold text-[14px] mb-3">
+            USER INFORMATION
+          </div>
+          <div className="rounded-xl border-[#cdcdcd] border-[1px] p-4 flex justify-start items-start space-x-6 w-full">
+            <Image
+              src={reservation.user.avatar || emptyAvatar}
+              width={64}
+              height={64}
+              className="rounded-full"
+              alt="Avatar"
+            />
+            <div className="flex justify-between items-start w-[60%]">
+              <div>
                 <div className="text-[16px] font-semibold">
-                  Express your level of satisfaction in stars
+                  Fullname:{" "}
+                  <span className="ml-1 font-normal">
+                    {reservation.user.full_name || "-"}
+                  </span>
                 </div>
-                <div className="flex space-x-2">
-                  {[...Array(5)].map((star, index) => {
-                    const currentRating = index + 1;
-                    return (
-                      <label key={index}>
-                        <input
-                          type="radio"
-                          name="rating"
-                          value={currentRating}
-                          onChange={() => {
-                            setCustomValue("rating", currentRating);
-                          }}
-                          className="hidden"
-                        />
-                        <FaStar
-                          size={30}
-                          className="cursor-pointer"
-                          color={
-                            currentRating <= (hover || getValues("rating"))
-                              ? "#ffc107"
-                              : "#e4e5e9"
-                          }
-                          onMouseEnter={() => setHover(currentRating)}
-                          onMouseLeave={() => setHover(null)}
-                        />
-                      </label>
-                    );
-                  })}
+                <div className="text-[16px] font-semibold">
+                  Email:
+                  <span className="ml-1 font-normal">
+                    {reservation.user.email || "-"}
+                  </span>
+                </div>
+                <div className="text-[16px] font-semibold">
+                  Phone:
+                  <span className="ml-1 font-normal">
+                    {reservation.user.phone || "-"}
+                  </span>
                 </div>
               </div>
-              <div className="my-3">
-                <textarea
-                  className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none h-[120px]"
-                  onChange={(e) => {
-                    setCustomValue("comment", e.target.value);
-                  }}
-                  placeholder="Your comment ..."
-                  value={getValues("comment")}
-                  id="comment"
-                ></textarea>
+              {/* <div>
+                <div className="text-[16px] font-semibold">
+                  Guestname:
+                  <span className="ml-1 font-normal">
+                    {reservation.user.full_name || "-"}
+                  </span>
+                </div>
+                <div className="text-[16px] font-semibold">
+                  Phone:
+                  <span className="ml-1 font-normal">
+                    {reservation.user.phone || "-"}
+                  </span>
+                </div>
+              </div> */}
+            </div>
+          </div>
+        </div>
+        {reservation.data.status_id === 5 && (
+          <div className="mt-6">
+            <div className="flex flex-col">
+              <div className="font-bold text-[16px]">
+                Please leave your comments so we can improve
               </div>
-              <div className="flex space-x-6 items-start justify-end">
-                <div className="float-right w-[120px]">
-                  <Button
-                    outline
-                    label="Cancel"
-                    onClick={() => {
-                      reset();
-                      setHover(null);
+              <div className="rounded-xl border-[#cdcdcd] border-[1px] p-4 mt-3">
+                <div className="flex items-center justify-start space-x-3">
+                  <div className="text-[16px] font-semibold">
+                    Express your level of satisfaction in stars
+                  </div>
+                  <div className="flex space-x-2">
+                    {[...Array(5)].map((star, index) => {
+                      const currentRating = index + 1;
+                      return (
+                        <label key={index}>
+                          <input
+                            type="radio"
+                            name="rating"
+                            value={currentRating}
+                            onChange={() => {
+                              setCustomValue("rating", currentRating);
+                            }}
+                            className="hidden"
+                          />
+                          <FaStar
+                            size={30}
+                            className="cursor-pointer"
+                            color={
+                              currentRating <= (hover || getValues("rating"))
+                                ? "#ffc107"
+                                : "#e4e5e9"
+                            }
+                            onMouseEnter={() => setHover(currentRating)}
+                            onMouseLeave={() => setHover(null)}
+                          />
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div className="my-3">
+                  <textarea
+                    className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none h-[120px]"
+                    onChange={(e) => {
+                      setCustomValue("comment", e.target.value);
                     }}
-                  />
+                    placeholder="Your comment ..."
+                    value={getValues("comment")}
+                    id="comment"
+                  ></textarea>
                 </div>
-                <div className="float-right w-[120px]">
-                  <Button label="Send" onClick={handleSubmit(handleSend)} />
+                <div className="flex space-x-6 items-start justify-end">
+                  <div className="float-right w-[120px]">
+                    <Button
+                      outline
+                      label="Cancel"
+                      onClick={() => {
+                        reset();
+                        setHover(null);
+                      }}
+                    />
+                  </div>
+                  <div className="float-right w-[120px]">
+                    <Button label="Send" onClick={handleSubmit(handleSend)} />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

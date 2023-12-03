@@ -8,7 +8,7 @@ import React, { useCallback, useMemo } from "react";
 import { MdDeleteOutline } from "react-icons/md";
 import { booking_status } from "@/const";
 
-function ReservationItem({ onDelete }) {
+function ReservationItem({ onDelete, data }) {
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
 
@@ -27,7 +27,9 @@ function ReservationItem({ onDelete }) {
     >
       <div className="flex flex-col gap-2 w-full">
         <div className="flex justify-between items-center">
-          <span className="font-semibold text-md">Booking ID: 123123123</span>
+          <span className="font-semibold text-md">
+            Booking ID: {data.id || "-"}
+          </span>
           <MdDeleteOutline
             className="text-[20px] text-rose-500 cursor-pointer"
             onClick={onDelete}
@@ -44,17 +46,27 @@ function ReservationItem({ onDelete }) {
         </div>
         <div className="flex flex-row items-center justify-between">
           <div className="font-semibold text-lg text-ellipsis line-clamp-1">
-            Paradise
+            {data.place.name || "-"}
           </div>
-          <div className="flex gap-1 font-semibold">$9999</div>
+          <div className="flex gap-1 font-semibold">
+            ${data.place.price_per_night || 0}
+          </div>
         </div>
         <div className="flex flex-row items-center justify-between">
-          <div className="gap-1 font-semibold bg-[#05a569] text-white rounded-2xl w-[120px] h-[32px] flex items-center justify-center">
-            Successfully
-          </div>
+          {booking_status.map(
+            (item) =>
+              item.id === data.status_id && (
+                <div
+                  key={item.id}
+                  className={`gap-1 font-semibold bg-[${item.color}] text-white rounded-2xl w-[120px] h-[32px] flex items-center justify-center`}
+                >
+                  {item.name}
+                </div>
+              )
+          )}
           <span
             className="text-rose-500 font-semibold text-md cursor-pointer hover:text-rose-700"
-            onClick={() => router.push(`/reservations/41`)}
+            onClick={() => router.push(`/reservations/${data.id}`)}
           >
             See details
           </span>

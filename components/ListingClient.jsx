@@ -109,7 +109,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
     });
   };
 
-  const onCreateReservation = (data) => {
+  const onCreateReservation = async (data) => {
     try {
       setIsLoading(true);
       const checkin_date = `${dateRange.startDate.getDate()}-${dateRange.startDate.getMonth()}-${dateRange.startDate.getFullYear()}`;
@@ -144,17 +144,16 @@ function ListingClient({ reservations = [], place, currentUser }) {
         },
       };
 
-      axios
+      await axios
         .post(`${API_URL}/bookings`, submitValues, config)
         .then((response) => {
           setIsLoading(false);
           toast.success(
             "Booking Successfully! Please check your email in 12 hours to confirm."
           );
-          console.log(response.data);
           router.refresh();
           reset();
-          // router.push(`/reservations/41`)
+          router.push(`/reservations/${response.data.data.id}`);
         })
         .catch((err) => {
           toast.error("Booking Failed");
@@ -166,6 +165,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
       setIsLoading(false);
     }
   };
+
   useEffect(() => {
     if (dateRange.startDate && dateRange.endDate) {
       const count = differenceInCalendarDays(
@@ -222,7 +222,6 @@ function ListingClient({ reservations = [], place, currentUser }) {
                   dateRange={dateRange}
                   onSubmit={() => {
                     setPaymentMode(true);
-                    window.scrollTo({ top: 0, behavior: "smooth" });
                   }}
                   disabled={isLoading}
                   disabledDates={disableDates}
