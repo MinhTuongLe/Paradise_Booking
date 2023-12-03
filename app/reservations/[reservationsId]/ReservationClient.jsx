@@ -15,46 +15,28 @@ import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import Cookie from "js-cookie";
 import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
-import ImageUpload from "@/components/inputs/ImageUpload";
 import Image from "next/image";
-import { FaCheckCircle } from "react-icons/fa";
+import { FaCheckCircle, FaStar } from "react-icons/fa";
 
 function ReservationClient({ place }) {
   const dispatch = useDispatch();
   const router = useRouter();
-  const loggedUser = useSelector((state) => state.authSlice.loggedUser);
-  const authState = useSelector((state) => state.authSlice.authState);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [hover, setHover] = useState(null);
 
   const {
-    register,
     handleSubmit,
     reset,
     setValue,
-    watch,
+    getValues,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      price_per_night: place?.price_per_night,
-      name: place?.name,
-      description: place?.description,
-      capacity: place?.capacity,
-      address: place?.address,
-      lat: place?.lat,
-      lng: place?.lng,
-      country: place?.country,
-      state: place?.city,
-      city: place?.city,
-      cover: place?.cover || "",
+      rating: 0,
+      comment: "",
     },
   });
-
-  const cover = watch("cover");
-  const location = watch("location");
-  const [lat, setLat] = useState(place?.lat);
-  const [lng, setLng] = useState(place?.lng);
 
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
@@ -67,121 +49,60 @@ function ReservationClient({ place }) {
     });
   };
 
-  const Map = useMemo(
-    () =>
-      dynamic(() => import("../../../components/Map"), {
-        ssr: false,
-      }),
-    [lat, lng]
-  );
-
-  const [searchResult, setSearchResult] = useState(null);
-  const handleSearchResult = (result) => {
-    setSearchResult(result);
-  };
-
-  function processSearchResult() {
-    const numberRegex = /^[0-9]+$/;
-    let country = place.country;
-    let city = place.city;
-    let address = place.address;
-    if (searchResult) {
-      const array = searchResult?.label.split(", ");
-
-      if (array) {
-        const length = array.length;
-        country = array[length - 1];
-        city = numberRegex.test(array[length - 2])
-          ? array[length - 3]
-          : array[length - 2];
-        const temp = numberRegex.test(array[length - 2])
-          ? array.slice(0, length - 3)
-          : array.slice(0, length - 2);
-        address = temp && temp.length > 1 ? temp.join(", ") : temp.join("");
-      }
-    }
-    return { country, city, address };
-  }
-
-  const handleFileUpload = async (file) => {
+  const handleSend = async (data) => {
     try {
       setIsLoading(true);
+      console.log(data);
 
-      const formData = new FormData();
-      formData.append("file", file);
+      //   // upload photo
+      //   let imageUrl = "";
+      //   if (data.cover) {
+      //     const file = data.cover;
+      //     if (typeof file === "string") {
+      //       imageUrl = place?.cover;
+      //     } else {
+      //       imageUrl = await handleFileUpload(file);
+      //     }
+      //   }
 
-      const accessToken = Cookie.get("accessToken");
+      //   const { country, city, address } = processSearchResult();
 
-      const response = await axios.post(`${API_URL}/upload`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      //   const submitValues = {
+      //     name: data?.name || "",
+      //     description: data?.description || "",
+      //     price_per_night: Number(data?.price_per_night) || 0,
+      //     address: address || place.address,
+      //     capacity: data?.capacity || 1,
+      //     lat: lat || place.lat,
+      //     lng: lng || place.lng,
+      //     country: country || place.country,
+      //     state: city || place.city,
+      //     city: city || place.city,
+      //     cover: imageUrl || "",
+      //   };
 
-      const imageUrl = "https://" + response.data.data.url;
-      toast.success("Uploading photo successfully");
-      return imageUrl;
-    } catch (error) {
-      toast.error("Uploading photo failed");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const onSubmit = async (data) => {
-    try {
-      setIsLoading(true);
-
-      // upload photo
-      let imageUrl = "";
-      if (data.cover) {
-        const file = data.cover;
-        if (typeof file === "string") {
-          imageUrl = place?.cover;
-        } else {
-          imageUrl = await handleFileUpload(file);
-        }
-      }
-
-      const { country, city, address } = processSearchResult();
-
-      const submitValues = {
-        name: data?.name || "",
-        description: data?.description || "",
-        price_per_night: Number(data?.price_per_night) || 0,
-        address: address || place.address,
-        capacity: data?.capacity || 1,
-        lat: lat || place.lat,
-        lng: lng || place.lng,
-        country: country || place.country,
-        state: city || place.city,
-        city: city || place.city,
-        cover: imageUrl || "",
-      };
-
-      // console.log(submitValues);
-      const accessToken = Cookie.get("accessToken");
-      const config = {
-        params: {
-          place_id: place.id,
-        },
-        headers: {
-          "content-type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      };
-      axios
-        .put(`${API_URL}/places`, submitValues, config)
-        .then(() => {
-          setIsLoading(false);
-          toast.success("Update Room Successfully");
-          router.refresh();
-        })
-        .catch((err) => {
-          toast.error("Update Room Failed");
-          setIsLoading(false);
-        });
+      //   // console.log(submitValues);
+      //   const accessToken = Cookie.get("accessToken");
+      //   const config = {
+      //     params: {
+      //       place_id: place.id,
+      //     },
+      //     headers: {
+      //       "content-type": "application/json",
+      //       Authorization: `Bearer ${accessToken}`,
+      //     },
+      //   };
+      //   axios
+      //     .put(`${API_URL}/places`, submitValues, config)
+      //     .then(() => {
+      //       setIsLoading(false);
+      //       toast.success("Update Room Successfully");
+      //       router.refresh();
+      //     })
+      //     .catch((err) => {
+      //       toast.error("Update Room Failed");
+      //       setIsLoading(false);
+      //     });
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");
@@ -189,13 +110,6 @@ function ReservationClient({ place }) {
       setIsLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (searchResult) {
-      setLat(searchResult.y);
-      setLng(searchResult.x);
-    }
-  }, [searchResult]);
 
   return (
     <div className="max-w-[768px] mx-auto px-4">
@@ -274,7 +188,7 @@ function ReservationClient({ place }) {
             </div>
           </div>
         </div>
-        <div className="mt-6">
+        <div className="my-6">
           <span className="font-bold text-[16px] text-[#828080]">
             Place Details
           </span>
@@ -304,6 +218,75 @@ function ReservationClient({ place }) {
               <div className="text-[16px] font-semibold">{`${
                 place?.city ? place?.city + ", " : ""
               } ${place?.country || "-"}`}</div>
+            </div>
+          </div>
+        </div>
+        <div className="mt-6">
+          <div className="flex flex-col">
+            <div className="font-bold text-[16px]">
+              Please leave your comments so we can improve
+            </div>
+            <div className="rounded-xl border-[#cdcdcd] border-[1px] p-4 mt-3">
+              <div className="flex items-center justify-start space-x-3">
+                <div className="text-[16px] font-semibold">
+                  Express your level of satisfaction in stars
+                </div>
+                <div className="flex space-x-2">
+                  {[...Array(5)].map((star, index) => {
+                    const currentRating = index + 1;
+                    return (
+                      <label key={index}>
+                        <input
+                          type="radio"
+                          name="rating"
+                          value={currentRating}
+                          onChange={() => {
+                            setCustomValue("rating", currentRating);
+                          }}
+                          className="hidden"
+                        />
+                        <FaStar
+                          size={30}
+                          className="cursor-pointer"
+                          color={
+                            currentRating <= (hover || getValues("rating"))
+                              ? "#ffc107"
+                              : "#e4e5e9"
+                          }
+                          onMouseEnter={() => setHover(currentRating)}
+                          onMouseLeave={() => setHover(null)}
+                        />
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+              <div className="my-3">
+                <textarea
+                  className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none h-[120px]"
+                  onChange={(e) => {
+                    setCustomValue("comment", e.target.value);
+                  }}
+                  placeholder="Your comment ..."
+                  value={getValues("comment")}
+                  id="comment"
+                ></textarea>
+              </div>
+              <div className="flex space-x-6 items-start justify-end">
+                <div className="float-right w-[120px]">
+                  <Button
+                    outline
+                    label="Cancel"
+                    onClick={() => {
+                      reset();
+                      setHover(null);
+                    }}
+                  />
+                </div>
+                <div className="float-right w-[120px]">
+                  <Button label="Send" onClick={handleSubmit(handleSend)} />
+                </div>
+              </div>
             </div>
           </div>
         </div>
