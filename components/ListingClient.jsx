@@ -408,13 +408,8 @@ function ListingClient({ reservations = [], place, currentUser }) {
                   <span className="text-md font-bold">Date</span>
                   <span className="text-md font-thin">
                     {dayCount > 1
-                      ? `${dateRange.startDate.getDate()}/
-                    ${dateRange.startDate.getMonth()}/
-                    ${dateRange.startDate.getFullYear()} - ${dateRange.endDate.getDate()}/${dateRange.endDate.getMonth()}
-                    /${dateRange.endDate.getFullYear()}`
-                      : `${dateRange.startDate.getDate()}/
-                    ${dateRange.startDate.getMonth()}/
-                    ${dateRange.startDate.getFullYear()}`}
+                      ? `${dateRange.startDate.getDate()}/${dateRange.startDate.getMonth()}/${dateRange.startDate.getFullYear()} - ${dateRange.endDate.getDate()}/${dateRange.endDate.getMonth()}/${dateRange.endDate.getFullYear()}`
+                      : `${dateRange.startDate.getDate()}/${dateRange.startDate.getMonth()}/${dateRange.startDate.getFullYear()}`}
                   </span>
                 </div>
                 <div className="flex flex-col justify-between items-start">
@@ -442,7 +437,13 @@ function ListingClient({ reservations = [], place, currentUser }) {
                     <h1 className="text-md font-bold space-y-3">
                       {currentUser?.full_name || "User"}
                     </h1>
-                    <p>tháng 11 năm 2023</p>
+                    <p>
+                      {currentUser.created
+                        .split(" ")[0]
+                        .split("-")
+                        .reverse()
+                        .join("/") || "-"}
+                    </p>
                   </div>
                 </div>
                 <textarea
