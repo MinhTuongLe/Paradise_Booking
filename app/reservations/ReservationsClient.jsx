@@ -22,9 +22,10 @@ import Input from "@/components/inputs/Input";
 import Button from "@/components/Button";
 import { API_URL, classNames, place_status } from "@/const";
 import Cookie from "js-cookie";
+import EmptyState from "@/components/EmptyState";
+import { useSelector } from "react-redux";
 
 function ReservationsClient() {
-  // function ReservationsClient({ reservations, currentUser }) {
   const router = useRouter();
   const [deletingId, setDeletingId] = useState("");
   const [id, setId] = useState();
@@ -32,6 +33,7 @@ function ReservationsClient() {
   const [isLoading, setIsLoading] = useState(true);
   const [selected, setSelected] = useState(place_status[0]);
   const [reservations, setReservations] = useState([]);
+  const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
   const cancelButtonRef = useRef(null);
 
@@ -149,6 +151,10 @@ function ReservationsClient() {
   useEffect(() => {
     getReservations();
   }, []);
+
+  if (loggedUser.id !== reservation.user.id) {
+    return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  }
 
   return (
     <Container>
@@ -359,7 +365,7 @@ function ReservationsClient() {
           {reservations.map((item, index) => {
             return (
               <div key={item.id}>
-                <ReservationItem onDelete={onDelete} data={item}/>
+                <ReservationItem onDelete={onDelete} data={item} />
               </div>
             );
           })}

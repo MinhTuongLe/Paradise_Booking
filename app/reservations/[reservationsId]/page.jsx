@@ -13,12 +13,15 @@ const ReservationPage = async ({ params }) => {
   const user = await getUserById(userId);
   // const reservation = await getReservationById(params.reservationsId);
 
+  let authorized = false;
   let reservation;
   if (accessToken && user.role !== 3) {
     reservation = await getReservationById(params.reservationsId);
-  } else {
-    return <EmptyState title="Unauthorized" subtitle="Please login" />;
+    authorized = true;
   }
+
+  if (!authorized)
+    return <EmptyState title="Unauthorized" subtitle="Please login" />;
 
   return (
     <ClientOnly>

@@ -18,10 +18,12 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { FaCheckCircle, FaStar } from "react-icons/fa";
 import { MdPending } from "react-icons/md";
+import EmptyState from "@/components/EmptyState";
 
 function ReservationClient({ reservation }) {
   const dispatch = useDispatch();
   const router = useRouter();
+  const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
   const [isLoading, setIsLoading] = useState(false);
   const [hover, setHover] = useState(null);
@@ -114,6 +116,10 @@ function ReservationClient({ reservation }) {
     }
   };
 
+  if (loggedUser.id !== reservation.user.id) {
+    return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  }
+  
   return (
     <div className="max-w-[768px] mx-auto px-4">
       <h1 className="text-2xl font-bold mt-10 mb-3">Reservation Details</h1>
