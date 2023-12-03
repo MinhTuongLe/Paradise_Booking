@@ -234,20 +234,11 @@ function PropertyClient({ place }) {
                 fill={true}
               />
             )}
-            <Input
-              id="max_guest"
-              label="Max Guest(s)"
-              disabled={isLoading}
-              register={register}
-              errors={errors}
-              type="number"
-              required
-            />
           </div>
         </div>
         <div className="col-span-6 space-y-6">
-          <div className="grid grid-cols-2 gap-6">
-            <div className="col-span-1">
+          <div className="grid grid-cols-12 gap-6">
+            <div className="col-span-4">
               <Input
                 id="capacity"
                 label="Capacity"
@@ -258,7 +249,18 @@ function PropertyClient({ place }) {
                 required
               />
             </div>
-            <div className="col-span-1">
+            <div className="col-span-4">
+              <Input
+                id="max_guest"
+                label="Max Guest(s)"
+                disabled={isLoading}
+                register={register}
+                errors={errors}
+                type="number"
+                required
+              />
+            </div>
+            <div className="col-span-4">
               <Input
                 id="price_per_night"
                 label="Price per Night"
