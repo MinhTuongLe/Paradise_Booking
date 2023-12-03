@@ -59,6 +59,7 @@ function ReservationItem({ onDelete, data }) {
                 <div
                   key={item.id}
                   className={`gap-1 font-semibold bg-[${item.color}] text-white rounded-2xl w-[120px] h-[32px] flex items-center justify-center`}
+                  style={{ backgroundColor: `${item.color}` }}
                 >
                   {item.name}
                 </div>
