@@ -53,6 +53,7 @@ function PropertyClient({ place }) {
       state: place?.city,
       city: place?.city,
       cover: place?.cover || "",
+      max_guest: place?.max_guest,
     },
   });
 
@@ -154,6 +155,7 @@ function PropertyClient({ place }) {
         price_per_night: Number(data?.price_per_night) || 0,
         address: address || place.address,
         capacity: data?.capacity || 1,
+        max_guest: data?.max_guest || place.max_guest,
         lat: lat || place.lat,
         lng: lng || place.lng,
         country: country || place.country,
@@ -225,13 +227,6 @@ function PropertyClient({ place }) {
               errors={errors}
               required
             />
-            {!isLoading && (
-              <ImageUpload
-                onChange={(value) => setCustomValue("cover", value)}
-                value={cover || ""}
-                fill={true}
-              />
-            )}
             <Input
               id="max_guest"
               label="Max Guest(s)"
@@ -241,6 +236,13 @@ function PropertyClient({ place }) {
               type="number"
               required
             />
+            {!isLoading && (
+              <ImageUpload
+                onChange={(value) => setCustomValue("cover", value)}
+                value={cover || ""}
+                fill={true}
+              />
+            )}
           </div>
         </div>
         <div className="col-span-6 space-y-6">
