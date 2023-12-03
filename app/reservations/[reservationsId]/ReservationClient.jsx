@@ -77,7 +77,6 @@ function ReservationClient({ reservation }) {
       //     description: data?.description || "",
       //     price_per_night: Number(data?.price_per_night) || 0,
       //     address: address || place.address,
-      //     capacity: data?.capacity || 1,
       //     lat: lat || place.lat,
       //     lng: lng || place.lng,
       //     country: country || place.country,

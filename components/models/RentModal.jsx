@@ -137,7 +137,7 @@ function RentModal({}) {
         description: data.description,
         price_per_night: Number(data.price_per_night),
         address: address,
-        capacity: data.max_guest,
+        max_guest: data.max_guest,
         lat: lat,
         lng: lng,
         country: country,

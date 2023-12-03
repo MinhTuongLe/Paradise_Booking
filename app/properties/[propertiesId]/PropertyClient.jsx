@@ -45,7 +45,6 @@ function PropertyClient({ place }) {
       price_per_night: place?.price_per_night,
       name: place?.name,
       description: place?.description,
-      capacity: place?.capacity,
       address: place?.address,
       lat: place?.lat,
       lng: place?.lng,
@@ -154,14 +153,13 @@ function PropertyClient({ place }) {
         description: data?.description || "",
         price_per_night: Number(data?.price_per_night) || 0,
         address: address || place.address,
-        capacity: Number(data?.capacity) || 1,
         lat: lat || place.lat,
         lng: lng || place.lng,
         country: country || place.country,
         state: city || place.city,
         city: city || place.city,
         cover: imageUrl || "",
-        max_guest: Number(data?.max_guest) || place.max_guest,
+        max_guest: Number(data?.max_guest) || place.max_guest || 1,
       };
 
       // console.log(submitValues);
@@ -238,18 +236,7 @@ function PropertyClient({ place }) {
         </div>
         <div className="col-span-6 space-y-6">
           <div className="grid grid-cols-12 gap-6">
-            <div className="col-span-4">
-              <Input
-                id="capacity"
-                label="Capacity"
-                type="number"
-                disabled={isLoading}
-                register={register}
-                errors={errors}
-                required
-              />
-            </div>
-            <div className="col-span-4">
+            <div className="col-span-6">
               <Input
                 id="max_guest"
                 label="Max Guest(s)"
@@ -260,7 +247,7 @@ function PropertyClient({ place }) {
                 required
               />
             </div>
-            <div className="col-span-4">
+            <div className="col-span-6">
               <Input
                 id="price_per_night"
                 label="Price per Night"
