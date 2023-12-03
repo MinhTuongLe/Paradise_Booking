@@ -11,7 +11,7 @@ function Logo({}) {
     <div onClick={() => router.push("/")}>
       <Image
         alt="logo"
-        className="hidden md:block cursor-pointer"
+        className="block cursor-pointer"
         height={100}
         width={100}
         src="/assets/logo.png"

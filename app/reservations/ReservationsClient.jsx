@@ -20,9 +20,8 @@ import ReservationItem from "@/components/ReservationItem";
 import { useForm } from "react-hook-form";
 import Input from "@/components/inputs/Input";
 import Button from "@/components/Button";
-import { API_URL, classNames, place_status } from "@/const";
+import { API_URL, booking_status, classNames, place_status } from "@/const";
 import Cookie from "js-cookie";
-import EmptyState from "@/components/EmptyState";
 import { useSelector } from "react-redux";
 
 function ReservationsClient() {
@@ -81,7 +80,7 @@ function ReservationsClient() {
   );
 
   const handleFilter = async (data) => {
-    let statuses = selected.id === 0 ? [1, 2] : [selected.id];
+    let statuses = selected.id === 0 ? null : [selected.id];
     const submitValues = {
       ...data,
       statuses,
@@ -265,7 +264,7 @@ function ReservationsClient() {
                       leaveTo="opacity-0"
                     >
                       <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                        {place_status.map((person) => (
+                        {booking_status.map((person) => (
                           <Listbox.Option
                             key={person.id}
                             className={({ active }) =>

@@ -82,9 +82,9 @@ function UserMenu({ authState, loggedUser }) {
             Paradise your Home
           </div>
         )}
-        <div
+        {/* <div
           // onClick={}
-          className="flex flex-row items-center gap-3 cursor-pointer transition relative"
+          className="md:hidden lg:flex flex-row items-center gap-3 cursor-pointer transition relative"
         >
           <label className="relative inline-flex items-center cursor-pointer">
             <input type="checkbox" value="" className="sr-only peer" />
@@ -100,16 +100,16 @@ function UserMenu({ authState, loggedUser }) {
         {authState && (
           <div
             onClick={toggleNotification}
-            className="flex flex-row items-center gap-3 cursor-pointer transition relative"
+            className="md:hidden lg:flex flex-row items-center gap-3 cursor-pointer transition relative"
           >
             <IoNotifications size={20} />
           </div>
-        )}
+        )} */}
         <div
           onClick={toggleOpen}
-          className="h-full md:px-5 border-[1px] flex flex-row items-center gap-3 sm:rounded-2xl xl:rounded-full cursor-pointer hover:shadow-md transition"
+          className="md:h-[60%] 2xl:h-full md:px-5 md:border-[1px] flex flex-row items-center gap-3 sm:rounded-2xl xl:rounded-full cursor-pointer hover:shadow-md transition"
         >
-          <AiOutlineMenu />
+          <AiOutlineMenu size={24} />
           <div className="hidden md:flex md:justify-center md:items-center md:h-full">
             {loggedUser && loggedUser.avatar ? (
               <Avatar src={loggedUser.avatar} userName={loggedUser.full_name} />
@@ -126,7 +126,7 @@ function UserMenu({ authState, loggedUser }) {
         </div>
       </div>
       {isOpen && (
-        <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm z-30">
+        <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-[100%] text-sm z-30">
           <div className="flex flex-col cursor-pointer">
             {authState && loggedUser ? (
               <>
@@ -142,6 +142,12 @@ function UserMenu({ authState, loggedUser }) {
                     />
                   </>
                 )}
+                <div className="block md:hidden">
+                  <MenuItem
+                    onClick={() => menuItemSelect(`/users/${loggedUser.id}`)}
+                    label="My profile"
+                  />
+                </div>
                 {loggedUser.role === 2 && (
                   <>
                     <MenuItem
@@ -190,7 +196,7 @@ function UserMenu({ authState, loggedUser }) {
           </div>
         </div>
       )}
-      {isOpenNotification && (
+      {/* {isOpenNotification && (
         <div className="absolute rounded-xl shadow-md w-[24vw] bg-white overflow-hidden right-0 top-12 text-sm z-20">
           <div className="col-span-12 space-p-4 p-4 pr-2">
             <h1 className="text-2xl font-bold my-3">Notifications</h1>
@@ -280,7 +286,7 @@ function UserMenu({ authState, loggedUser }) {
             </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

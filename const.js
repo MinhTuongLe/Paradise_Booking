@@ -52,7 +52,7 @@ export const place_status = [
   },
   {
     id: 1,
-    name: "Reserving",
+    name: "Empty",
   },
   {
     id: 2,
