@@ -3,17 +3,15 @@ import getUserById from "@/app/actions/getUserById";
 import ClientOnly from "@/components/ClientOnly";
 import EmptyState from "@/components/EmptyState";
 import ListingClient from "@/components/ListingClient";
-import { mock_data_2 } from "../../../mock-data/reservation";
+import getReservationByPlaceId from "@/app/actions/getReservationByPlaceId";
 
 export const dynamic = "force-dynamic";
 
 const ListingPage = async ({ params }) => {
   const { place, vendor_id } = await getPlaceById(params.listingId);
-  const vendor = await getUserById(vendor_id);
+  const reservations = await getReservationByPlaceId(params.listingId);
 
-  const reservations = mock_data_2.reservations.filter(
-    (item) => item.listingId === params.listingId
-  );
+  const vendor = await getUserById(vendor_id);
 
   if (!place) {
     return (

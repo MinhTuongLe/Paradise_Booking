@@ -36,7 +36,7 @@ function Footer({}) {
     [
       "Hosting",
       "Try hosting",
-      "AirCover for Hosts",
+      "ParadiseCover for Hosts",
       "Explore hosting resources",
       "Safety information",
       "How to host responsibly",

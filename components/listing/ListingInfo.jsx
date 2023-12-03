@@ -51,7 +51,7 @@ function ListingInfo({
       )}
       <div className="flex flex-col">
         <p className="text-4xl font-bold text-[#FF5A5F]">
-          air<span className="text-black">cover</span>
+          paradise<span className="text-black">cover</span>
         </p>
         <p className="text-neutral-500 pt-3">
           Every booking includes free protection from Host cancellations,

@@ -24,8 +24,6 @@ const PropertyPage = async ({ params }) => {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;
   }
 
-  console.log(reservations)
-
   return (
     <ClientOnly>
       <PropertyClient place={place} reservations={reservations} />

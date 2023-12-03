@@ -47,7 +47,7 @@ export const booking_status = [
 
 export const place_status = [
   {
-    id: 0,
+    id: 3,
     name: "All",
   },
   {

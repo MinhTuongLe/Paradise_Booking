@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
@@ -6,22 +7,25 @@ import Heading from "@/components/Heading";
 import ListingCard from "@/components/listing/ListingCard";
 import { API_URL, classNames, place_status } from "@/const";
 import axios from "axios";
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useRef, useState, useEffect } from "react";
 import { Dialog, Transition, Listbox } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { toast } from "react-toastify";
 import Cookie from "js-cookie";
 import { useRouter } from "next/navigation";
+import Button from "@/components/Button";
+import EmptyState from "@/components/EmptyState";
+import Loader from "@/components/Loader";
 
-function PropertiesClient({ listings, currentUser }) {
+function PropertiesClient({ currentUser }) {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [deletingId, setDeletingId] = useState("");
   const [id, setId] = useState();
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(place_status[0]);
-  const [places, setPlaces] = useState([]); 
+  const [places, setPlaces] = useState([]);
 
   const cancelButtonRef = useRef(null);
 
@@ -54,6 +58,36 @@ function PropertiesClient({ listings, currentUser }) {
       });
     setOpen(false);
   };
+
+  const getPlaces = async (type) => {
+    setIsLoading(true);
+    const accessToken = Cookie.get("accessToken");
+    const config = {
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      params: {
+        vendor_id: currentUser.id,
+        type_manage: type,
+      },
+    };
+
+    await axios
+      .get(`${API_URL}/bookings_list/manage_reservation`, config)
+      .then((response) => {
+        setPlaces(response.data.data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        toast.error("Something Went Wrong");
+        setIsLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    getPlaces(selected.id);
+  }, []);
 
   return (
     <Container>
@@ -137,99 +171,111 @@ function PropertiesClient({ listings, currentUser }) {
       <div className="mt-10 mb-6">
         <Heading title="Properties" subtitle="List of your properties" />
       </div>
-      {
-        <div className="flex items-center space-x-6">
-          <span className="font-bold text-[16px]">Place status</span>
-          <Listbox value={selected} onChange={setSelected}>
-            {({ open }) => (
-              <>
-                <div className="relative">
-                  <Listbox.Button className="relative w-[180px] cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6">
-                    <span className="flex items-center">
-                      <span className="ml-3 block truncate">
-                        {selected.name}
-                      </span>
-                    </span>
-                    <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
-                      <ChevronUpDownIcon
-                        className="h-5 w-5 text-gray-400"
-                        aria-hidden="true"
-                      />
-                    </span>
-                  </Listbox.Button>
+      <div className="flex items-center space-x-6">
+        <span className="font-bold text-[16px]">Place status</span>
+        <Listbox
+          value={selected}
+          onChange={(e) => {
+            setSelected(e);
+            getPlaces(e.id);
+          }}
+        >
+          {({ open }) => (
+            <>
+              <div className="relative">
+                <Listbox.Button className="relative w-[180px] cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6">
+                  <span className="flex items-center">
+                    <span className="ml-3 block truncate">{selected.name}</span>
+                  </span>
+                  <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
+                    <ChevronUpDownIcon
+                      className="h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                  </span>
+                </Listbox.Button>
 
-                  <Transition
-                    show={open}
-                    as={Fragment}
-                    leave="transition ease-in duration-100"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                  >
-                    <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                      {place_status.map((person) => (
-                        <Listbox.Option
-                          key={person.id}
-                          className={({ active }) =>
-                            classNames(
-                              active ? "bg-rose-100" : "text-gray-900",
-                              "relative cursor-default select-none py-2 pl-3 pr-9"
-                            )
-                          }
-                          value={person}
-                        >
-                          {({ selected, active }) => (
-                            <>
-                              <div className="flex items-center">
-                                {/* {person.icon} */}
-                                <span
-                                  className={classNames(
-                                    selected ? "font-semibold" : "font-normal",
-                                    "ml-3 block truncate"
-                                  )}
-                                >
-                                  {person.name}
-                                </span>
-                              </div>
+                <Transition
+                  show={open}
+                  as={Fragment}
+                  leave="transition ease-in duration-100"
+                  leaveFrom="opacity-100"
+                  leaveTo="opacity-0"
+                >
+                  <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                    {place_status.map((person) => (
+                      <Listbox.Option
+                        key={person.id}
+                        className={({ active }) =>
+                          classNames(
+                            active ? "bg-rose-100" : "text-gray-900",
+                            "relative cursor-default select-none py-2 pl-3 pr-9"
+                          )
+                        }
+                        value={person}
+                      >
+                        {({ selected, active }) => (
+                          <>
+                            <div className="flex items-center">
+                              {/* {person.icon} */}
+                              <span
+                                className={classNames(
+                                  selected ? "font-semibold" : "font-normal",
+                                  "ml-3 block truncate"
+                                )}
+                              >
+                                {person.name}
+                              </span>
+                            </div>
 
-                              {selected ? (
-                                <span
-                                  className={classNames(
-                                    active ? "text-gray-900" : "text-rose-500",
-                                    "absolute inset-y-0 right-0 flex items-center pr-4"
-                                  )}
-                                >
-                                  <CheckIcon
-                                    className="h-5 w-5"
-                                    aria-hidden="true"
-                                  />
-                                </span>
-                              ) : null}
-                            </>
-                          )}
-                        </Listbox.Option>
-                      ))}
-                    </Listbox.Options>
-                  </Transition>
-                </div>
-              </>
-            )}
-          </Listbox>
-        </div>
-      }
-      <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
-        {!isLoading &&
-          listings.map((listing) => (
-            <ListingCard
-              key={listing.id}
-              data={listing}
-              actionId={listing.id}
-              onAction={onDelete}
-              disabled={deletingId === listing.id}
-              actionLabel="Delete property"
-              currentUser={currentUser}
-            />
-          ))}
+                            {selected ? (
+                              <span
+                                className={classNames(
+                                  active ? "text-gray-900" : "text-rose-500",
+                                  "absolute inset-y-0 right-0 flex items-center pr-4"
+                                )}
+                              >
+                                <CheckIcon
+                                  className="h-5 w-5"
+                                  aria-hidden="true"
+                                />
+                              </span>
+                            ) : null}
+                          </>
+                        )}
+                      </Listbox.Option>
+                    ))}
+                  </Listbox.Options>
+                </Transition>
+              </div>
+            </>
+          )}
+        </Listbox>
       </div>
+      {!isLoading ? (
+        places && places.length > 0 ? (
+          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
+            {places.map((listing) => (
+              <ListingCard
+                key={listing.id}
+                data={listing}
+                actionId={listing.id}
+                onAction={onDelete}
+                disabled={deletingId === listing.id}
+                actionLabel="Delete property"
+                currentUser={currentUser}
+              />
+            ))}
+          </div>
+        ) : (
+          <EmptyState
+            title="No Properties found"
+            subtitle="Looks like you have not any Properties"
+          />
+        )
+      ) : (
+        <Loader />
+      )}
     </Container>
   );
 }

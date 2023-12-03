@@ -18,23 +18,6 @@ const StatisticsPage = async () => {
     );
   }
 
-  // // const reservations = await getReservation({
-  // //   userId: currentUser.id,
-  // // });
-
-  // const _reservations = mock_data_2.reservations.filter(
-  //   (item) => item.userId === currentUser.id
-  // );
-
-  // const reservations = _reservations.map((item) => {
-  //   const listingId = item.listingId;
-  //   const listing = mock_data.listings.find((item) => item.id === listingId);
-  //   return {
-  //     ...item,
-  //     listing,
-  //   };
-  // });
-
   return (
     <ClientOnly>
       <StatisticsClient />

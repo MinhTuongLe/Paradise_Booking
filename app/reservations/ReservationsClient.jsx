@@ -23,6 +23,7 @@ import Button from "@/components/Button";
 import { API_URL, booking_status, classNames, place_status } from "@/const";
 import Cookie from "js-cookie";
 import { useSelector } from "react-redux";
+import Loader from "@/components/Loader";
 
 function ReservationsClient() {
   const router = useRouter();
@@ -355,25 +356,29 @@ function ReservationsClient() {
           />
         </div>
       </div>
-      {!isLoading && reservations && reservations.length > 0 ? (
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
-          {reservations.map((item, index) => {
-            return (
-              <div key={item.id}>
-                <ReservationItem onDelete={onDelete} data={item} />
-              </div>
-            );
-          })}
-        </div>
-      ) : (
-        <div className="mt-12 space-y-4">
-          <span className="text-[24px] font-bold">
-            You don't have any reservation to display
-          </span>
-          <div className="max-w-[160px]">
-            <Button label="Booking now" onClick={() => router.push("/")} />
+      {!isLoading ? (
+        reservations && reservations.length > 0 ? (
+          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
+            {reservations.map((item, index) => {
+              return (
+                <div key={item.id}>
+                  <ReservationItem onDelete={onDelete} data={item} />
+                </div>
+              );
+            })}
           </div>
-        </div>
+        ) : (
+          <div className="mt-12 space-y-4">
+            <span className="text-[24px] font-bold">
+              You don't have any reservation to display
+            </span>
+            <div className="max-w-[160px]">
+              <Button label="Booking now" onClick={() => router.push("/")} />
+            </div>
+          </div>
+        )
+      ) : (
+        <Loader />
       )}
     </Container>
   );

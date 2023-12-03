@@ -36,8 +36,7 @@ const PaginationComponent = ({ page, total, limit }) => {
     <div className="w-full flex justify-center items-center space-x-6 mt-6">
       {page > 1 && (
         <Link legacyBehavior href={`/?page=${page - 1}&limit=${limit}`}>
-          {/* <a className="border px-4 py-2 rounded">Previous</a> */}
-          <FcPrevious className="text-[24px]" />
+          <FcPrevious className="text-[24px] cursor-pointer" />
         </Link>
       )}
 
@@ -59,8 +58,7 @@ const PaginationComponent = ({ page, total, limit }) => {
 
       {page < totalPages && (
         <Link legacyBehavior href={`/?page=${page + 1}&limit=${limit}`}>
-          {/* <a className="border px-4 py-2 rounded">Next</a> */}
-          <FcNext className="text-[24px]" />
+          <FcNext className="text-[24px] cursor-pointer" />
         </Link>
       )}
     </div>

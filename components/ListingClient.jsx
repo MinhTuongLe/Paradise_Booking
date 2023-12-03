@@ -60,14 +60,15 @@ function ListingClient({ reservations = [], place, currentUser }) {
     let dates = [];
 
     reservations.forEach((reservation) => {
+      console.log(reservation.checkin_date, reservation.checkout_date);
       const range = eachDayOfInterval({
-        start: new Date(reservation.startDate),
-        end: new Date(reservation.endDate),
+        start: new Date(reservation.checkin_date),
+        end: new Date(reservation.checkout_date),
       });
 
       dates = [...dates, ...range];
     });
-
+    console.log(dates);
     return dates;
   }, [reservations]);
 
@@ -149,7 +150,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
         .then((response) => {
           setIsLoading(false);
           toast.success(
-            "Booking Successfully! Please check your email in 12 hours to confirm."
+            "Booking Successfully! Please check your email in 1 day to confirm."
           );
           router.refresh();
           reset();

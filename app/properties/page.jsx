@@ -15,9 +15,7 @@ const PropertiesPage = async () => {
   if (!accessToken) unauthorized = true;
 
   const user = await getUserById(userId);
-  let places = [];
-  if (user?.role === 2) places = await getPlaceByVendorId(userId);
-  else unauthorized = true;
+  if (user?.role !== 2) unauthorized = true;
 
   if (unauthorized) {
     return (
@@ -27,20 +25,9 @@ const PropertiesPage = async () => {
     );
   }
 
-  if (places.length === 0) {
-    return (
-      <ClientOnly>
-        <EmptyState
-          title="No Properties found"
-          subtitle="Looks like you have not any Properties"
-        />
-      </ClientOnly>
-    );
-  }
-
   return (
     <ClientOnly>
-      <PropertiesClient listings={places} currentUser={user} />
+      <PropertiesClient currentUser={user} />
     </ClientOnly>
   );
 };
