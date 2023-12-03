@@ -137,8 +137,6 @@ function UserClient({ places, currentUser, role }) {
         avatar: imageUrl,
       };
 
-      // console.log(submitValues);
-
       // update profile
       const config = {
         headers: {
@@ -170,9 +168,7 @@ function UserClient({ places, currentUser, role }) {
     }
   };
 
-  const handleBecomeVendor = () => {
-    console.log(currentUser.id);
-  };
+  const handleBecomeVendor = () => {};
 
   return (
     <div className="max-w-[1200px] mx-auto px-4">

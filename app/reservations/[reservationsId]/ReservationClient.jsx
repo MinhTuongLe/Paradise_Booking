@@ -57,7 +57,6 @@ function ReservationClient({ reservation }) {
   const handleSend = async (data) => {
     try {
       setIsLoading(true);
-      console.log(data);
 
       //   // upload photo
       //   let imageUrl = "";
@@ -86,7 +85,6 @@ function ReservationClient({ reservation }) {
       //     cover: imageUrl || "",
       //   };
 
-      //   // console.log(submitValues);
       //   const accessToken = Cookie.get("accessToken");
       //   const config = {
       //     params: {

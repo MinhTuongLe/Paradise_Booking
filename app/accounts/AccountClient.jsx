@@ -42,7 +42,6 @@ function AccountClient({ accounts }) {
 
   const handleStatusChange = (event, accountId) => {
     const newStatus = event.target.value;
-    // console.log(newStatus, accountId);
 
     const accessToken = Cookie.get("accessToken");
     const config = {

@@ -132,8 +132,6 @@ function PropertyClient({ place, reservations }) {
   };
 
   const handleUpdateBookingStatus = (booking_id, status_id) => {
-    console.log(booking_id, status_id);
-
     setIsLoading(true);
     const accessToken = Cookie.get("accessToken");
     const config = {
@@ -190,7 +188,6 @@ function PropertyClient({ place, reservations }) {
         max_guest: Number(data?.max_guest) || place.max_guest || 1,
       };
 
-      // console.log(submitValues);
       const accessToken = Cookie.get("accessToken");
       const config = {
         params: {

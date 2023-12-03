@@ -146,8 +146,6 @@ function RentModal({}) {
         cover: imageUrl,
       };
 
-      // console.log(submitValues);
-
       // create place
       const accessToken = Cookie.get("accessToken");
       const config = {

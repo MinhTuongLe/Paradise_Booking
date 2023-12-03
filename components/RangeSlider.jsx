@@ -34,7 +34,6 @@ const RangeSlider = ({ initialMin, initialMax, min, max, step, priceCap }) => {
   useEffect(() => {
     progressRef.current.style.left = (minValue / max) * step + "%";
     progressRef.current.style.right = step - (maxValue / max) * step + "%";
-    // console.log(minValue, maxValue);
   }, [minValue, maxValue, max, step]);
 
   return (

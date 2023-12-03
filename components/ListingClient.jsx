@@ -60,7 +60,6 @@ function ListingClient({ reservations = [], place, currentUser }) {
     let dates = [];
 
     reservations.forEach((reservation) => {
-      console.log(reservation.checkin_date, reservation.checkout_date);
       const range = eachDayOfInterval({
         start: new Date(reservation.checkin_date),
         end: new Date(reservation.checkout_date),
@@ -68,7 +67,6 @@ function ListingClient({ reservations = [], place, currentUser }) {
 
       dates = [...dates, ...range];
     });
-    console.log(dates);
     return dates;
   }, [reservations]);
 
@@ -136,7 +134,6 @@ function ListingClient({ reservations = [], place, currentUser }) {
         return;
       }
 
-      // console.log(submitValues);
       const accessToken = Cookie.get("accessToken");
       const config = {
         headers: {

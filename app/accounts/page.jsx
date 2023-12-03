@@ -10,7 +10,6 @@ export const dynamic = "force-dynamic";
 const AccountPage = async ({}) => {
   let unauthorized = false;
   const accessToken = cookies().get("accessToken")?.value;
-  // console.log(accounts_data);
 
   const userId = cookies().get("userId")?.value;
   const user = await getUserById(userId);
@@ -21,7 +20,6 @@ const AccountPage = async ({}) => {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;
   } else {
     accounts = await getAccounts();
-    console.log(accounts);
   }
 
   return (

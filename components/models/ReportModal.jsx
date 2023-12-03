@@ -92,8 +92,6 @@ function ReportModal({}) {
       return onNext();
     }
 
-    console.log(data);
-
     // setIsLoading(true);
 
     // axios
