@@ -71,7 +71,12 @@ function ReservationsClient() {
   );
 
   const handleFilter = (data) => {
-    console.log(data);
+    let status = selected.id === 0 ? [1, 2] : [selected.id];
+    const submitValues = {
+      ...data,
+      status,
+    };
+    console.log(submitValues);
   };
 
   const handleClearAllFilters = () => {
