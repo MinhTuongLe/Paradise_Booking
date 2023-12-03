@@ -137,7 +137,7 @@ function RentModal({}) {
         description: data.description,
         price_per_night: Number(data.price_per_night),
         address: address,
-        max_guest: data.max_guest,
+        capacity: data.max_guest,
         lat: lat,
         lng: lng,
         country: country,
@@ -305,7 +305,6 @@ function RentModal({}) {
               />
             </div>
           </div>
-          <hr />
         </div>
       </div>
     </div>
@@ -324,7 +323,6 @@ function RentModal({}) {
             />
           </div>
         ))}
-        <hr />
       </div>
     );
   }
@@ -355,7 +353,6 @@ function RentModal({}) {
           </label>
         </div>
         <Map center={[lat, lng]} onSearchResult={handleSearchResult} />
-        <hr />
       </div>
     );
   }
@@ -387,7 +384,6 @@ function RentModal({}) {
           value={bathroomCount}
           onChange={(value) => setCustomValue("bathroomCount", value)}
         />
-        <hr />
       </div>
     );
   }
@@ -404,7 +400,6 @@ function RentModal({}) {
           value={cover}
           classname="h-[40vh] w-full object-cover"
         />
-        <hr />
       </div>
     );
   }
@@ -413,8 +408,8 @@ function RentModal({}) {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title="Set your place name and description"
-          subtitle="What is name and description of it?"
+          title="Now, set your price"
+          subtitle="How much do you charge per night?"
         />
         <Input
           id="name"
@@ -433,7 +428,6 @@ function RentModal({}) {
           errors={errors}
           required
         />
-        <hr />
       </div>
     );
   }
@@ -455,7 +449,6 @@ function RentModal({}) {
           errors={errors}
           required
         />
-        <hr />
       </div>
     );
   }
