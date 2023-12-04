@@ -194,7 +194,6 @@ function PropertiesClient({ currentUser }) {
                     />
                   </span>
                 </Listbox.Button>
-
                 <Transition
                   show={open}
                   as={Fragment}
