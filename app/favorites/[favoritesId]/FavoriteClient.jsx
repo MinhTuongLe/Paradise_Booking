@@ -12,7 +12,7 @@ import { API_URL, booking_status, classNames, place_status } from "@/const";
 import Cookie from "js-cookie";
 import { toast } from "react-toastify";
 
-function FavoritesClient({ listings }) {
+function FavoriteClient({ listings }) {
   const [isLoading, setIsLoading] = useState(true);
   const [item, setItem] = useState();
   const [open, setOpen] = useState(false);
@@ -142,4 +142,4 @@ function FavoritesClient({ listings }) {
   );
 }
 
-export default FavoritesClient;
+export default FavoriteClient;

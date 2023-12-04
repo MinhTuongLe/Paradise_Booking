@@ -1,13 +1,13 @@
 import ClientOnly from "@/components/ClientOnly";
 import EmptyState from "@/components/EmptyState";
 import React from "react";
-import FavoritesClient from "./FavoritesClient";
+import FavoriteClient from "./FavoriteClient";
 import { cookies } from "next/headers";
 import getUserById from "@/app/actions/getUserById";
 
 export const dynamic = "force-dynamic";
 
-const FavoritesPage = async () => {
+const FavoritePage = async () => {
   const accessToken = cookies().get("accessToken")?.value;
   const userId = cookies().get("userId")?.value;
   const user = await getUserById(userId);
@@ -44,9 +44,9 @@ const FavoritesPage = async () => {
 
   return (
     <ClientOnly>
-      <FavoritesClient listings={listings} />
+      <FavoriteClient listings={listings} />
     </ClientOnly>
   );
 };
 
-export default FavoritesPage;
+export default FavoritePage;
