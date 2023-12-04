@@ -60,16 +60,18 @@ const data = {
 
 function StatisticsClient() {
   return (
-    <Container>
-      <div className="mt-10">
-        <Heading
-          ce
-          title="Statistics"
-          subtitle="The chart shows statistics from the website"
-        />
-      </div>
-      <Bar options={options} data={data} />
-    </Container>
+    <div className="max-w-[1440px] h-full mx-auto xl:px-20 md:px-2 sm:px-2 px-4">
+      <Container>
+        <div className="mt-10">
+          <Heading
+            ce
+            title="Statistics"
+            subtitle="The chart shows statistics from the website"
+          />
+        </div>
+        <Bar options={options} data={data} />
+      </Container>
+    </div>
   );
 }
 

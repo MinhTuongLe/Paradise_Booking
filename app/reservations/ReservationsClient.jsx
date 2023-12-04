@@ -3,13 +3,7 @@
 
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import React, {
-  useCallback,
-  useState,
-  Fragment,
-  useRef,
-  useEffect,
-} from "react";
+import React, { useState, Fragment, useRef, useEffect } from "react";
 import { Dialog, Transition, Listbox } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
@@ -22,18 +16,15 @@ import Input from "@/components/inputs/Input";
 import Button from "@/components/Button";
 import { API_URL, booking_status, classNames, place_status } from "@/const";
 import Cookie from "js-cookie";
-import { useSelector } from "react-redux";
 import Loader from "@/components/Loader";
 
 function ReservationsClient() {
   const router = useRouter();
-  const [deletingId, setDeletingId] = useState("");
-  const [id, setId] = useState();
+  const [item, setItem] = useState();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [selected, setSelected] = useState(place_status[0]);
   const [reservations, setReservations] = useState([]);
-  const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
   const cancelButtonRef = useRef(null);
 
@@ -42,7 +33,6 @@ function ReservationsClient() {
     handleSubmit,
     reset,
     setValue,
-    watch,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -51,34 +41,6 @@ function ReservationsClient() {
       statuses: selected,
     },
   });
-
-  const setCustomValue = (id, value) => {
-    setValue(id, value, {
-      shouldValidate: true,
-      shouldDirty: true,
-      shouldTouch: true,
-    });
-  };
-
-  const onCancel = useCallback(
-    (id) => {
-      setDeletingId(id);
-
-      axios
-        .delete(`/api/reservations/${id}`)
-        .then(() => {
-          toast.info("Reservation cancelled");
-          router.refresh();
-        })
-        .catch((error) => {
-          toast.error(error?.response?.data?.error);
-        })
-        .finally(() => {
-          setDeletingId("");
-        });
-    },
-    [router]
-  );
 
   const handleFilter = async (data) => {
     let statuses = selected.id === 0 ? null : [selected.id];
@@ -95,34 +57,36 @@ function ReservationsClient() {
     getReservations();
   };
 
-  const onDelete = (id) => {
-    setId(id);
+  const onDelete = (item) => {
+    setItem(item);
     setOpen(true);
   };
 
   const handleDelete = () => {
-    // setIsLoading(true);
-    // const accessToken = Cookie.get("accessToken");
-    // const config = {
-    //   params: {
-    //     id: id,
-    //   },
-    //   headers: {
-    //     Authorization: `Bearer ${accessToken}`,
-    //   },
-    // };
-    // axios
-    //   .delete(`${API_URL}/places`, config)
-    //   .then(() => {
-    //     toast.success(`Delete room successfully`);
-    //     setIsLoading(false);
-    //     router.refresh();
-    //   })
-    //   .catch(() => {
-    //     toast.error("Delete room failed");
-    //     setIsLoading(false);
-    //   });
-    console.log(123123123123);
+    if (item.status_id !== 5 && item.status_id !== 6) {
+      toast.error(`Delete failed. This reservation is processing`);
+      setOpen(false);
+      return;
+    }
+    setIsLoading(true);
+    const accessToken = Cookie.get("accessToken");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+    axios
+      .delete(`${API_URL}/bookings/${item.id}`, config)
+      .then(() => {
+        toast.success(`Delete reservation successfully`);
+        getReservations();
+        setIsLoading(false);
+        router.refresh();
+      })
+      .catch(() => {
+        toast.error("Delete reservation failed");
+        setIsLoading(false);
+      });
     setOpen(false);
   };
 
@@ -242,7 +206,7 @@ function ReservationsClient() {
               {({ open }) => (
                 <>
                   <div className="relative">
-                    <Listbox.Button className="relative w-[180px] cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 sm:text-sm sm:leading-6">
+                    <Listbox.Button className="relative w-[180px] cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-500 sm:text-sm sm:leading-6">
                       <span className="flex items-center">
                         {selected?.icon && (
                           <div className={`text-[${selected.color}]`}>
@@ -368,7 +332,10 @@ function ReservationsClient() {
             {reservations.map((item, index) => {
               return (
                 <div key={item.id}>
-                  <ReservationItem onDelete={onDelete} data={item} />
+                  <ReservationItem
+                    onDelete={() => onDelete(item)}
+                    data={item}
+                  />
                 </div>
               );
             })}

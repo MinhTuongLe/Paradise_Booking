@@ -59,14 +59,15 @@ function ListingClient({ reservations = [], place, currentUser }) {
   const disableDates = useMemo(() => {
     let dates = [];
 
-    reservations.forEach((reservation) => {
-      const range = eachDayOfInterval({
-        start: new Date(reservation.checkin_date),
-        end: new Date(reservation.checkout_date),
-      });
+    reservations &&
+      reservations.forEach((reservation) => {
+        const range = eachDayOfInterval({
+          start: new Date(reservation.checkin_date),
+          end: new Date(reservation.checkout_date),
+        });
 
-      dates = [...dates, ...range];
-    });
+        dates = [...dates, ...range];
+      });
     return dates;
   }, [reservations]);
 
@@ -186,6 +187,10 @@ function ListingClient({ reservations = [], place, currentUser }) {
       setLng(searchResult.x);
     }
   }, [searchResult]);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [paymentMode]);
 
   const category = useMemo(() => {
     return categories.find((item) => item.label === place.category);
