@@ -4,10 +4,12 @@ import AccountClient from "./AccountClient";
 import { cookies } from "next/headers";
 import getUserById from "@/app/actions/getUserById";
 import getAccounts from "@/app/actions/getAccounts";
+import PaginationComponent from "@/components/PaginationComponent";
+import { LIMIT } from "@/const";
 
 export const dynamic = "force-dynamic";
 
-const AccountPage = async ({}) => {
+const AccountPage = async ({ searchParams }) => {
   let unauthorized = false;
   const accessToken = cookies().get("accessToken")?.value;
 
@@ -15,16 +17,28 @@ const AccountPage = async ({}) => {
   const user = await getUserById(userId);
   if (!accessToken || !userId || !user || user?.role !== 3) unauthorized = true;
 
-  let accounts = [];
+  let obj = {
+    accounts: [],
+    paging: {
+      total: 0,
+      limit: LIMIT,
+      page: 1,
+    },
+  };
   if (unauthorized) {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;
   } else {
-    accounts = await getAccounts();
+    obj = await getAccounts(searchParams || { page: 1, limit: LIMIT });
   }
 
   return (
     <ClientOnly>
-      <AccountClient accounts={accounts} />
+      <AccountClient accounts={obj.accounts} />
+      <PaginationComponent
+        page={Number(searchParams?.page) || 1}
+        total={obj.paging?.total || LIMIT}
+        limit={obj.paging?.limit || LIMIT}
+      />
     </ClientOnly>
   );
 };

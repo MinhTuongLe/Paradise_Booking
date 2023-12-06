@@ -8,8 +8,6 @@ import { LIMIT } from "@/const";
 export const dynamic = "force-dynamic";
 
 export default async function Home({ searchParams }) {
-  // console.log(searchParams);
-
   const { places, paging } = await getPlaces(
     searchParams || { page: 1, limit: LIMIT }
   );

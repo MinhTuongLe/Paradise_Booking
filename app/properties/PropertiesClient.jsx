@@ -14,12 +14,14 @@ import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { toast } from "react-toastify";
 import Cookie from "js-cookie";
 import { useRouter } from "next/navigation";
-import Button from "@/components/Button";
 import EmptyState from "@/components/EmptyState";
 import Loader from "@/components/Loader";
+import { useSelector } from "react-redux";
 
 function PropertiesClient({ currentUser }) {
   const router = useRouter();
+  const loggedUser = useSelector((state) => state.authSlice.loggedUser);
+
   const [isLoading, setIsLoading] = useState(true);
   const [id, setId] = useState();
   const [open, setOpen] = useState(false);
@@ -49,6 +51,7 @@ function PropertiesClient({ currentUser }) {
       .then(() => {
         setOpen(false);
         toast.success(`Delete room successfully`);
+        getPlaces(selected.id);
         setIsLoading(false);
         router.refresh();
       })
@@ -88,6 +91,11 @@ function PropertiesClient({ currentUser }) {
   useEffect(() => {
     getPlaces(selected.id);
   }, []);
+
+  // còn bị lỗi
+  if (loggedUser.id !== currentUser.id) {
+    return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  }
 
   return (
     <Container>

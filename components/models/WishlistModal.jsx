@@ -70,10 +70,11 @@ function WishlistModal() {
         user_id: Number(user_id),
       };
 
-      axios
+      await axios
         .post(`${API_URL}/wish_lists`, submitValues, config)
         .then(() => {
           toast.success("Create New Wishlist Successfully");
+          getWishListByUserId();
           setIsLoading(false);
           onBack();
         })
@@ -143,8 +144,8 @@ function WishlistModal() {
   };
 
   useEffect(() => {
-    getWishListByUserId();
-  }, []);
+    if (wishlistModal.isOpen) getWishListByUserId();
+  }, [wishlistModal.isOpen]);
 
   let bodyContent = (
     <>

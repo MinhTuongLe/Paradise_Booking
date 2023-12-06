@@ -245,11 +245,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
             <hr />
             <div className="my-8 w-full">
               <p className="text-xl font-semibold mb-8">{`Where you’ll be`}</p>
-              <Map
-                center={[lat, lng]}
-                locationValue={place.country}
-                onSearchResult={handleSearchResult}
-              />
+              <Map center={[lat, lng]} onSearchResult={handleSearchResult} />
             </div>
             <hr />
             <div className="my-8 w-full">

@@ -326,161 +326,164 @@ function PropertyClient({ place, reservations }) {
           </div>
         </div>
       </div>
-      {reservations.map((item, index) => {
-        return (
-          <div key={index} className="mt-16">
-            <hr />
-            <div className="mt-12">
-              <div>
-                <div className="flex justify-between items-center">
-                  <span className="font-bold text-[16px]">
-                    {`${
-                      item.place?.address ? item.place?.address + ", " : ""
-                    } ${item.place.city}, ${item.place.country}`}
-                  </span>
-                  <span className="text-[#828080] font-bold">
-                    Booking ID: {item.id}
-                  </span>
-                </div>
-                <div className="mt-3 rounded-xl border-[#cdcdcd] border-[1px]">
-                  <div className="flex justify-between items-center border-b-[#cdcdcd] border-b-[1px] p-4">
-                    <Listbox
-                      value={booking_status.map(
-                        (status) => status.id === item.status_id
-                      )}
-                      onChange={(e) => handleUpdateBookingStatus(item.id, e.id)}
-                    >
-                      {({ open }) => (
-                        <>
-                          <div className="relative mt-2">
-                            <Listbox.Button className="relative w-[180px] cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-500 sm:text-sm sm:leading-6">
-                              <span className="flex items-center">
-                                {booking_status.map(
-                                  (status) =>
-                                    status.id === item.status_id && (
-                                      <div
-                                        key={status.id}
-                                        className={`text-[${status.color}]`}
-                                      >
-                                        {status.icon}
-                                      </div>
-                                    )
-                                )}
-                                <span className="ml-3 block truncate">
+      {reservations &&
+        reservations?.map((item, index) => {
+          return (
+            <div key={index} className="mt-16">
+              <hr />
+              <div className="mt-12">
+                <div>
+                  <div className="flex justify-between items-center">
+                    <span className="font-bold text-[16px]">
+                      {`${
+                        item.place?.address ? item.place?.address + ", " : ""
+                      } ${item.place.city}, ${item.place.country}`}
+                    </span>
+                    <span className="text-[#828080] font-bold">
+                      Booking ID: {item.id}
+                    </span>
+                  </div>
+                  <div className="mt-3 rounded-xl border-[#cdcdcd] border-[1px]">
+                    <div className="flex justify-between items-center border-b-[#cdcdcd] border-b-[1px] p-4">
+                      <Listbox
+                        value={booking_status.map(
+                          (status) => status.id === item.status_id
+                        )}
+                        onChange={(e) =>
+                          handleUpdateBookingStatus(item.id, e.id)
+                        }
+                      >
+                        {({ open }) => (
+                          <>
+                            <div className="relative mt-2">
+                              <Listbox.Button className="relative w-[180px] cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-500 sm:text-sm sm:leading-6">
+                                <span className="flex items-center">
                                   {booking_status.map(
                                     (status) =>
-                                      status.id === item.status_id &&
-                                      status.name
-                                  )}
-                                </span>
-                              </span>
-                              <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
-                                <ChevronUpDownIcon
-                                  className="h-5 w-5 text-gray-400"
-                                  aria-hidden="true"
-                                />
-                              </span>
-                            </Listbox.Button>
-
-                            <Transition
-                              show={open}
-                              as={Fragment}
-                              leave="transition ease-in duration-100"
-                              leaveFrom="opacity-100"
-                              leaveTo="opacity-0"
-                            >
-                              <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                {booking_status.map((person) => (
-                                  <Listbox.Option
-                                    key={person.id}
-                                    className={({ active }) =>
-                                      classNames(
-                                        active
-                                          ? "bg-rose-100"
-                                          : "text-gray-900",
-                                        "relative cursor-default select-none py-2 pl-3 pr-9"
-                                      )
-                                    }
-                                    value={person}
-                                  >
-                                    {({ selected, active }) => (
-                                      <>
+                                      status.id === item.status_id && (
                                         <div
-                                          className={`flex items-center text-[${person.color}]`}
+                                          key={status.id}
+                                          className={`text-[${status.color}]`}
                                         >
-                                          {person.icon}
-                                          <span
-                                            className={classNames(
-                                              selected
-                                                ? "font-semibold"
-                                                : "font-normal",
-                                              "ml-3 block truncate"
-                                            )}
-                                          >
-                                            {person.name}
-                                          </span>
+                                          {status.icon}
                                         </div>
-
-                                        {selected ? (
-                                          <span
-                                            className={classNames(
-                                              active
-                                                ? "text-gray-900"
-                                                : "text-rose-500",
-                                              "absolute inset-y-0 right-0 flex items-center pr-4"
-                                            )}
-                                          >
-                                            <CheckIcon
-                                              className="h-5 w-5"
-                                              aria-hidden="true"
-                                            />
-                                          </span>
-                                        ) : null}
-                                      </>
+                                      )
+                                  )}
+                                  <span className="ml-3 block truncate">
+                                    {booking_status.map(
+                                      (status) =>
+                                        status.id === item.status_id &&
+                                        status.name
                                     )}
-                                  </Listbox.Option>
-                                ))}
-                              </Listbox.Options>
-                            </Transition>
-                          </div>
-                        </>
-                      )}
-                    </Listbox>
-                    <div className="font-extrabold text-[20px]">
-                      Total Price:
-                      <span className="pl-2 font-bold text-[18px]">
-                        ${item.place.price_per_night}
-                      </span>
+                                  </span>
+                                </span>
+                                <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
+                                  <ChevronUpDownIcon
+                                    className="h-5 w-5 text-gray-400"
+                                    aria-hidden="true"
+                                  />
+                                </span>
+                              </Listbox.Button>
+
+                              <Transition
+                                show={open}
+                                as={Fragment}
+                                leave="transition ease-in duration-100"
+                                leaveFrom="opacity-100"
+                                leaveTo="opacity-0"
+                              >
+                                <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                  {booking_status.map((person) => (
+                                    <Listbox.Option
+                                      key={person.id}
+                                      className={({ active }) =>
+                                        classNames(
+                                          active
+                                            ? "bg-rose-100"
+                                            : "text-gray-900",
+                                          "relative cursor-default select-none py-2 pl-3 pr-9"
+                                        )
+                                      }
+                                      value={person}
+                                    >
+                                      {({ selected, active }) => (
+                                        <>
+                                          <div
+                                            className={`flex items-center text-[${person.color}]`}
+                                          >
+                                            {person.icon}
+                                            <span
+                                              className={classNames(
+                                                selected
+                                                  ? "font-semibold"
+                                                  : "font-normal",
+                                                "ml-3 block truncate"
+                                              )}
+                                            >
+                                              {person.name}
+                                            </span>
+                                          </div>
+
+                                          {selected ? (
+                                            <span
+                                              className={classNames(
+                                                active
+                                                  ? "text-gray-900"
+                                                  : "text-rose-500",
+                                                "absolute inset-y-0 right-0 flex items-center pr-4"
+                                              )}
+                                            >
+                                              <CheckIcon
+                                                className="h-5 w-5"
+                                                aria-hidden="true"
+                                              />
+                                            </span>
+                                          ) : null}
+                                        </>
+                                      )}
+                                    </Listbox.Option>
+                                  ))}
+                                </Listbox.Options>
+                              </Transition>
+                            </div>
+                          </>
+                        )}
+                      </Listbox>
+                      <div className="font-extrabold text-[20px]">
+                        Total Price:
+                        <span className="pl-2 font-bold text-[18px]">
+                          ${item.place.price_per_night}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="border-b-[#cdcdcd] border-b-[1px] p-4 w-full">
-                    <div className="text-[#828080] font-bold text-[14px] mb-2">
-                      USER INFORMATION
-                    </div>
-                    <div className="flex justify-start items-start space-x-6 w-full">
-                      <Image
-                        src={item.user.avatar || emptyImageSrc}
-                        width={64}
-                        height={64}
-                        className="rounded-full"
-                        alt="Avatar"
-                      />
-                      <div className="flex justify-between items-start w-[60%]">
-                        <div>
-                          <div className="text-[16px] font-semibold">
-                            Fullname:{" "}
-                            <span className="ml-1 font-normal">
-                              {item.user.full_name || "-"}
-                            </span>
+                    <div className="border-b-[#cdcdcd] border-b-[1px] p-4 w-full">
+                      <div className="text-[#828080] font-bold text-[14px] mb-2">
+                        USER INFORMATION
+                      </div>
+                      <div className="flex justify-start items-start space-x-6 w-full">
+                        <Image
+                          src={item.user.avatar || emptyImageSrc}
+                          width={64}
+                          height={64}
+                          className="rounded-full"
+                          alt="Avatar"
+                        />
+                        <div className="flex justify-between items-start w-[60%]">
+                          <div>
+                            <div className="text-[16px] font-semibold">
+                              Fullname:{" "}
+                              <span className="ml-1 font-normal">
+                                {item.user.full_name || "-"}
+                              </span>
+                            </div>
+                            <div className="text-[16px] font-semibold">
+                              Email:
+                              <span className="ml-1 font-normal">
+                                {item.user.email || "-"}
+                              </span>
+                            </div>
                           </div>
-                          <div className="text-[16px] font-semibold">
-                            Email:
-                            <span className="ml-1 font-normal">
-                              {item.user.email || "-"}
-                            </span>
-                          </div>
-                        </div>
-                        {/* <div>
+                          {/* <div>
                           <div className="text-[16px] font-semibold">
                             Guestname:
                             <span className="ml-1 font-normal">
@@ -494,43 +497,43 @@ function PropertyClient({ place, reservations }) {
                             </span>
                           </div>
                         </div> */}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="flex justify-start items-center space-x-[100px] border-b-[#cdcdcd] border-b-[1px] p-4">
-                    <div className="text-[16px] font-semibold">
-                      To: {item.checkin_date}
-                    </div>
-                    <div className="text-[16px] font-semibold">
-                      From: {item.checkout_date}
-                    </div>
-                  </div>
-                  <div className="flex justify-start items-center space-x-32 p-4">
-                    <div className="">
-                      <div className="text-[#828080] font-bold text-[14px]">
-                        PURCHASED ON
+                    <div className="flex justify-start items-center space-x-[100px] border-b-[#cdcdcd] border-b-[1px] p-4">
+                      <div className="text-[16px] font-semibold">
+                        To: {item.checkin_date}
                       </div>
                       <div className="text-[16px] font-semibold">
-                        {item.created_at
-                          .split("T")[0]
-                          .split("-")
-                          .reverse()
-                          .join("-") || "-"}
+                        From: {item.checkout_date}
                       </div>
                     </div>
-                    <div className="">
-                      <div className="text-[#828080] font-bold text-[14px]">
-                        PAYMENT METHOD
+                    <div className="flex justify-start items-center space-x-32 p-4">
+                      <div className="">
+                        <div className="text-[#828080] font-bold text-[14px]">
+                          PURCHASED ON
+                        </div>
+                        <div className="text-[16px] font-semibold">
+                          {item.created_at
+                            .split("T")[0]
+                            .split("-")
+                            .reverse()
+                            .join("-") || "-"}
+                        </div>
                       </div>
-                      <div className="text-[16px] font-semibold">COD</div>
+                      <div className="">
+                        <div className="text-[#828080] font-bold text-[14px]">
+                          PAYMENT METHOD
+                        </div>
+                        <div className="text-[16px] font-semibold">COD</div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
     </div>
   );
 }

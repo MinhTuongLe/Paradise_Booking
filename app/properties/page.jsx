@@ -1,7 +1,6 @@
 import ClientOnly from "@/components/ClientOnly";
 import EmptyState from "@/components/EmptyState";
 import PropertiesClient from "./PropertiesClient";
-import getPlaceByVendorId from "@/app/actions/getPlaceByVendorId";
 import getUserById from "@/app/actions/getUserById";
 import { cookies } from "next/headers";
 

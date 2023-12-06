@@ -28,6 +28,7 @@ import { setLoggUser } from "@/components/slice/authSlice";
 import { useSelector } from "react-redux";
 import Cookie from "js-cookie";
 import { IoBriefcaseOutline, IoClose } from "react-icons/io5";
+import EmptyState from "@/components/EmptyState";
 
 const data = {
   name: "Le Minh Tuong",
@@ -169,6 +170,10 @@ function UserClient({ places, currentUser, role }) {
   };
 
   const handleBecomeVendor = () => {};
+
+  if (loggedUser.id !== currentUser.id) {
+    return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  }
 
   return (
     <div className="max-w-[1200px] mx-auto px-4">

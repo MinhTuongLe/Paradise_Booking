@@ -158,7 +158,6 @@ function RentModal({}) {
         .post(`${API_URL}/places`, submitValues, config)
         .then(() => {
           toast.success("Create place successfully");
-          router.refresh();
           reset();
           setStep(STEPS.BECOME_VENDOR);
           rentModel.onClose();
@@ -169,6 +168,7 @@ function RentModal({}) {
         .finally(() => {
           setIsLoading(false);
         });
+      router.refresh();
     } catch (error) {
       toast.error("Something went wrong");
     } finally {
