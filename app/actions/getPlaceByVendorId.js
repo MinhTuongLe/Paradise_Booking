@@ -9,6 +9,6 @@ export default async function getPlaceByVendorId(vendor_id) {
 
     return place;
   } catch (error) {
-    console.log("By vendor Something went wrong");
+    console.log("Something went wrong");
   }
 }

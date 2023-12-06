@@ -23,9 +23,10 @@ export default async function getAccounts({ page, limit }) {
 
     const response = await axios.get(`${API_URL}/accounts`, config);
 
-    const accounts = response.data.data;
+    const accounts = response?.data?.data;
+    const paging = response?.data?.paging;
 
-    return accounts;
+    return { accounts, paging };
   } catch (error) {
     console.log("Something went wrong");
   }

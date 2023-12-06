@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState, Fragment, useRef, useEffect } from "react";
 import { Dialog, Transition, Listbox } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
@@ -14,17 +15,25 @@ import ReservationItem from "@/components/ReservationItem";
 import { useForm } from "react-hook-form";
 import Input from "@/components/inputs/Input";
 import Button from "@/components/Button";
-import { API_URL, booking_status, classNames, place_status } from "@/const";
+import {
+  API_URL,
+  LIMIT,
+  booking_status,
+  classNames,
+  place_status,
+} from "@/const";
 import Cookie from "js-cookie";
 import Loader from "@/components/Loader";
+import PaginationComponent from "@/components/PaginationComponent";
 
 function ReservationsClient() {
   const router = useRouter();
+  const params = useSearchParams();
   const [item, setItem] = useState();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [selected, setSelected] = useState(place_status[0]);
-  const [reservations, setReservations] = useState([]);
+  const [reservations, setReservations] = useState({});
 
   const cancelButtonRef = useRef(null);
 
@@ -98,12 +107,16 @@ function ReservationsClient() {
         "content-type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
+      params: {
+        page: params.get("page") || 1,
+        limit: params.get("limit") || LIMIT,
+      },
     };
 
     await axios
       .post(`${API_URL}/booking_list`, filterValues || null, config)
       .then((response) => {
-        setReservations(response.data.data);
+        setReservations(response.data);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -114,7 +127,7 @@ function ReservationsClient() {
 
   useEffect(() => {
     getReservations();
-  }, []);
+  }, [params]);
 
   return (
     <Container>
@@ -327,19 +340,26 @@ function ReservationsClient() {
         </div>
       </div>
       {!isLoading ? (
-        reservations && reservations.length > 0 ? (
-          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
-            {reservations.map((item, index) => {
-              return (
-                <div key={item.id}>
-                  <ReservationItem
-                    onDelete={() => onDelete(item)}
-                    data={item}
-                  />
-                </div>
-              );
-            })}
-          </div>
+        reservations && reservations.data.data.length > 0 ? (
+          <>
+            <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
+              {reservations.data.data.map((item, index) => {
+                return (
+                  <div key={item.id}>
+                    <ReservationItem
+                      onDelete={() => onDelete(item)}
+                      data={item}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+            <PaginationComponent
+              page={Number(params.get("page")) || 1}
+              total={reservations.paging?.total || LIMIT}
+              limit={reservations.paging?.limit || LIMIT}
+            />
+          </>
         ) : (
           <div className="mt-12 space-y-4">
             <span className="text-[24px] font-bold">

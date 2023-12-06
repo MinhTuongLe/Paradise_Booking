@@ -2,9 +2,11 @@
 import React from "react";
 import Link from "next/link";
 import { FcPrevious, FcNext } from "react-icons/fc";
+import { usePathname } from "next/navigation";
 
 const PaginationComponent = ({ page, total, limit }) => {
   const totalPages = Math.ceil(total / limit);
+  const pathname = usePathname();
 
   const getPageNumbers = () => {
     const pages = [];
@@ -35,7 +37,10 @@ const PaginationComponent = ({ page, total, limit }) => {
   return (
     <div className="w-full flex justify-center items-center space-x-6 mt-6">
       {page > 1 && (
-        <Link legacyBehavior href={`/?page=${page - 1}&limit=${limit}`}>
+        <Link
+          legacyBehavior
+          href={`${pathname}/?page=${page - 1}&limit=${limit}`}
+        >
           <FcPrevious className="text-[24px] cursor-pointer" />
         </Link>
       )}
@@ -44,7 +49,7 @@ const PaginationComponent = ({ page, total, limit }) => {
         <Link
           legacyBehavior
           key={pageNumber}
-          href={`/?page=${pageNumber}&limit=${limit}`}
+          href={`${pathname}/?page=${pageNumber}&limit=${limit}`}
         >
           <a
             className={`border px-4 py-2 rounded ${
@@ -57,7 +62,10 @@ const PaginationComponent = ({ page, total, limit }) => {
       ))}
 
       {page < totalPages && (
-        <Link legacyBehavior href={`/?page=${page + 1}&limit=${limit}`}>
+        <Link
+          legacyBehavior
+          href={`${pathname}/?page=${page + 1}&limit=${limit}`}
+        >
           <FcNext className="text-[24px] cursor-pointer" />
         </Link>
       )}

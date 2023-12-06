@@ -16,7 +16,7 @@ export default async function getReservationById(reservationId) {
       },
     });
 
-    const reservation = response.data.data;
+    const reservation = response.data;
 
     return reservation;
   } catch (error) {
