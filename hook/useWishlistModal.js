@@ -2,8 +2,9 @@ import { create } from "zustand";
 
 const useWishlistModal = create((set) => ({
   isOpen: false,
-  onOpen: () => set({ isOpen: true }),
-  onClose: () => set({ isOpen: false }),
+  listingId: null,
+  onOpen: (id) => set({ isOpen: true, listingId: id }),
+  onClose: () => set({ isOpen: false, listingId: null }),
 }));
 
 export default useWishlistModal;

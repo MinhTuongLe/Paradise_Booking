@@ -3,17 +3,20 @@
 
 import Container from "@/components/Container";
 import Heading from "@/components/Heading";
-import WishlistCard from "@/components/listing/WishlistCard";
-import { Dialog, Transition, Listbox } from "@headlessui/react";
+import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
-import React, { useState, Fragment, useRef, useEffect } from "react";
-import { API_URL, booking_status, classNames, place_status } from "@/const";
+import React, { useState, Fragment, useRef } from "react";
+import { API_URL } from "@/const";
 import Cookie from "js-cookie";
 import { toast } from "react-toastify";
+import ListingCard from "@/components/listing/ListingCard";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import Loader from "@/components/Loader";
 
-function FavoriteClient({ listings }) {
-  const [isLoading, setIsLoading] = useState(true);
+function FavoriteClient({ listings, wishlist }) {
+  const loggedUser = useSelector((state) => state.authSlice.loggedUser);
+  const [isLoading, setIsLoading] = useState(false);
   const [item, setItem] = useState();
   const [open, setOpen] = useState(false);
   const cancelButtonRef = useRef(null);
@@ -24,27 +27,25 @@ function FavoriteClient({ listings }) {
   };
 
   const handleDelete = () => {
-    console.log(item.id);
-    // setIsLoading(true);
-    // const accessToken = Cookie.get("accessToken");
-    // const config = {
-    //   headers: {
-    //     Authorization: `Bearer ${accessToken}`,
-    //   },
-    // };
-    // axios
-    //   .delete(`${API_URL}/bookings/${item.id}`, config)
-    //   .then(() => {
-    //     toast.success(`Delete reservation successfully`);
-    //     getReservations();
-    //     setIsLoading(false);
-    //     router.refresh();
-    //   })
-    //   .catch(() => {
-    //     toast.error("Delete reservation failed");
-    //     setIsLoading(false);
-    //   });
-    // setOpen(false);
+    setIsLoading(true);
+    const accessToken = Cookie.get("accessToken");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+    axios
+      .delete(`${API_URL}/place_wish_lists/${item}/${wishlist.id}`, config)
+      .then(() => {
+        setOpen(false);
+        toast.success(`Delete place successfully`);
+        setIsLoading(false);
+      })
+      .catch(() => {
+        setOpen(false);
+        toast.error("Delete place failed");
+        setIsLoading(false);
+      });
   };
 
   return (
@@ -127,17 +128,28 @@ function FavoriteClient({ listings }) {
         </Dialog>
       </Transition.Root>
       <div className="mt-10">
-        <Heading title="Favorites" subtitle="List of places you favorites!" />
+        <Heading
+          title={wishlist?.Title || "Your Wishlist"}
+          subtitle="List of places in your wishlist!"
+        />
       </div>
-      <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
-        {listings.map((listing) => (
-          <WishlistCard
-            key={listing.id}
-            data={listing}
-            onDelete={() => onDelete(listing)}
-          />
-        ))}
-      </div>
+      {!isLoading ? (
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
+          {listings &&
+            listings.map((listing) => (
+              <ListingCard
+                key={listing.id}
+                data={listing}
+                actionId={listing.id}
+                onAction={onDelete}
+                actionLabel="Delete place"
+                currentUser={loggedUser}
+              />
+            ))}
+        </div>
+      ) : (
+        <Loader />
+      )}
     </Container>
   );
 }

@@ -4,35 +4,31 @@ import React from "react";
 import FavoriteClient from "./FavoriteClient";
 import { cookies } from "next/headers";
 import getUserById from "@/app/actions/getUserById";
+import getPlacesByWishlistId from "@/app/actions/getPlacesByWishlistId";
+import getWishlistById from "@/app/actions/getWishlistById";
 
 export const dynamic = "force-dynamic";
 
-const FavoritePage = async () => {
+const FavoritePage = async ({ params }) => {
   const accessToken = cookies().get("accessToken")?.value;
   const userId = cookies().get("userId")?.value;
   const user = await getUserById(userId);
-  if (!accessToken || user?.role === 3) {
+  const wish_list_id = params?.favoritesId;
+  let places = [];
+  let wishlist = {};
+
+  if (!accessToken || !user || user?.role === 3) {
     return (
       <ClientOnly>
         <EmptyState title="Unauthorized" subtitle="Please login" />
       </ClientOnly>
     );
+  } else {
+    places = await getPlacesByWishlistId(wish_list_id);
+    wishlist = await getWishlistById(wish_list_id);
   }
-  const listings = [
-    ,
-    {
-      id: 1,
-      title: "Wishlist 1",
-      cover: "",
-    },
-    {
-      id: 2,
-      title: "Wishlist 2",
-      cover: "",
-    },
-  ];
 
-  if (!listings || listings?.length === 0)
+  if (!wishlist || !places || places?.length === 0)
     return (
       <ClientOnly>
         <EmptyState
@@ -44,7 +40,7 @@ const FavoritePage = async () => {
 
   return (
     <ClientOnly>
-      <FavoriteClient listings={listings} />
+      <FavoriteClient listings={places} wishlist={wishlist} />
     </ClientOnly>
   );
 };

@@ -135,11 +135,8 @@ function ReportModal({}) {
       />
       {types.map((type, index) => {
         return (
-          <>
-            <div
-              key={index}
-              className="w-full flex justify-between items-center cursor-pointer"
-            >
+          <div key={index}>
+            <div className="w-full flex justify-between items-center cursor-pointer">
               <label
                 htmlFor={`type-${index}`}
                 className="text-lg text-zinc-600 font-thin cursor-pointer"
@@ -156,7 +153,7 @@ function ReportModal({}) {
               />
             </div>
             <hr />
-          </>
+          </div>
         );
       })}
     </div>

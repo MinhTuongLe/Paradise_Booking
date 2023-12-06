@@ -7,18 +7,27 @@ const getAccessToken = async () => {
   return accessToken;
 };
 
-export default async function getReservationById(reservationId) {
+export default async function getPlacesByWishlistId(wish_list_id) {
   try {
     const accessToken = await getAccessToken();
-    const response = await axios.get(`${API_URL}/bookings/${reservationId}`, {
+    const config = {
+      params: {
+        wish_list_id: wish_list_id,
+      },
       headers: {
+        "content-type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
-    });
+    };
 
-    const reservation = response.data.data;
+    const response = await axios.get(
+      `${API_URL}/place_wish_lists/place`,
+      config
+    );
 
-    return reservation;
+    const places = response.data.data;
+
+    return places;
   } catch (error) {
     console.log("Something went wrong");
   }

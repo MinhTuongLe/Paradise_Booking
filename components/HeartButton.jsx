@@ -8,8 +8,7 @@ import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { useSelector } from "react-redux";
 
 function HeartButton({ listingId }) {
-  // console.log(listingId);
-  const loggedUser = useSelector((state) => state.authSlice.loggedUser);
+  const authState = useSelector((state) => state.authSlice.authState);
   const wishlistModal = useWishlistModal();
   const loginModal = useLoginModal();
 
@@ -17,8 +16,8 @@ function HeartButton({ listingId }) {
     <div
       onClick={(e) => {
         e.stopPropagation();
-        if (loggedUser) wishlistModal.onOpen();
-        else loginModal;
+        if (authState) wishlistModal.onOpen(listingId);
+        else loginModal.onOpen();
       }}
       className=" relative hover:opacity-80 transition cursor-pointer"
     >

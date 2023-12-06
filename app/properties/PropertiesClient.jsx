@@ -21,7 +21,6 @@ import Loader from "@/components/Loader";
 function PropertiesClient({ currentUser }) {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
-  const [deletingId, setDeletingId] = useState("");
   const [id, setId] = useState();
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(place_status[0]);
@@ -48,15 +47,16 @@ function PropertiesClient({ currentUser }) {
     axios
       .delete(`${API_URL}/places`, config)
       .then(() => {
+        setOpen(false);
         toast.success(`Delete room successfully`);
         setIsLoading(false);
         router.refresh();
       })
       .catch(() => {
+        setOpen(false);
         toast.error("Delete room failed");
         setIsLoading(false);
       });
-    setOpen(false);
   };
 
   const getPlaces = async (type) => {
@@ -260,7 +260,6 @@ function PropertiesClient({ currentUser }) {
                 data={listing}
                 actionId={listing.id}
                 onAction={onDelete}
-                disabled={deletingId === listing.id}
                 actionLabel="Delete property"
                 currentUser={currentUser}
               />
