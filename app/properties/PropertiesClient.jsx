@@ -92,7 +92,6 @@ function PropertiesClient({ currentUser }) {
     getPlaces(selected.id);
   }, []);
 
-  // còn bị lôĩ
   if (loggedUser.id !== currentUser.id) {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;
   }

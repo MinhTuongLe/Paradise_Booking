@@ -18,6 +18,8 @@ import {
   TableCell,
 } from "@nextui-org/react";
 import Cookie from "js-cookie";
+import { useSelector } from "react-redux";
+import EmptyState from "@/components/EmptyState";
 
 const columns = [
   { name: "Id", uid: "id" },
@@ -39,6 +41,7 @@ const statusColorMap = {
 function AccountClient({ accounts }) {
   const [isLoading, setIsLoading] = useState(false);
   const emptyImageSrc = "/assets/avatar.png";
+  const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
   const handleStatusChange = (event, accountId) => {
     const newStatus = event.target.value;
@@ -106,6 +109,10 @@ function AccountClient({ accounts }) {
         return cellValue || "-";
     }
   }, []);
+
+  if (loggedUser.role !== 3) {
+    return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  }
 
   return (
     <div className="max-w-[1200px] mx-auto px-4">
