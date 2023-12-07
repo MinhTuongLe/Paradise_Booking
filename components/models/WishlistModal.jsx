@@ -117,10 +117,10 @@ function WishlistModal() {
         "content-type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
-      params: {
-        page: params.get("page") || 1,
-        limit: params.get("limit") || LIMIT,
-      },
+      // params: {
+      //   page: params.get("page") || 1,
+      //   limit: params.get("limit") || LIMIT,
+      // },
     };
 
     await axios
@@ -172,13 +172,13 @@ function WishlistModal() {
                   />
                 </div>
               ))}
-              {wishlists.paging?.total > (wishlists.paging?.limit || LIMIT) && (
+              {/* {wishlists.paging?.total > (wishlists.paging?.limit || LIMIT) && (
                 <PaginationComponent
                   page={Number(params.get("page")) || 1}
                   total={wishlists.paging?.total || LIMIT}
                   limit={wishlists.paging?.limit || LIMIT}
                 />
-              )}
+              )} */}
             </>
           ) : (
             <div className="text-[24px] font-bold">

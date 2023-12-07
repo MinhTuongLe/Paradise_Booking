@@ -6,15 +6,24 @@ import { cookies } from "next/headers";
 import getUserById from "@/app/actions/getUserById";
 import getPlacesByWishlistId from "@/app/actions/getPlacesByWishlistId";
 import getWishlistById from "@/app/actions/getWishlistById";
+import { LIMIT } from "@/const";
+import PaginationComponent from "@/components/PaginationComponent";
 
 export const dynamic = "force-dynamic";
 
-const FavoritePage = async ({ params }) => {
+const FavoritePage = async ({ params, searchParams }) => {
   const accessToken = cookies().get("accessToken")?.value;
   const userId = cookies().get("userId")?.value;
   const user = await getUserById(userId);
   const wish_list_id = params?.favoritesId;
-  let places = [];
+  let obj = {
+    places: [],
+    paging: {
+      page: 1,
+      limit: LIMIT,
+      total: 0,
+    },
+  };
   let wishlist = {};
 
   if (!accessToken || !user || user?.role === 3) {
@@ -24,11 +33,15 @@ const FavoritePage = async ({ params }) => {
       </ClientOnly>
     );
   } else {
-    places = await getPlacesByWishlistId(wish_list_id);
+    obj = await getPlacesByWishlistId({
+      wish_list_id,
+      page: searchParams.page || 1,
+      limit: searchParams.limit || LIMIT,
+    });
     wishlist = await getWishlistById(wish_list_id);
   }
 
-  if (!wishlist || !places || places?.length === 0)
+  if (!wishlist || !obj.places || obj.places?.length === 0)
     return (
       <ClientOnly>
         <EmptyState
@@ -40,7 +53,14 @@ const FavoritePage = async ({ params }) => {
 
   return (
     <ClientOnly>
-      <FavoriteClient listings={places} wishlist={wishlist} />
+      <FavoriteClient listings={obj.places} wishlist={wishlist} />
+      {obj.paging?.total > (obj.paging?.limit || LIMIT) && (
+        <PaginationComponent
+          page={Number(searchParams?.page) || 1}
+          total={obj.paging?.total || LIMIT}
+          limit={obj.paging?.limit || LIMIT}
+        />
+      )}
     </ClientOnly>
   );
 };

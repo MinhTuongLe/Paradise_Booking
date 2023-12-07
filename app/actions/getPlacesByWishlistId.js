@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_URL } from "@/const";
+import { API_URL, LIMIT } from "@/const";
 import { cookies } from "next/headers";
 
 const getAccessToken = async () => {
@@ -7,12 +7,18 @@ const getAccessToken = async () => {
   return accessToken;
 };
 
-export default async function getPlacesByWishlistId(wish_list_id) {
+export default async function getPlacesByWishlistId({
+  wish_list_id,
+  page,
+  limit,
+}) {
   try {
     const accessToken = await getAccessToken();
     const config = {
       params: {
         wish_list_id: wish_list_id,
+        page: page ? page : 1,
+        limit: limit ? limit : LIMIT,
       },
       headers: {
         "content-type": "application/json",
@@ -25,9 +31,10 @@ export default async function getPlacesByWishlistId(wish_list_id) {
       config
     );
 
-    const places = response.data.data;
+    const places = response?.data?.data;
+    const paging = response?.data?.paging;
 
-    return places;
+    return { places, paging };
   } catch (error) {
     console.log("Something went wrong");
   }
