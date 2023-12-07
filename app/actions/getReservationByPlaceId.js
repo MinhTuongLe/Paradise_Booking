@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_URL } from "@/const";
+import { API_URL, LIMIT } from "@/const";
 import { cookies } from "next/headers";
 
 const getAccessToken = async () => {
@@ -7,21 +7,29 @@ const getAccessToken = async () => {
   return accessToken;
 };
 
-export default async function getReservationByPlaceId(placeId) {
+export default async function getReservationByPlaceId({
+  placeId,
+  page,
+  limit,
+}) {
   try {
     const accessToken = await getAccessToken();
-    const response = await axios.get(`${API_URL}/bookings`, {
+    const config = {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
       params: {
-        place_id:placeId
-      }
-    });
+        place_id: placeId,
+        page: page ? page : 1,
+        limit: limit ? limit : LIMIT,
+      },
+    };
+    const response = await axios.get(`${API_URL}/bookings`, config);
 
-    const reservation = response.data;
+    const reservations = response?.data?.data;
+    const paging = response?.data?.paging;
 
-    return reservation;
+    return { reservations, paging };
   } catch (error) {
     console.log("Something went wrong");
   }

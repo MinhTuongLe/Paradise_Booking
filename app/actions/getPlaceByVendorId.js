@@ -1,13 +1,23 @@
 import axios from "axios";
-import { API_URL } from "@/const";
+import { API_URL, LIMIT } from "@/const";
 
-export default async function getPlaceByVendorId(vendor_id) {
+export default async function getPlaceByVendorId({ vendor_id, page, limit }) {
   try {
-    const response = await axios.get(`${API_URL}/places/owner/${vendor_id}`);
+    const config = {
+      params: {
+        page: page ? page : 1,
+        limit: limit ? limit : LIMIT,
+      },
+    };
+    const response = await axios.get(
+      `${API_URL}/places/owner/${vendor_id}`,
+      config
+    );
 
-    const place = response.data;
+    const places = response?.data?.data;
+    const paging = response?.data?.paging;
 
-    return place;
+    return { places, paging };
   } catch (error) {
     console.log("Something went wrong");
   }

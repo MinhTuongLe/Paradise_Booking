@@ -34,11 +34,13 @@ const AccountPage = async ({ searchParams }) => {
   return (
     <ClientOnly>
       <AccountClient accounts={obj.accounts} />
-      <PaginationComponent
-        page={Number(searchParams?.page) || 1}
-        total={obj.paging?.total || LIMIT}
-        limit={obj.paging?.limit || LIMIT}
-      />
+      {obj.paging?.total > (obj.paging?.limit || LIMIT) && (
+        <PaginationComponent
+          page={Number(searchParams?.page) || 1}
+          total={obj.paging?.total || LIMIT}
+          limit={obj.paging?.limit || LIMIT}
+        />
+      )}
     </ClientOnly>
   );
 };

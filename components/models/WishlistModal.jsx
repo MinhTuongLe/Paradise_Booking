@@ -4,16 +4,18 @@
 
 import useWishlistModal from "@/hook/useWishlistModal";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Cookie from "js-cookie";
 import Input from "../inputs/Input";
 import Modal from "./Modal";
-import { API_URL } from "@/const";
+import { API_URL, LIMIT } from "@/const";
 import WishlistCard from "@/components/listing/WishlistCard";
 import Loader from "../Loader";
+import Button from "../Button";
+import PaginationComponent from "../PaginationComponent";
 
 const STEPS = {
   ADD_TO_WISHLIST: 0,
@@ -22,10 +24,12 @@ const STEPS = {
 
 function WishlistModal() {
   const router = useRouter();
+  const params = useSearchParams();
+
   const wishlistModal = useWishlistModal();
   const [step, setStep] = useState(STEPS.ADD_TO_WISHLIST);
   const [isLoading, setIsLoading] = useState(false);
-  const [wishlists, setWishlists] = useState([]);
+  const [wishlists, setWishlists] = useState({});
   const listingId = wishlistModal.listingId;
 
   const {
@@ -54,7 +58,7 @@ function WishlistModal() {
     }
 
     try {
-      // setIsLoading(true);
+      setIsLoading(true);
       const accessToken = Cookie.get("accessToken");
       const user_id = Cookie.get("userId");
 
@@ -113,12 +117,16 @@ function WishlistModal() {
         "content-type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
+      params: {
+        page: params.get("page") || 1,
+        limit: params.get("limit") || LIMIT,
+      },
     };
 
     await axios
       .get(`${API_URL}/wish_lists/user/${user_id}`, config)
       .then((response) => {
-        setWishlists(response.data.data);
+        setWishlists(response.data);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -145,24 +153,33 @@ function WishlistModal() {
 
   useEffect(() => {
     if (wishlistModal.isOpen) getWishListByUserId();
-  }, [wishlistModal.isOpen]);
+  }, [wishlistModal.isOpen, params]);
 
   let bodyContent = (
     <>
       {!isLoading ? (
         <div className="space-y-6 flex flex-col justify-start items-start max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-[#FF5A5F]">
-          {wishlists && wishlists.length > 0 ? (
-            wishlists.map((item, index) => (
-              <div className="w-full" key={index}>
-                <WishlistCard
-                  data={{
-                    id: item.id,
-                    title: item.Title,
-                  }}
-                  onActions={handleActions}
+          {wishlists.data && wishlists.data.length > 0 ? (
+            <>
+              {wishlists.data.map((item, index) => (
+                <div className="w-full" key={index}>
+                  <WishlistCard
+                    data={{
+                      id: item.id,
+                      title: item.Title,
+                    }}
+                    onActions={handleActions}
+                  />
+                </div>
+              ))}
+              {wishlists.paging?.total > (wishlists.paging?.limit || LIMIT) && (
+                <PaginationComponent
+                  page={Number(params.get("page")) || 1}
+                  total={wishlists.paging?.total || LIMIT}
+                  limit={wishlists.paging?.limit || LIMIT}
                 />
-              </div>
-            ))
+              )}
+            </>
           ) : (
             <div className="text-[24px] font-bold">
               You don't have any wishlist

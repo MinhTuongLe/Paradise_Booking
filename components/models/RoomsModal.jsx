@@ -1,47 +1,90 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import useRoomsModal from "../../hook/useRoomsModal";
 import Modal from "./Modal";
 import ListingCard from "../listing/ListingCard";
+import { useSearchParams } from "next/navigation";
+import { API_URL, LIMIT } from "@/const";
+import axios from "axios";
+import Cookie from "js-cookie";
+import { useEffect, useState } from "react";
+import Loader from "../Loader";
+import PaginationComponent from "../PaginationComponent";
 
-function RoomsModal({ currentUser, places }) {
+function RoomsModal({ currentUser }) {
   const roomsModal = useRoomsModal();
+  const params = useSearchParams();
+
+  const [places, setPlaces] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+
+  const getPlacesByVendorId = async () => {
+    setIsLoading(true);
+    const user_id = Cookie.get("userId");
+    const config = {
+      params: {
+        page: params.get("page") || 1,
+        limit: params.get("limit") || LIMIT,
+      },
+    };
+
+    await axios
+      .get(`${API_URL}/places/owner/${user_id}`, config)
+      .then((response) => {
+        setPlaces(response.data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        toast.error("Something Went Wrong");
+        setIsLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    getPlacesByVendorId();
+  }, [params]);
 
   const bodyContent = (
-    <div className="grid gap-12 sm:grid-cols-2 xl:grid-cols-4 overflow-x-hidden p-8">
-      {places &&
-        places.map((list) => {
-          return (
-            <ListingCard
-              key={list.id}
-              data={list}
-              currentUser={currentUser}
-              shrink={true}
-            />
-          );
-        })}
-    </div>
+    <>
+      {!isLoading ? (
+        <div className="grid gap-12 sm:grid-cols-2 xl:grid-cols-4 overflow-x-hidden p-8 pb-0">
+          {places.data &&
+            places.data.length > 0 &&
+            places.data.map((list) => {
+              return (
+                <ListingCard
+                  key={list.id}
+                  data={list}
+                  currentUser={currentUser}
+                  shrink={true}
+                />
+              );
+            })}
+        </div>
+      ) : (
+        <Loader />
+      )}
+    </>
   );
 
   const footerContent = (
     <>
-      <hr />
-      <div className="flex justify-between items-center w-full">
-        <button
-          className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
-          onClick={roomsModal.onClose}
-        >
-          Show more rooms
-        </button>
-      </div>
+      {places.paging?.total > (places.paging?.limit || LIMIT) && (
+        <PaginationComponent
+          page={Number(params.get("page")) || 1}
+          total={places.paging?.total || LIMIT}
+          limit={places.paging?.limit || LIMIT}
+        />
+      )}
     </>
   );
 
   return (
     <Modal
       isOpen={roomsModal.isOpen}
-      title={`${places?.length || 0} rooms`}
+      title={`All Rooms of ${currentUser.full_name || "Vendor"}`}
       onClose={roomsModal.onClose}
       body={bodyContent}
       footer={footerContent}

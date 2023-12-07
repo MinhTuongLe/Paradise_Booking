@@ -35,11 +35,13 @@ export default async function Home({ searchParams }) {
               );
             })}
         </div>
-        <PaginationComponent
-          page={Number(searchParams?.page) || 1}
-          total={paging?.total || LIMIT}
-          limit={paging?.limit || LIMIT}
-        />
+        {paging?.total > (paging?.limit || LIMIT) && (
+          <PaginationComponent
+            page={Number(searchParams?.page) || 1}
+            total={paging?.total || LIMIT}
+            limit={paging?.limit || LIMIT}
+          />
+        )}
       </Container>
     </ClientOnly>
   );

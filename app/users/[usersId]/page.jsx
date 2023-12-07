@@ -5,17 +5,20 @@ import { cookies } from "next/headers";
 import getUserById from "@/app/actions/getUserById";
 import getPlaceByVendorId from "@/app/actions/getPlaceByVendorId";
 import RoomsModal from "@/components/models/RoomsModal";
+import { LIMIT } from "@/const";
 
 export const dynamic = "force-dynamic";
 
-const UserPage = async ({ params }) => {
+const UserPage = async ({ params, searchParams }) => {
   const accessToken = cookies().get("accessToken")?.value;
 
   const user = await getUserById(params?.usersId);
 
-  // let places = [];
-  // if (user.id === 2) places = await getPlaceByVendorId(user.id);
-  const places = await getPlaceByVendorId(user?.id);
+  const { places, paging } = await getPlaceByVendorId({
+    vendor_id: user?.id,
+    page: searchParams.page || 1,
+    limit: searchParams.limit || LIMIT,
+  });
 
   if (!accessToken && user.role !== 2) {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;
@@ -23,7 +26,7 @@ const UserPage = async ({ params }) => {
 
   return (
     <ClientOnly>
-      <RoomsModal currentUser={user} places={places} />
+      <RoomsModal currentUser={user} />
       <UserClient places={places} currentUser={user} role={user.role} />
     </ClientOnly>
   );
