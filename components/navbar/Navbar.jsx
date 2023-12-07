@@ -47,6 +47,7 @@ function Navbar() {
     Cookie.remove("loggedUser");
     Cookie.remove("accessToken");
     Cookie.remove("expiresAt");
+    Cookie.remove("userId");
     dispatch(reset());
     router.refresh();
   };
