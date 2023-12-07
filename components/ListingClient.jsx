@@ -26,6 +26,7 @@ import Button from "./Button";
 import { useForm } from "react-hook-form";
 import Input from "./inputs/Input";
 import { API_URL } from "@/const";
+import { useSelector } from "react-redux";
 
 const initialDateRange = {
   startDate: new Date(),
@@ -34,6 +35,8 @@ const initialDateRange = {
 };
 
 function ListingClient({ reservations = [], place, currentUser }) {
+  const authState = useSelector((state) => state.authSlice.authState);
+
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
 
@@ -224,7 +227,8 @@ function ListingClient({ reservations = [], place, currentUser }) {
                   onChangeDate={(value) => setDateRange(value)}
                   dateRange={dateRange}
                   onSubmit={() => {
-                    setPaymentMode(true);
+                    if (authState) setPaymentMode(true);
+                    else loginModal.onOpen();
                   }}
                   disabled={isLoading}
                   disabledDates={disableDates}

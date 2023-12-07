@@ -14,12 +14,20 @@ const UserPage = async ({ params, searchParams }) => {
 
   const user = await getUserById(params?.usersId);
 
-  const { places, paging } = await getPlaceByVendorId({
-    vendor_id: user?.id,
-    page: searchParams.page || 1,
-    limit: searchParams.limit || LIMIT,
-  });
-
+  let obj = {
+    places: [],
+    paging: {
+      page: 1,
+      limit: LIMIT,
+      total: 0,
+    },
+  };
+  if (user.role === 2)
+    obj = await getPlaceByVendorId({
+      vendor_id: user?.id,
+      page: searchParams.page || 1,
+      limit: searchParams.limit || LIMIT,
+    });
   if (!accessToken && user.role !== 2) {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;
   }
@@ -27,7 +35,7 @@ const UserPage = async ({ params, searchParams }) => {
   return (
     <ClientOnly>
       <RoomsModal currentUser={user} />
-      <UserClient places={places} currentUser={user} role={user.role} />
+      <UserClient places={obj.places} currentUser={user} role={user.role} />
     </ClientOnly>
   );
 };

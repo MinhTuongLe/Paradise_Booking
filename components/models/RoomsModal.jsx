@@ -12,6 +12,7 @@ import Cookie from "js-cookie";
 import { useEffect, useState } from "react";
 import Loader from "../Loader";
 import PaginationComponent from "../PaginationComponent";
+import { toast } from "react-toastify";
 
 function RoomsModal({ currentUser }) {
   const roomsModal = useRoomsModal();
@@ -43,8 +44,8 @@ function RoomsModal({ currentUser }) {
   };
 
   useEffect(() => {
-    getPlacesByVendorId();
-  }, [params]);
+    if (roomsModal.isOpen) getPlacesByVendorId();
+  }, [params, roomsModal]);
 
   const bodyContent = (
     <>
