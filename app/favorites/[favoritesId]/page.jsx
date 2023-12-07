@@ -25,13 +25,10 @@ const FavoritePage = async ({ params, searchParams }) => {
     },
   };
   let wishlist = {};
+  let unauthorized = false;
 
   if (!accessToken || !user || user?.role === 3) {
-    return (
-      <ClientOnly>
-        <EmptyState title="Unauthorized" subtitle="Please login" />
-      </ClientOnly>
-    );
+    unauthorized = true;
   } else {
     obj = await getPlacesByWishlistId({
       wish_list_id,
@@ -39,9 +36,17 @@ const FavoritePage = async ({ params, searchParams }) => {
       limit: searchParams.limit || LIMIT,
     });
     wishlist = await getWishlistById(wish_list_id);
+
+    if (!wishlist || !obj.places) unauthorized = true;
   }
 
-  if (!wishlist || !obj.places || obj.places?.length === 0)
+  if (unauthorized) {
+    return (
+      <ClientOnly>
+        <EmptyState title="Unauthorized" subtitle="Please login" />
+      </ClientOnly>
+    );
+  } else if (obj.places?.length === 0)
     return (
       <ClientOnly>
         <EmptyState

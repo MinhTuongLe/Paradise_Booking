@@ -17,6 +17,8 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { useSelector } from "react-redux";
+import EmptyState from "@/components/EmptyState";
 
 ChartJS.register(
   CategoryScale,
@@ -59,6 +61,12 @@ const data = {
 };
 
 function StatisticsClient() {
+  const loggedUser = useSelector((state) => state.authSlice.loggedUser);
+  const authState = useSelector((state) => state.authSlice.authState);
+
+  if (!authState || loggedUser.role !== 2) {
+    return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  }
   return (
     <div className="max-w-[1440px] h-full mx-auto xl:px-20 md:px-2 sm:px-2 px-4">
       <Container>

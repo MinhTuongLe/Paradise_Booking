@@ -63,6 +63,7 @@ function UserMenu({ authState, loggedUser }) {
     Cookie.remove("expiresAt");
     dispatch(reset());
     router.refresh();
+    window.location.reload();
   };
 
   return (

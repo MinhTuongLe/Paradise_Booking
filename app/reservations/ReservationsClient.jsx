@@ -25,6 +25,8 @@ import {
 import Cookie from "js-cookie";
 import Loader from "@/components/Loader";
 import PaginationComponent from "@/components/PaginationComponent";
+import { useSelector } from "react-redux";
+import EmptyState from "@/components/EmptyState";
 
 function ReservationsClient() {
   const router = useRouter();
@@ -34,6 +36,8 @@ function ReservationsClient() {
   const [isLoading, setIsLoading] = useState(true);
   const [selected, setSelected] = useState(place_status[0]);
   const [reservations, setReservations] = useState({});
+  const authState = useSelector((state) => state.authSlice.authState);
+  const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
   const cancelButtonRef = useRef(null);
 
@@ -126,8 +130,12 @@ function ReservationsClient() {
   };
 
   useEffect(() => {
-    getReservations();
+    if (authState && loggedUser.role !== 3) getReservations();
   }, [params]);
+
+  if (!authState || loggedUser.role === 3) {
+    return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  }
 
   return (
     <Container>
@@ -340,7 +348,7 @@ function ReservationsClient() {
         </div>
       </div>
       {!isLoading ? (
-        reservations && reservations.data.data.length > 0 ? (
+        reservations && reservations.data?.data?.length > 0 ? (
           <>
             <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
               {reservations.data.data.map((item, index) => {

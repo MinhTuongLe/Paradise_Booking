@@ -24,6 +24,7 @@ function ReservationClient({ reservation }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
+  const authState = useSelector((state) => state.authSlice.authState);
 
   const [isLoading, setIsLoading] = useState(false);
   const [hover, setHover] = useState(null);
@@ -113,8 +114,8 @@ function ReservationClient({ reservation }) {
       setIsLoading(false);
     }
   };
-  
-  if (loggedUser.id !== reservation.user_id) {
+
+  if (!authState || loggedUser.id !== reservation.user_id) {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;
   }
 

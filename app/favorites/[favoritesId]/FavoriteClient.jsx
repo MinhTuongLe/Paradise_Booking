@@ -13,9 +13,11 @@ import ListingCard from "@/components/listing/ListingCard";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Loader from "@/components/Loader";
+import EmptyState from "@/components/EmptyState";
 
 function FavoriteClient({ listings, wishlist }) {
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
+  const authState = useSelector((state) => state.authSlice.authState);
   const [isLoading, setIsLoading] = useState(false);
   const [item, setItem] = useState();
   const [open, setOpen] = useState(false);
@@ -47,6 +49,10 @@ function FavoriteClient({ listings, wishlist }) {
         setIsLoading(false);
       });
   };
+
+  if (!authState || loggedUser.role === 3) {
+    return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  }
 
   return (
     <Container>

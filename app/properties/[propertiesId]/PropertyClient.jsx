@@ -22,6 +22,7 @@ import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import { MdCancel, MdIncompleteCircle, MdPending } from "react-icons/md";
 import { FaCalendarAlt, FaCalendarCheck, FaCheckCircle } from "react-icons/fa";
+import EmptyState from "@/components/EmptyState";
 
 function PropertyClient({ place, reservations }) {
   const emptyImageSrc = "/assets/avatar.png";
@@ -227,6 +228,10 @@ function PropertyClient({ place, reservations }) {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
+
+  if (!authState || loggedUser.role !== 2) {
+    return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  }
 
   return (
     <div className="max-w-[1200px] mx-auto px-4">

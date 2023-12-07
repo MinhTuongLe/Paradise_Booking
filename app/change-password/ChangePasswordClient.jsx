@@ -16,11 +16,13 @@ import { toast } from "react-toastify";
 import Button from "@/components/Button";
 import { API_URL } from "@/const";
 import Cookie from "js-cookie";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import EmptyState from "@/components/EmptyState";
 
 function ChangePasswordClient() {
   const router = useRouter();
   const dispatch = useDispatch();
+  const authState = useSelector((state) => state.authSlice.authState);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -65,6 +67,10 @@ function ChangePasswordClient() {
         });
     }
   };
+
+  if (!authState) {
+    return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  }
 
   return (
     <div className="max-w-[768px] mx-auto px-4">

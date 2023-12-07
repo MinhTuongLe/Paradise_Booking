@@ -27,6 +27,7 @@ import { useForm } from "react-hook-form";
 import Input from "./inputs/Input";
 import { API_URL } from "@/const";
 import { useSelector } from "react-redux";
+import EmptyState from "./EmptyState";
 
 const initialDateRange = {
   startDate: new Date(),
@@ -36,6 +37,7 @@ const initialDateRange = {
 
 function ListingClient({ reservations = [], place, currentUser }) {
   const authState = useSelector((state) => state.authSlice.authState);
+  const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
@@ -119,7 +121,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
       const checkout_date = `${dateRange.endDate.getDate()}-${dateRange.endDate.getMonth()}-${dateRange.endDate.getFullYear()}`;
 
       const submitValues = {
-        user_id: currentUser.id,
+        user_id: loggedUser.id,
         place_id: place.id,
         checkin_date,
         checkout_date,
@@ -302,7 +304,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
             </div>
           </div>
         </div>
-      ) : (
+      ) : authState ? (
         <div className="w-[80%] mx-auto mt-12">
           <div className="flex justify-start items-start space-x-6">
             <IoChevronBack
@@ -542,6 +544,8 @@ function ListingClient({ reservations = [], place, currentUser }) {
             </div>
           </div>
         </div>
+      ) : (
+        <EmptyState title="Unauthorized" subtitle="Please login" />
       )}
     </Container>
   );
