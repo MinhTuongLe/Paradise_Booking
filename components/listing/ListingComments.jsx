@@ -87,7 +87,7 @@ function ListingComments({ place_id }) {
           No comment to display
         </div>
       )}
-      {!isLoading && ratings && ratings.length > 0 && (
+      {!isLoading && ratings && ratings.length > 6 && (
         <div className="flex justify-between items-center w-full">
           <button
             className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-md border-[1px]"
