@@ -9,7 +9,7 @@ import Categories from "./Categories";
 import { useDispatch, useSelector } from "react-redux";
 import Cookie from "js-cookie";
 import { reset } from "../slice/authSlice";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { MdManageAccounts } from "react-icons/md";
 import { FaRegUser } from "react-icons/fa";
@@ -24,6 +24,7 @@ function Navbar() {
   const dispatch = useDispatch();
   const router = useRouter();
   const [isShowed, setIsShowed] = useState(true);
+  const pathname = usePathname();
 
   useEffect(() => {
     // remove cookie if expired
@@ -53,26 +54,30 @@ function Navbar() {
   };
 
   return (
-    <div className="fixed w-full bg-white z-10 shadow-sm h-[10vh] min-h-[82px]">
-      <div className="py-4 border-b-[1px] h-full">
-        <Container>
-          <div className="flex flex-row items-center justify-between gap-3 h-full ">
-            <Logo />
-            {loggedUser.role === 3 ? (
-              <div className={`${loggedUser.role === 3 && "w-full"}`}>
-                <AdminNavbar />
+    <>
+      {pathname !== "/verify" && (
+        <div className="fixed w-full bg-white z-10 shadow-sm h-[10vh] min-h-[82px]">
+          <div className="py-4 border-b-[1px] h-full">
+            <Container>
+              <div className="flex flex-row items-center justify-between gap-3 h-full ">
+                <Logo />
+                {loggedUser.role === 3 ? (
+                  <div className={`${loggedUser.role === 3 && "w-full"}`}>
+                    <AdminNavbar />
+                  </div>
+                ) : (
+                  <div className="hidden lg:block">
+                    <Search />
+                  </div>
+                )}
+                <UserMenu authState={authState} loggedUser={loggedUser} />
               </div>
-            ) : (
-              <div className="hidden lg:block">
-                <Search />
-              </div>
-            )}
-            <UserMenu authState={authState} loggedUser={loggedUser} />
+            </Container>
           </div>
-        </Container>
-      </div>
-      <Categories />
-    </div>
+          <Categories />
+        </div>
+      )}
+    </>
   );
 }
 

@@ -29,6 +29,8 @@ function ReservationClient({ reservation }) {
   const [isLoading, setIsLoading] = useState(false);
   const [hover, setHover] = useState(null);
 
+  console.log(reservation);
+
   const {
     handleSubmit,
     reset,
@@ -38,7 +40,8 @@ function ReservationClient({ reservation }) {
   } = useForm({
     defaultValues: {
       rating: 0,
-      comment: "",
+      content: "",
+      title: "",
     },
   });
 
@@ -59,54 +62,33 @@ function ReservationClient({ reservation }) {
     try {
       setIsLoading(true);
 
-      //   // upload photo
-      //   let imageUrl = "";
-      //   if (data.cover) {
-      //     const file = data.cover;
-      //     if (typeof file === "string") {
-      //       imageUrl = place?.cover;
-      //     } else {
-      //       imageUrl = await handleFileUpload(file);
-      //     }
-      //   }
+      const submitValues = {
+        ...data,
+        place_id: reservation.data.place.id,
+        booking_id: reservation.data.id,
+      };
+      // console.log(submitValues);
 
-      //   const { country, city, address } = processSearchResult();
-
-      //   const submitValues = {
-      //     name: data?.name || "",
-      //     description: data?.description || "",
-      //     price_per_night: Number(data?.price_per_night) || 0,
-      //     address: address || place.address,
-      //     capacity: data?.capacity || 1,
-      //     lat: lat || place.lat,
-      //     lng: lng || place.lng,
-      //     country: country || place.country,
-      //     state: city || place.city,
-      //     city: city || place.city,
-      //     cover: imageUrl || "",
-      //   };
-
-      //   const accessToken = Cookie.get("accessToken");
-      //   const config = {
-      //     params: {
-      //       place_id: place.id,
-      //     },
-      //     headers: {
-      //       "content-type": "application/json",
-      //       Authorization: `Bearer ${accessToken}`,
-      //     },
-      //   };
-      //   axios
-      //     .put(`${API_URL}/places`, submitValues, config)
-      //     .then(() => {
-      //       setIsLoading(false);
-      //       toast.success("Update Room Successfully");
-      //       router.refresh();
-      //     })
-      //     .catch((err) => {
-      //       toast.error("Update Room Failed");
-      //       setIsLoading(false);
-      //     });
+      const accessToken = Cookie.get("accessToken");
+      const config = {
+        headers: {
+          "content-type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      };
+      axios
+        .post(`${API_URL}/booking_ratings`, submitValues, config)
+        .then(() => {
+          setIsLoading(false);
+          toast.success("Comment Successfully");
+          router.refresh();
+        })
+        .catch((err) => {
+          toast.error("Comment Failed");
+          setIsLoading(false);
+        });
+      reset();
+      setHover(null);
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");
@@ -154,39 +136,6 @@ function ReservationClient({ reservation }) {
                     </div>
                   )
               )}
-
-              {/* <div className="space-x-4 flex justify-between items-center">
-                    <div className="bg-rose-500 p-2 rounded-full text-white">
-                      <IoIosCloseCircle className="text-[22px]" />
-                    </div>
-                    <span className="font-extrabold text-[20px]">Failed</span>
-                  </div> */}
-              {/* <div className="space-x-4 flex justify-between items-center">
-                    <div className="bg-[#ffa700] p-2 rounded-full text-white">
-                      <MdPending className="text-[22px]" />
-                    </div>
-                    <span className="font-extrabold text-[20px]">Pending</span>
-                  </div>
-                  <div className="space-x-4 flex justify-between items-center">
-                    <div className="bg-[#1975d3] p-2 rounded-full text-white">
-                      <MdIncompleteCircle className="text-[22px]" />
-                    </div>
-                    <span className="font-extrabold text-[20px]">
-                      Completed
-                    </span>
-                  </div> */}
-              {/* <div className="space-x-4 flex justify-between items-center">
-                    <div className="bg-[#55bdbf] p-2 rounded-full text-white">
-                      <FaCalendarAlt className="text-[22px]" />
-                    </div>
-                    <span className="font-extrabold text-[20px]">Checkin</span>
-                  </div>
-                  <div className="space-x-4 flex justify-between items-center">
-                    <div className="bg-[#58a1d8] p-2 rounded-full text-white">
-                      <FaCalendarCheck className="text-[22px]" />
-                    </div>
-                    <span className="font-extrabold text-[20px]">Checkout</span>
-                  </div> */}
               <div className="font-extrabold text-[20px]">
                 ${reservation.data.place.price_per_night || 0}
               </div>
@@ -317,7 +266,7 @@ function ReservationClient({ reservation }) {
           <div className="mt-6">
             <div className="flex flex-col">
               <div className="font-bold text-[16px]">
-                Please leave your comments so we can improve
+                Please leave your contents so we can improve
               </div>
               <div className="rounded-xl border-[#cdcdcd] border-[1px] p-4 mt-3">
                 <div className="flex items-center justify-start space-x-3">
@@ -355,14 +304,25 @@ function ReservationClient({ reservation }) {
                   </div>
                 </div>
                 <div className="my-3">
+                  <input
+                    className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none h-[64px]"
+                    onChange={(e) => {
+                      setCustomValue("title", e.target.value);
+                    }}
+                    placeholder="Title ..."
+                    value={getValues("title")}
+                    id="title"
+                  />
+                </div>
+                <div className="mb-3">
                   <textarea
                     className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none h-[120px]"
                     onChange={(e) => {
-                      setCustomValue("comment", e.target.value);
+                      setCustomValue("content", e.target.value);
                     }}
-                    placeholder="Your comment ..."
-                    value={getValues("comment")}
-                    id="comment"
+                    placeholder="Content ..."
+                    value={getValues("content")}
+                    id="content"
                   ></textarea>
                 </div>
                 <div className="flex space-x-6 items-start justify-end">
