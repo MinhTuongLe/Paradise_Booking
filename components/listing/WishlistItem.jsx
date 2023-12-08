@@ -14,7 +14,7 @@ import { CiEdit } from "react-icons/ci";
 import useWishlistModal from "@/hook/useWishlistModal";
 import { toast } from "react-toastify";
 
-function WishlistCard({ data, onActions }) {
+function WishlistItem({ data, onActions }) {
   const router = useRouter();
   const wishlistModal = useWishlistModal();
   const [isLoading, setIsLoading] = useState(false);
@@ -108,14 +108,15 @@ function WishlistCard({ data, onActions }) {
     >
       {!isLoading && (
         <div className="flex space-x-6 w-full justify-start items-center">
-          <div className="flex gap-4 items-center justify-start w-[70%]">
-            <div
-              className="aspect-square w-[64px] relative overflow-hidden rounded-xl cursor-pointer"
-              onClick={() => {
-                router.push(`/favorites/${data.id}`);
-                wishlistModal.onClose();
-              }}
-            >
+          <div
+            className="flex gap-4 items-center justify-start w-[70%] cursor-pointer"
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/favorites/${data.id}`);
+              wishlistModal.onClose();
+            }}
+          >
+            <div className="aspect-square w-[64px] relative overflow-hidden rounded-xl">
               <Image
                 fill
                 className="object-cover aspect-square h-full w-full group-hover:scale-110 transition  rounded-xl"
@@ -181,4 +182,4 @@ function WishlistCard({ data, onActions }) {
   );
 }
 
-export default WishlistCard;
+export default WishlistItem;

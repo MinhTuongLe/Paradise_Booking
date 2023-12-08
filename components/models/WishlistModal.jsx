@@ -12,7 +12,7 @@ import Cookie from "js-cookie";
 import Input from "../inputs/Input";
 import Modal from "./Modal";
 import { API_URL, LIMIT } from "@/const";
-import WishlistCard from "@/components/listing/WishlistCard";
+import WishlistItem from "@/components/listing/WishlistItem";
 import Loader from "../Loader";
 import Button from "../Button";
 import PaginationComponent from "../PaginationComponent";
@@ -163,7 +163,7 @@ function WishlistModal() {
             <>
               {wishlists.data.map((item, index) => (
                 <div className="w-full" key={index}>
-                  <WishlistCard
+                  <WishlistItem
                     data={{
                       id: item.id,
                       title: item.Title,

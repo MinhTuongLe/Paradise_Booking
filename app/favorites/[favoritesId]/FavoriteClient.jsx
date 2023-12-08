@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import Loader from "@/components/Loader";
 import EmptyState from "@/components/EmptyState";
+import { useRouter } from "next/navigation";
 
 function FavoriteClient({ listings, wishlist }) {
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
@@ -22,6 +23,7 @@ function FavoriteClient({ listings, wishlist }) {
   const [item, setItem] = useState();
   const [open, setOpen] = useState(false);
   const cancelButtonRef = useRef(null);
+  const router = useRouter();
 
   const onDelete = (item) => {
     setItem(item);
@@ -41,6 +43,7 @@ function FavoriteClient({ listings, wishlist }) {
       .then(() => {
         setOpen(false);
         toast.success(`Delete place successfully`);
+        router.refresh();
         setIsLoading(false);
       })
       .catch(() => {
