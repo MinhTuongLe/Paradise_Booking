@@ -3,6 +3,7 @@
 import React from "react";
 import Calendar from "../inputs/Calendar";
 import Button from "../Button";
+import { useSelector } from "react-redux";
 
 function ListingReservation({
   price,
@@ -13,6 +14,8 @@ function ListingReservation({
   disabled,
   disabledDates,
 }) {
+  const loggedUser = useSelector((state) => state.authSlice.loggedUser);
+
   return (
     <div className="bg-white rounded-xl border-[1px] border-neutral-200 overflow-hidden">
       <div className="flex flex-row items-center gap-1 p-4">
@@ -26,10 +29,14 @@ function ListingReservation({
         disabledDates={disabledDates}
         onChange={(value) => onChangeDate(value.selection)}
       />
-      <hr />
-      <div className="p-4">
-        <Button disabled={disabled} label="Reserve" onClick={onSubmit} />
-      </div>
+      {loggedUser.role !== 3 && (
+        <>
+          <hr />
+          <div className="p-4">
+            <Button disabled={disabled} label="Reserve" onClick={onSubmit} />
+          </div>
+        </>
+      )}
       <hr />
       <div className="p-4 flex flex-row items-center justify-between font-semibold text-lg">
         <p>Total</p>

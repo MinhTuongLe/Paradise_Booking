@@ -1,21 +1,20 @@
 "use client";
 
-import useCountries from "@/hook/useCountries";
-
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Heading from "../Heading";
 import HeartButton from "../HeartButton";
 import { AiOutlineShareAlt } from "react-icons/ai";
-import { usePathname } from "next/navigation";
-import { BASE_URL } from "../../const";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 function ListingHead({ title, locationValue, imageSrc, id, currentUser }) {
-  const { getByValue } = useCountries();
-  const currentUrl = usePathname();
+  const currentUrl = window.location.href;
+  const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
   const handleCopyToClipboard = () => {
-    navigator.clipboard.writeText(BASE_URL + currentUrl);
+    navigator.clipboard.writeText(currentUrl);
+    toast.success("Copy successfully");
   };
 
   return (
@@ -35,9 +34,11 @@ function ListingHead({ title, locationValue, imageSrc, id, currentUser }) {
             <AiOutlineShareAlt />
             <span className="text-[16px] ml-4">Share</span>
           </div>
-          <div className="">
-            <HeartButton listingId={id} currentUser={currentUser} />
-          </div>
+          {loggedUser.role !== 3 && (
+            <div className="">
+              <HeartButton listingId={id} currentUser={currentUser} />
+            </div>
+          )}
         </div>
       </div>
       <div className="grid grid-cols-12 gap-4 w-full">

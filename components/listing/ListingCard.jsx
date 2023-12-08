@@ -10,6 +10,7 @@ import React, { useCallback, useMemo } from "react";
 import Button from "../Button";
 import HeartButton from "../HeartButton";
 import { FaStar } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 function ListingCard({
   data,
@@ -26,6 +27,7 @@ function ListingCard({
   const { getByValue } = useCountries();
   const pathName = usePathname();
   const router = useRouter();
+  const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
   const location = getByValue(data.country);
 
@@ -84,7 +86,7 @@ function ListingCard({
             alt="listing"
             priority
           />
-          {shrink === false && (
+          {shrink === false && loggedUser.role !== 3 && (
             <div className="absolute top-3 right-3">
               <HeartButton listingId={data.id} />
             </div>
