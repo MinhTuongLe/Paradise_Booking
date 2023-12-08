@@ -76,30 +76,55 @@ function ReservationsClient() {
   };
 
   const handleDelete = () => {
-    if (item.status_id !== 5 && item.status_id !== 6) {
+    if (item.status_id !== 5 && item.status_id !== 6 && item.status_id !== 1) {
       toast.error(`Delete failed. This reservation is processing`);
       setOpen(false);
       return;
     }
+
     setIsLoading(true);
     const accessToken = Cookie.get("accessToken");
-    const config = {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    };
-    axios
-      .delete(`${API_URL}/bookings/${item.id}`, config)
-      .then(() => {
-        toast.success(`Delete reservation successfully`);
-        getReservations();
-        setIsLoading(false);
-        router.refresh();
-      })
-      .catch(() => {
-        toast.error("Delete reservation failed");
-        setIsLoading(false);
-      });
+
+    if (item.status_id === 1) {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        params: {
+          id: item.id,
+        },
+      };
+      axios
+        .post(`${API_URL}/cancel_booking`, null, config)
+        .then(() => {
+          toast.success(`Cancel reservation successfully`);
+          getReservations();
+          setIsLoading(false);
+          router.refresh();
+        })
+        .catch(() => {
+          toast.error("Cancel reservation failed");
+          setIsLoading(false);
+        });
+    } else {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      };
+      axios
+        .delete(`${API_URL}/bookings/${item.id}`, config)
+        .then(() => {
+          toast.success(`Delete reservation successfully`);
+          getReservations();
+          setIsLoading(false);
+          router.refresh();
+        })
+        .catch(() => {
+          toast.error("Delete reservation failed");
+          setIsLoading(false);
+        });
+    }
     setOpen(false);
   };
 
@@ -183,11 +208,15 @@ function ReservationsClient() {
                           as="h3"
                           className="text-base font-semibold leading-6 text-gray-900"
                         >
-                          Delete property
+                          {item?.status_id === 1
+                            ? "Cancel reservation"
+                            : "Delete reservation"}
                         </Dialog.Title>
                         <div className="mt-2">
                           <p className="text-sm text-gray-500">
-                            Are you sure to delete this reservation?
+                            Are you sure to{" "}
+                            {item?.status_id === 1 ? "cancel" : "delete"} this
+                            reservation?
                           </p>
                         </div>
                       </div>
@@ -199,7 +228,7 @@ function ReservationsClient() {
                       className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
                       onClick={handleDelete}
                     >
-                      Delete
+                      {item?.status_id === 1 ? "Cancel" : "Delete"}
                     </button>
                     <button
                       type="button"
@@ -207,7 +236,7 @@ function ReservationsClient() {
                       onClick={() => setOpen(false)}
                       ref={cancelButtonRef}
                     >
-                      Cancel
+                      Back
                     </button>
                   </div>
                 </Dialog.Panel>

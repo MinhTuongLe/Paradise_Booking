@@ -168,7 +168,8 @@ function WishlistModal() {
                       id: item.id,
                       title: item.Title,
                     }}
-                    onActions={handleActions}
+                    listingId={listingId}
+                    onActions={getWishListByUserId}
                   />
                 </div>
               ))}
