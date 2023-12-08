@@ -247,7 +247,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
               </div>
             </div>
             <hr />
-            <ListingComments />
+            <ListingComments place_id={place.id}/>
             <hr />
             <div className="my-8 w-full">
               <p className="text-xl font-semibold mb-8">{`Where you’ll be`}</p>

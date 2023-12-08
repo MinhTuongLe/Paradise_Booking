@@ -20,16 +20,16 @@ import { FaCheckCircle, FaStar } from "react-icons/fa";
 import { MdPending } from "react-icons/md";
 import EmptyState from "@/components/EmptyState";
 
-function ReservationClient({ reservation }) {
+function ReservationClient({ reservation, rating }) {
   const dispatch = useDispatch();
   const router = useRouter();
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
   const authState = useSelector((state) => state.authSlice.authState);
 
   const [isLoading, setIsLoading] = useState(false);
-  const [hover, setHover] = useState(null);
+  const [hover, setHover] = useState(rating?.rating || null);
 
-  console.log(reservation);
+  // console.log(rating);
 
   const {
     handleSubmit,
@@ -39,9 +39,9 @@ function ReservationClient({ reservation }) {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      rating: 0,
-      content: "",
-      title: "",
+      rating: rating?.rating || 0,
+      content: rating?.content || "",
+      title: rating?.title || "",
     },
   });
 
@@ -87,8 +87,6 @@ function ReservationClient({ reservation }) {
           toast.error("Comment Failed");
           setIsLoading(false);
         });
-      reset();
-      setHover(null);
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");
@@ -262,7 +260,7 @@ function ReservationClient({ reservation }) {
             </div>
           </div>
         </div>
-        {reservation.data.status_id === 5 && (
+        {!isLoading && reservation.data.status_id === 5 && (
           <div className="mt-6">
             <div className="flex flex-col">
               <div className="font-bold text-[16px]">
@@ -286,6 +284,9 @@ function ReservationClient({ reservation }) {
                               setCustomValue("rating", currentRating);
                             }}
                             className="hidden"
+                            readOnly={
+                              rating?.rating || rating?.title || rating?.content
+                            }
                           />
                           <FaStar
                             size={30}
@@ -312,6 +313,9 @@ function ReservationClient({ reservation }) {
                     placeholder="Title ..."
                     value={getValues("title")}
                     id="title"
+                    readOnly={
+                      rating?.rating || rating?.title || rating?.content
+                    }
                   />
                 </div>
                 <div className="mb-3">
@@ -323,23 +327,28 @@ function ReservationClient({ reservation }) {
                     placeholder="Content ..."
                     value={getValues("content")}
                     id="content"
+                    readOnly={
+                      rating?.rating || rating?.title || rating?.content
+                    }
                   ></textarea>
                 </div>
-                <div className="flex space-x-6 items-start justify-end">
-                  <div className="float-right w-[120px]">
-                    <Button
-                      outline
-                      label="Cancel"
-                      onClick={() => {
-                        reset();
-                        setHover(null);
-                      }}
-                    />
+                {!rating?.rating && !rating?.title && !rating?.content && (
+                  <div className="flex space-x-6 items-start justify-end">
+                    <div className="float-right w-[120px]">
+                      <Button
+                        outline
+                        label="Cancel"
+                        onClick={() => {
+                          reset();
+                          setHover(null);
+                        }}
+                      />
+                    </div>
+                    <div className="float-right w-[120px]">
+                      <Button label="Send" onClick={handleSubmit(handleSend)} />
+                    </div>
                   </div>
-                  <div className="float-right w-[120px]">
-                    <Button label="Send" onClick={handleSubmit(handleSend)} />
-                  </div>
-                </div>
+                )}
               </div>
             </div>
           </div>

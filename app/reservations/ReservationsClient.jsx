@@ -34,8 +34,8 @@ function ReservationsClient() {
   const [item, setItem] = useState();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [selected, setSelected] = useState(place_status[0]);
   const [reservations, setReservations] = useState({});
+  const [selected, setSelected] = useState(place_status[0]);
   const authState = useSelector((state) => state.authSlice.authState);
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 

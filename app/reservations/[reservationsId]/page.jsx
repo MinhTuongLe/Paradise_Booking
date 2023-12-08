@@ -4,6 +4,7 @@ import ReservationClient from "./ReservationClient";
 import { cookies } from "next/headers";
 import getUserById from "@/app/actions/getUserById";
 import getReservationById from "@/app/actions/getReservationById";
+import getRatingByReservationId from "@/app/actions/getRatingByReservationId";
 
 export const dynamic = "force-dynamic";
 
@@ -14,9 +15,10 @@ const ReservationPage = async ({ params }) => {
   // const reservation = await getReservationById(params.reservationsId);
 
   let authorized = false;
-  let reservation;
+  let reservation, rating;
   if (accessToken && user.role !== 3) {
     reservation = await getReservationById(params.reservationsId);
+    rating = await getRatingByReservationId(params.reservationsId);
     authorized = true;
   }
 
@@ -25,7 +27,7 @@ const ReservationPage = async ({ params }) => {
 
   return (
     <ClientOnly>
-      <ReservationClient reservation={reservation} />
+      <ReservationClient reservation={reservation} rating={rating} />
     </ClientOnly>
   );
 };
