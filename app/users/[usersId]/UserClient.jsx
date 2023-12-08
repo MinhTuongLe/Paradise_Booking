@@ -48,6 +48,8 @@ function UserClient({ places, currentUser, role }) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [ratings, setRatings] = useState([]);
+
 
   const {
     register,
