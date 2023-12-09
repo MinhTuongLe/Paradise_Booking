@@ -17,6 +17,7 @@ function ToastContainerBar({}) {
         pauseOnFocusLoss
         pauseOnHover
         theme="colored"
+        style={{ textTransform: "capitalize" }}
       />
     </>
   );

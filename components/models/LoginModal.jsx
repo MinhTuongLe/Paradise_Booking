@@ -83,7 +83,7 @@ function LoginModal({}) {
           });
       })
       .catch((err) => {
-        toast.error("Something Went Wrong");
+        toast.error(err.response.data.error.message);
         setIsLoading(false);
       });
   };
