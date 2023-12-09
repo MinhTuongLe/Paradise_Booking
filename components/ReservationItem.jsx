@@ -39,7 +39,7 @@ function ReservationItem({ onDelete, data }) {
           <Image
             fill
             className="object-cover aspect-square h-full w-full rounded-xl"
-            src={emptyImageSrc}
+            src={data.place.cover || emptyImageSrc}
             alt="listing"
             priority
           />

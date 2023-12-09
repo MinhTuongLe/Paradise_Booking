@@ -12,8 +12,9 @@ import Button from "../Button";
 import Heading from "../Heading";
 // import Input from "../inputs/Input";
 import Modal from "./Modal";
-import { BiDollar } from "react-icons/bi";
+// import { BiDollar } from "react-icons/bi";
 import Image from "next/image";
+import "../../styles/globals.css";
 
 const data = {
   name: "Le Minh Tuong",
@@ -75,7 +76,7 @@ function CommentsModal({}) {
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
-      <div className="w-full p-2 space-y-2">
+      {/* <div className="w-full p-2 space-y-2">
         <div className="w-full p-2 space-y-1">
           <div className="w-full flex justify-between items-start">
             <h1 className="text-xl font-bold space-y-3">Place 1</h1>
@@ -121,61 +122,101 @@ function CommentsModal({}) {
           </div>
           <p className="line-clamp-5">{`"...${data.bio}`}</p>
         </div>
+      </div>
+      <hr /> */}
+      <div className="w-full p-2 space-y-1">
+        <div className="w-full flex justify-between items-start">
+          <h1 className="text-xl font-bold space-y-3">Place 1</h1>
+          <Image
+            width={80}
+            height={60}
+            src={emptyImageSrc}
+            alt="Avatar"
+            className="rounded-xl h-[60px] w-[80px]"
+            priority
+          />
+        </div>
+        <div className="flex justify-start items-center space-x-6">
+          <Image
+            width={40}
+            height={40}
+            src={emptyImageSrc}
+            priority
+            alt="Avatar"
+            className="rounded-full h-[40px] w-[40px]"
+          />
+          <div>
+            <h1 className="text-md font-bold space-y-3">Conal</h1>
+            <p>tháng 11 năm 2023</p>
+          </div>
+        </div>
+        <p className="line-clamp-5">{`"...${data.bio}`}</p>
       </div>
       <hr />
-      <div className="w-full p-2 space-y-2">
-        <div className="w-full p-2 space-y-1">
-          <div className="w-full flex justify-between items-start">
-            <h1 className="text-xl font-bold space-y-3">Place 1</h1>
-            <Image
-              width={80}
-              height={60}
-              src={emptyImageSrc}
-              alt="Avatar"
-              className="rounded-xl h-[60px] w-[80px]"
-              priority
-            />
-          </div>
-          <div className="flex justify-start items-center space-x-6">
-            <Image
-              width={40}
-              height={40}
-              src={emptyImageSrc}
-              priority
-              alt="Avatar"
-              className="rounded-full h-[40px] w-[40px]"
-            />
-            <div>
-              <h1 className="text-md font-bold space-y-3">Conal</h1>
-              <p>tháng 11 năm 2023</p>
-            </div>
-          </div>
-          <p className="line-clamp-5">{`"...${data.bio}`}</p>
+      <div className="w-full p-2 space-y-1">
+        <div className="w-full flex justify-between items-start">
+          <h1 className="text-xl font-bold space-y-3">Place 1</h1>
+          <Image
+            width={80}
+            height={60}
+            src={emptyImageSrc}
+            alt="Avatar"
+            className="rounded-xl h-[60px] w-[80px]"
+            priority
+          />
         </div>
-        <div className="w-full p-2 pl-12 space-y-2">
-          <div className="flex justify-start items-center space-x-6">
-            <Image
-              width={40}
-              height={40}
-              src={emptyImageSrc}
-              priority
-              alt="Avatar"
-              className="rounded-full h-[40px] w-[40px]"
-            />
-            <div>
-              <h1 className="text-md font-bold space-y-3">Conal</h1>
-              <p>tháng 11 năm 2023</p>
-            </div>
+        <div className="flex justify-start items-center space-x-6">
+          <Image
+            width={40}
+            height={40}
+            src={emptyImageSrc}
+            priority
+            alt="Avatar"
+            className="rounded-full h-[40px] w-[40px]"
+          />
+          <div>
+            <h1 className="text-md font-bold space-y-3">Conal</h1>
+            <p>tháng 11 năm 2023</p>
           </div>
-          <p className="line-clamp-5">{`"...${data.bio}`}</p>
         </div>
+        <p className="line-clamp-5">{`"...${data.bio}`}</p>
       </div>
+      <hr />
+      <div className="w-full p-2 space-y-1">
+        <div className="w-full flex justify-between items-start">
+          <h1 className="text-xl font-bold space-y-3">Place 1</h1>
+          <Image
+            width={80}
+            height={60}
+            src={emptyImageSrc}
+            alt="Avatar"
+            className="rounded-xl h-[60px] w-[80px]"
+            priority
+          />
+        </div>
+        <div className="flex justify-start items-center space-x-6">
+          <Image
+            width={40}
+            height={40}
+            src={emptyImageSrc}
+            priority
+            alt="Avatar"
+            className="rounded-full h-[40px] w-[40px]"
+          />
+          <div>
+            <h1 className="text-md font-bold space-y-3">Conal</h1>
+            <p>tháng 11 năm 2023</p>
+          </div>
+        </div>
+        <p className="line-clamp-5">{`"...${data.bio}`}</p>
+      </div>
+      <hr />
     </div>
   );
 
   const footerContent = (
     <>
-      <hr />
+      {/* <hr />
       <div className="flex justify-between items-center w-full">
         <button
           className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
@@ -183,7 +224,7 @@ function CommentsModal({}) {
         >
           Show more comments
         </button>
-      </div>
+      </div> */}
     </>
   );
 

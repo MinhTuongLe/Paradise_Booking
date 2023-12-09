@@ -10,37 +10,37 @@ export const booking_status = [
   {
     id: 1,
     name: "Pending",
-    icon: <MdPending className="text-[22px]" color="#ffa700" />,
+    icon: <MdPending className="text-[24px]" color="#ffa700" />,
     color: "#ffa700",
   },
   {
     id: 2,
     name: "Successful",
-    icon: <FaCheckCircle className="text-[20px]" color="#05a569" />,
+    icon: <FaCheckCircle className="text-[24px]" color="#05a569" />,
     color: "#05a569",
   },
   {
     id: 3,
     name: "Checkin",
-    icon: <FaCalendarAlt className="text-[22px]" color="#55bdbf" />,
+    icon: <FaCalendarAlt className="text-[24px]" color="#55bdbf" />,
     color: "#55bdbf",
   },
   {
     id: 4,
     name: "Checkout",
-    icon: <FaCalendarCheck className="text-[22px]" color="#58a1d8" />,
+    icon: <FaCalendarCheck className="text-[24px]" color="#58a1d8" />,
     color: "#58a1d8",
   },
   {
     id: 5,
     name: "Completed",
-    icon: <MdIncompleteCircle className="text-[22px]" color="#1975d3" />,
+    icon: <MdIncompleteCircle className="text-[24px]" color="#1975d3" />,
     color: "#1975d3",
   },
   {
     id: 6,
     name: "Cancel",
-    icon: <MdCancel className="text-[22px]" color="#f44668" />,
+    icon: <MdCancel className="text-[24px]" color="#f44668" />,
     color: "#f44668",
   },
 ];

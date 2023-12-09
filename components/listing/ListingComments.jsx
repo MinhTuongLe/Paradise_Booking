@@ -50,7 +50,7 @@ function ListingComments({ place_id }) {
             Recent comments
           </p>
           <div className="grid grid-cols-2">
-            {ratings.map((comment, index) => {
+            {ratings.slice(0, 6).map((comment, index) => {
               return (
                 <div key={index} className="w-full p-2 pr-[92px] mb-8">
                   <div className="flex justify-start items-center space-x-6 mb-2">
@@ -87,7 +87,7 @@ function ListingComments({ place_id }) {
           No comment to display
         </div>
       )}
-      {!isLoading && ratings && ratings.length > 6 && (
+      {!isLoading && ratings && ratings.length > 0 && (
         <div className="flex justify-between items-center w-full">
           <button
             className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-md border-[1px]"

@@ -73,8 +73,7 @@ function RoomCommentsModal({}) {
                     <span className="text-xs">5</span>
                     <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
                       <div
-                        className="bg-rose-500 rounded-full dark:bg-rose-300"
-                        style={{ width: "45%" }}
+                        className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full w-[45%]`}
                       ></div>
                     </div>
                   </div>
@@ -82,8 +81,7 @@ function RoomCommentsModal({}) {
                     <span className="text-xs">4</span>
                     <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
                       <div
-                        className="bg-rose-500 rounded-full dark:bg-rose-300"
-                        style={{ width: "45%" }}
+                        className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full w-[45%]`}
                       ></div>
                     </div>
                   </div>
@@ -91,8 +89,7 @@ function RoomCommentsModal({}) {
                     <span className="text-xs">3</span>
                     <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
                       <div
-                        className="bg-rose-500 rounded-full dark:bg-rose-300"
-                        style={{ width: "45%" }}
+                        className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full w-[45%]`}
                       ></div>
                     </div>
                   </div>
@@ -100,8 +97,7 @@ function RoomCommentsModal({}) {
                     <span className="text-xs">2</span>
                     <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
                       <div
-                        className="bg-rose-500 rounded-full dark:bg-rose-300"
-                        style={{ width: "45%" }}
+                        className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full w-[45%]`}
                       ></div>
                     </div>
                   </div>
@@ -109,8 +105,7 @@ function RoomCommentsModal({}) {
                     <span className="text-xs">1</span>
                     <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
                       <div
-                        className="bg-rose-500 rounded-full dark:bg-rose-300"
-                        style={{ width: "45%" }}
+                        className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full w-[45%]`}
                       ></div>
                     </div>
                   </div>
