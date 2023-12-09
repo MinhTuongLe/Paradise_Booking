@@ -62,7 +62,7 @@ function Modal({
         onClick={handleClose}
       >
         <div
-          className={`${classname} relative w-full my-6 mx-auto max-h-[80vh] lg:h-auto md:h-auto overflow-auto`}
+          className={`${classname} relative w-full my-6 mx-auto max-h-[80vh] lg:h-auto md:h-auto overflow-auto scrollbar-none`}
           onClick={(e) => e.stopPropagation()}
         >
           <div

@@ -1,10 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import useLoginModel from "@/hook/useLoginModal";
 import useCommentsModal from "../../hook/useCommentsModal";
 // import axios from "axios";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -15,6 +16,9 @@ import Modal from "./Modal";
 // import { BiDollar } from "react-icons/bi";
 import Image from "next/image";
 import "../../styles/globals.css";
+import { API_URL } from "@/const";
+import { useParams } from "next/navigation";
+import axios from "axios";
 
 const data = {
   name: "Le Minh Tuong",
@@ -28,6 +32,8 @@ const data = {
 function CommentsModal({}) {
   const commentsModal = useCommentsModal();
   const [isLoading, setIsLoading] = useState(false);
+  const [ratings, setRatings] = useState([]);
+  const params = useParams();
 
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
@@ -73,6 +79,25 @@ function CommentsModal({}) {
   const toggle = useCallback(() => {
     commentsModal.onClose();
   }, [commentsModal]);
+
+  const getRatings = async () => {
+    setIsLoading(true);
+
+    await axios
+      .get(`${API_URL}/booking_ratings/users/${params.usersId}`)
+      .then((response) => {
+        setRatings(response.data.data.DataRating);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        toast.error("Something Went Wrong");
+        setIsLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    if (commentsModal.isOpen) getRatings();
+  }, [commentsModal.isOpen]);
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
@@ -124,93 +149,47 @@ function CommentsModal({}) {
         </div>
       </div>
       <hr /> */}
-      <div className="w-full p-2 space-y-1">
-        <div className="w-full flex justify-between items-start">
-          <h1 className="text-xl font-bold space-y-3">Place 1</h1>
-          <Image
-            width={80}
-            height={60}
-            src={emptyImageSrc}
-            alt="Avatar"
-            className="rounded-xl h-[60px] w-[80px]"
-            priority
-          />
-        </div>
-        <div className="flex justify-start items-center space-x-6">
-          <Image
-            width={40}
-            height={40}
-            src={emptyImageSrc}
-            priority
-            alt="Avatar"
-            className="rounded-full h-[40px] w-[40px]"
-          />
-          <div>
-            <h1 className="text-md font-bold space-y-3">Conal</h1>
-            <p>tháng 11 năm 2023</p>
+      {ratings &&
+        ratings.length > 0 &&
+        ratings.map((rating, index) => (
+          <div key={index}>
+            <div className="w-full p-2 space-y-1">
+              <div className="w-full flex justify-between items-start">
+                <h1 className="text-xl font-bold space-y-3">My Paradise</h1>
+                <Image
+                  width={80}
+                  height={60}
+                  src={emptyImageSrc}
+                  alt="Avatar"
+                  className="rounded-xl h-[60px] w-[80px]"
+                  priority
+                />
+              </div>
+              <div className="flex justify-start items-center space-x-6">
+                <Image
+                  width={40}
+                  height={40}
+                  src={emptyImageSrc}
+                  priority
+                  alt="Avatar"
+                  className="rounded-full h-[40px] w-[40px]"
+                />
+                <div>
+                  <h1 className="text-md font-bold space-y-3">Conal</h1>
+                  <p>
+                    {rating?.created_at
+                      .split("T")[0]
+                      .split("-")
+                      .reverse()
+                      .join("-") || "-"}
+                  </p>
+                </div>
+              </div>
+              <p className="line-clamp-5">{`"...${rating.content || "-"}`}</p>
+            </div>
+            <hr />
           </div>
-        </div>
-        <p className="line-clamp-5">{`"...${data.bio}`}</p>
-      </div>
-      <hr />
-      <div className="w-full p-2 space-y-1">
-        <div className="w-full flex justify-between items-start">
-          <h1 className="text-xl font-bold space-y-3">Place 1</h1>
-          <Image
-            width={80}
-            height={60}
-            src={emptyImageSrc}
-            alt="Avatar"
-            className="rounded-xl h-[60px] w-[80px]"
-            priority
-          />
-        </div>
-        <div className="flex justify-start items-center space-x-6">
-          <Image
-            width={40}
-            height={40}
-            src={emptyImageSrc}
-            priority
-            alt="Avatar"
-            className="rounded-full h-[40px] w-[40px]"
-          />
-          <div>
-            <h1 className="text-md font-bold space-y-3">Conal</h1>
-            <p>tháng 11 năm 2023</p>
-          </div>
-        </div>
-        <p className="line-clamp-5">{`"...${data.bio}`}</p>
-      </div>
-      <hr />
-      <div className="w-full p-2 space-y-1">
-        <div className="w-full flex justify-between items-start">
-          <h1 className="text-xl font-bold space-y-3">Place 1</h1>
-          <Image
-            width={80}
-            height={60}
-            src={emptyImageSrc}
-            alt="Avatar"
-            className="rounded-xl h-[60px] w-[80px]"
-            priority
-          />
-        </div>
-        <div className="flex justify-start items-center space-x-6">
-          <Image
-            width={40}
-            height={40}
-            src={emptyImageSrc}
-            priority
-            alt="Avatar"
-            className="rounded-full h-[40px] w-[40px]"
-          />
-          <div>
-            <h1 className="text-md font-bold space-y-3">Conal</h1>
-            <p>tháng 11 năm 2023</p>
-          </div>
-        </div>
-        <p className="line-clamp-5">{`"...${data.bio}`}</p>
-      </div>
-      <hr />
+        ))}
     </div>
   );
 

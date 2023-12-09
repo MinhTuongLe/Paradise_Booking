@@ -63,19 +63,30 @@ function ListingComments({ place_id }) {
                       priority
                     />
                     <div>
-                      <h1 className="text-lg font-bold space-y-3">Conal</h1>
-                      <p className="text-lg">Vietnam</p>
+                      <h1 className="text-lg font-bold space-y-3">
+                        {comment?.user?.full_name || "-"}
+                      </h1>
+                      <p className="text-lg">{comment?.user?.address || "-"}</p>
                     </div>
                   </div>
                   <div className="flex justify-start items-center space-x-6 mb-2">
                     <div className="flex space-x-2 justify-between items-center">
                       <FaStar size={16} />
-                      <span className="text-lg">{comment?.rating || 0}</span>
+                      <span className="text-lg">
+                        {comment?.DataRating?.rating || 0}
+                      </span>
                     </div>
-                    <p className="text-md">tháng 11 năm 2023</p>
+                    <p className="text-md">
+                      {" "}
+                      {comment?.DataRating.created_at
+                        .split("T")[0]
+                        .split("-")
+                        .reverse()
+                        .join("-") || "-"}
+                    </p>
                   </div>
                   <p className="line-clamp-3 text-md">{`"...${
-                    comment?.content || "-"
+                    comment?.DataRating?.content || "-"
                   }`}</p>
                 </div>
               );

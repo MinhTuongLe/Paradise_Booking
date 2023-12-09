@@ -50,7 +50,6 @@ function UserClient({ places, currentUser, role }) {
   const [isEditMode, setIsEditMode] = useState(false);
   const [ratings, setRatings] = useState([]);
 
-
   const {
     register,
     handleSubmit,
@@ -172,6 +171,25 @@ function UserClient({ places, currentUser, role }) {
   };
 
   const handleBecomeVendor = () => {};
+
+  const getRatings = async () => {
+    setIsLoading(true);
+
+    await axios
+      .get(`${API_URL}/booking_ratings/users/${currentUser.id}`)
+      .then((response) => {
+        setRatings(response.data.data.DataRating);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        toast.error("Something Went Wrong");
+        setIsLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    getRatings();
+  }, []);
 
   if (loggedUser.id !== currentUser.id) {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;
@@ -398,57 +416,59 @@ function UserClient({ places, currentUser, role }) {
                     </div>
                     {role === 2 && (
                       <>
-                        <div>
+                        <div className="w-full">
                           <div className="flex justify-between items-center w-full">
                             <h1 className="text-xl font-bold space-y-3">
                               {currentUser.full_name || "User"}' Comments
                             </h1>
-                            <button
-                              className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
-                              onClick={commentsModal.onOpen}
-                            >
-                              Show more comments
-                            </button>
+                            {ratings && ratings.length > 2 && (
+                              <button
+                                className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
+                                onClick={commentsModal.onOpen}
+                              >
+                                Show more comments
+                              </button>
+                            )}
                           </div>
                           <div className="vendor-room-places flex w-full space-x-4 mt-3">
-                            <div className="w-1/2 p-2 space-y-6 border-[1px] rounded-xl">
-                              <p className="line-clamp-5 text-ellipsis">{`"...${data.bio}`}</p>
-                              <div className="flex justify-start items-center space-x-6">
-                                <Image
-                                  width={40}
-                                  height={40}
-                                  src={emptyImageSrc}
-                                  alt="Avatar"
-                                  className="rounded-full h-[40px] w-[40px]"
-                                  priority
-                                />
-                                <div>
-                                  <h1 className="text-md font-bold space-y-3">
-                                    Conal
-                                  </h1>
-                                  <p>tháng 11 năm 2023</p>
+                            {ratings && ratings.length > 0 ? (
+                              ratings.slice(0, 2).map((rating, index) => (
+                                <div
+                                  key={index}
+                                  className="w-1/2 p-2 space-y-6 border-[1px] rounded-xl"
+                                >
+                                  <p className="line-clamp-5 text-ellipsis">{`"...${
+                                    rating.content || "-"
+                                  }`}</p>
+                                  <div className="flex justify-start items-center space-x-6">
+                                    <Image
+                                      width={40}
+                                      height={40}
+                                      src={emptyImageSrc}
+                                      alt="Avatar"
+                                      className="rounded-full h-[40px] w-[40px]"
+                                      priority
+                                    />
+                                    <div>
+                                      <h1 className="text-md font-bold space-y-3">
+                                        Conal
+                                      </h1>
+                                      <p>
+                                        {rating?.created_at
+                                          .split("T")[0]
+                                          .split("-")
+                                          .reverse()
+                                          .join("-") || "-"}
+                                      </p>
+                                    </div>
+                                  </div>
                                 </div>
+                              ))
+                            ) : (
+                              <div className="text-center text-xl font-bold">
+                                No comment to display
                               </div>
-                            </div>
-                            <div className="w-1/2 p-2 space-y-6 border-[1px] rounded-xl">
-                              <p className="line-clamp-5 text-ellipsis">{`"...${data.bio}`}</p>
-                              <div className="flex justify-start items-center space-x-6">
-                                <Image
-                                  width={40}
-                                  height={40}
-                                  src={emptyImageSrc}
-                                  alt="Avatar"
-                                  className="rounded-full h-[40px] w-[40px]"
-                                  priority
-                                />
-                                <div>
-                                  <h1 className="text-md font-bold space-y-3">
-                                    Conal
-                                  </h1>
-                                  <p>tháng 11 năm 2023</p>
-                                </div>
-                              </div>
-                            </div>
+                            )}
                           </div>
                         </div>
                         {places && places.length > 0 && (

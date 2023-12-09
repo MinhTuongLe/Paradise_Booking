@@ -18,6 +18,8 @@ function RoomCommentsModal({}) {
   const commentsModal = useRoomCommentsModal();
   const [isLoading, setIsLoading] = useState(false);
   const [ratings, setRatings] = useState([]);
+  const [averageRating, setAverageRating] = useState(0);
+  const [ratingDistribution, setRatingDistribution] = useState({});
 
   const params = useParams();
 
@@ -46,15 +48,54 @@ function RoomCommentsModal({}) {
   };
 
   useEffect(() => {
-    if (commentsModal.isOpen) getRatings();
+    if (commentsModal.isOpen) {
+      getRatings();
+    }
   }, [commentsModal.isOpen]);
 
+  useEffect(() => {
+    if (commentsModal.isOpen && ratings) {
+      // Tính trung bình rating
+      const totalRatings = ratings.length;
+      const totalRatingSum = ratings.reduce(
+        (sum, rating) => sum + rating.DataRating.rating,
+        0
+      );
+      const average = totalRatingSum / totalRatings;
+      setAverageRating(average);
+
+      // Tính phần trăm xuất hiện của các giá trị rating từ 1 đến 5
+      const ratingCounts = {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+      };
+
+      ratings.forEach((rating) => {
+        const ratingValue = rating.DataRating.rating;
+        if (ratingValue >= 1 && ratingValue <= 5) {
+          ratingCounts[ratingValue]++;
+        }
+      });
+
+      const distributionPercentages = {};
+      Object.keys(ratingCounts).forEach((key) => {
+        const percentage = (ratingCounts[key] / totalRatings) * 100;
+        distributionPercentages[key] = percentage.toFixed(0);
+      });
+
+      setRatingDistribution(distributionPercentages);
+    }
+  }, [commentsModal.isOpen, ratings]);
+
   const bodyContent = (
-    <div className="grid grid-cols-12 gap-8">
+    <>
       {isLoading ? (
         <Loader />
       ) : (
-        <>
+        <div className="grid grid-cols-12 gap-8">
           <div className="col-span-4">
             <div className="flex flex-col space-y-4">
               <div className="space-y-1">
@@ -63,7 +104,9 @@ function RoomCommentsModal({}) {
                 </span>
                 <div className="flex space-x-2 justify-start items-center">
                   <FaStar size={16} />
-                  <span className="text-lg font-bold">5.0</span>
+                  <span className="text-lg font-bold">
+                    {averageRating || 0}
+                  </span>
                 </div>
               </div>
               <div className="space-y-1">
@@ -73,7 +116,8 @@ function RoomCommentsModal({}) {
                     <span className="text-xs">5</span>
                     <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
                       <div
-                        className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full w-[45%]`}
+                        className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
+                        style={{ width: `${ratingDistribution[5]}%` }}
                       ></div>
                     </div>
                   </div>
@@ -81,7 +125,8 @@ function RoomCommentsModal({}) {
                     <span className="text-xs">4</span>
                     <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
                       <div
-                        className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full w-[45%]`}
+                        className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
+                        style={{ width: `${ratingDistribution[4]}%` }}
                       ></div>
                     </div>
                   </div>
@@ -89,7 +134,8 @@ function RoomCommentsModal({}) {
                     <span className="text-xs">3</span>
                     <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
                       <div
-                        className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full w-[45%]`}
+                        className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
+                        style={{ width: `${ratingDistribution[3]}%` }}
                       ></div>
                     </div>
                   </div>
@@ -97,7 +143,8 @@ function RoomCommentsModal({}) {
                     <span className="text-xs">2</span>
                     <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
                       <div
-                        className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full w-[45%]`}
+                        className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
+                        style={{ width: `${ratingDistribution[2]}%` }}
                       ></div>
                     </div>
                   </div>
@@ -105,7 +152,8 @@ function RoomCommentsModal({}) {
                     <span className="text-xs">1</span>
                     <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
                       <div
-                        className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full w-[45%]`}
+                        className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
+                        style={{ width: `${ratingDistribution[1]}%` }}
                       ></div>
                     </div>
                   </div>
@@ -131,30 +179,40 @@ function RoomCommentsModal({}) {
                           priority
                         />
                         <div>
-                          <h1 className="text-lg font-bold space-y-3">Conal</h1>
-                          <p className="text-lg">Vietnam</p>
+                          <h1 className="text-lg font-bold space-y-3">
+                            {comment?.user?.full_name || "-"}
+                          </h1>
+                          <p className="text-lg">
+                            {comment?.user?.address || "-"}
+                          </p>
                         </div>
                       </div>
                       <div className="flex justify-start items-center space-x-6 mb-2">
                         <div className="flex space-x-2 justify-between items-center">
                           <FaStar size={16} />
                           <span className="text-lg">
-                            {comment?.rating || 0}
+                            {comment?.DataRating?.rating || 0}
                           </span>
                         </div>
-                        <p className="text-md">tháng 11 năm 2023</p>
+                        <p className="text-md">
+                          {comment?.DataRating.created_at
+                            .split("T")[0]
+                            .split("-")
+                            .reverse()
+                            .join("-") || "-"}
+                        </p>
                       </div>
                       <p className="line-clamp-3 text-md">{`"...${
-                        comment?.content || "-"
+                        comment?.DataRating?.content || "-"
                       }`}</p>
                     </div>
                   );
                 })}
             </div>
           </div>
-        </>
+        </div>
       )}
-    </div>
+    </>
   );
 
   const footerContent = <></>;
