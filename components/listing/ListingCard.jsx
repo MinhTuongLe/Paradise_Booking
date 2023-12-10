@@ -94,10 +94,10 @@ function ListingCard({
           </div>
         )}
         <div className="flex justify-between items-center space-x-4">
-          <div className="font-light text-neutral-500 text-ellipsis line-clamp-1">
+          <div className="font-light text-neutral-500 text-ellipsis line-clamp-1 max-w-[70%]">
             {data.city || ""} {data.state ? `, ${data.state}` : ""}
           </div>
-          <div className="flex space-x-2 justify-between items-center">
+          <div className="flex space-x-2 justify-between items-center max-w-[20%]">
             <FaStar size={16} />
             <span className="text-sm">5.0</span>
           </div>
