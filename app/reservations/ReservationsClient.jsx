@@ -75,7 +75,7 @@ function ReservationsClient() {
     setOpen(true);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (item.status_id !== 5 && item.status_id !== 6 && item.status_id !== 1) {
       toast.error(`Delete failed. This reservation is processing`);
       setOpen(false);
@@ -94,38 +94,44 @@ function ReservationsClient() {
           id: item.id,
         },
       };
-      axios
-        .post(`${API_URL}/cancel_booking`, null, config)
-        .then(() => {
+
+      try {
+        setOpen(false);
+        const res = await axios.post(`${API_URL}/cancel_booking`, null, config);
+        if (res.data.data) {
+          await getReservations();
           toast.success(`Cancel reservation successfully`);
-          getReservations();
-          setIsLoading(false);
-          router.refresh();
-        })
-        .catch(() => {
+        } else {
           toast.error("Cancel reservation failed");
-          setIsLoading(false);
-        });
+        }
+      } catch (error) {
+        toast.error("Cancel reservation failed");
+      }
+      setIsLoading(false);
     } else {
       const config = {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       };
-      axios
-        .delete(`${API_URL}/bookings/${item.id}`, config)
-        .then(() => {
+
+      try {
+        setOpen(false);
+        const res = await axios.delete(
+          `${API_URL}/bookings/${item.id}`,
+          config
+        );
+        if (res.data.data) {
+          await getReservations();
           toast.success(`Delete reservation successfully`);
-          getReservations();
-          setIsLoading(false);
-          router.refresh();
-        })
-        .catch(() => {
+        } else {
           toast.error("Delete reservation failed");
-          setIsLoading(false);
-        });
+        }
+      } catch (error) {
+        toast.error("Delete reservation failed");
+      }
     }
-    setOpen(false);
+    setIsLoading(false);
   };
 
   const getReservations = async (filterValues) => {

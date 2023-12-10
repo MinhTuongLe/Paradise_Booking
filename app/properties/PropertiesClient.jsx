@@ -35,8 +35,9 @@ function PropertiesClient({ currentUser }) {
     setOpen(true);
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     setIsLoading(true);
+    setOpen(false);
     const accessToken = Cookie.get("accessToken");
     const config = {
       params: {
@@ -46,20 +47,17 @@ function PropertiesClient({ currentUser }) {
         Authorization: `Bearer ${accessToken}`,
       },
     };
-    axios
-      .delete(`${API_URL}/places`, config)
-      .then(() => {
-        setOpen(false);
+    try {
+      const res = await axios.delete(`${API_URL}/places`, config);
+
+      if (res.data.data) {
+        await getPlaces(selected.id);
         toast.success(`Delete room successfully`);
-        getPlaces(selected.id);
-        setIsLoading(false);
-        router.refresh();
-      })
-      .catch(() => {
-        setOpen(false);
-        toast.error("Delete room failed");
-        setIsLoading(false);
-      });
+      } else toast.error("Delete room failed");
+    } catch (error) {
+      toast.error("Delete room failed");
+    }
+    setIsLoading(false);
   };
 
   const getPlaces = async (type) => {

@@ -43,7 +43,7 @@ function Input({
         id={id}
         disabled={disabled}
         {...register(id, { required, pattern })}
-        placeholder=""
+        placeholder=" "
         type={showPassword ? "text" : type}
         className={`peer w-full ${
           label ? "p-4 pt-6" : "p-1"

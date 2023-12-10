@@ -19,7 +19,7 @@ import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 function WishlistItem({ data, listingId, onActions }) {
   const router = useRouter();
   const wishlistModal = useWishlistModal();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [wishlistLength, setWishlistLength] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [title, setTitle] = useState(data.title);
@@ -27,7 +27,6 @@ function WishlistItem({ data, listingId, onActions }) {
   const cancelButtonRef = useRef(null);
 
   const getPlacesByWishlistId = async () => {
-    setIsLoading(true);
     const accessToken = Cookie.get("accessToken");
     const config = {
       params: {
@@ -43,12 +42,11 @@ function WishlistItem({ data, listingId, onActions }) {
       .get(`${API_URL}/place_wish_lists/place`, config)
       .then((response) => {
         setWishlistLength(response.data.data.length);
-        setIsLoading(false);
       })
       .catch((err) => {
         toast.error("Something Went Wrong");
-        setIsLoading(false);
       });
+    setIsLoading(false);
   };
 
   const handleAdd = (e) => {
@@ -234,7 +232,7 @@ function WishlistItem({ data, listingId, onActions }) {
         }}
         className="col-span-1 group"
       >
-        {!isLoading && (
+        {!isLoading ? (
           <div className="flex space-x-6 w-full justify-start items-center">
             <div
               className="flex gap-4 items-center justify-start w-[70%] cursor-pointer"
@@ -306,6 +304,10 @@ function WishlistItem({ data, listingId, onActions }) {
                 </div>
               )}
             </div>
+          </div>
+        ) : (
+          <div role="status" class="w-full animate-pulse">
+            <div class="h-[64px] bg-gray-200 rounded-2xl dark:bg-gray-400 mb-4"></div>
           </div>
         )}
       </motion.div>

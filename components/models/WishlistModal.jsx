@@ -127,28 +127,11 @@ function WishlistModal() {
       .get(`${API_URL}/wish_lists/user/${user_id}`, config)
       .then((response) => {
         setWishlists(response.data);
-        setIsLoading(false);
       })
       .catch((err) => {
         toast.error("Something Went Wrong");
-        setIsLoading(false);
       });
-  };
-
-  // const handleAddPlaceToWishlist = () => {
-  //   return listingId
-  // };
-
-  // const handleEditWishlist = () => {
-  //   console.log("Edit");
-  // };
-
-  // const handleDeleteWishlist = () => {
-  //   console.log("Delete");
-  // };
-
-  const handleActions = () => {
-    return listingId;
+    setIsLoading(false);
   };
 
   useEffect(() => {
