@@ -17,12 +17,13 @@ import { toast } from "react-toastify";
 import Button from "@/components/Button";
 import ImageUpload from "@/components/inputs/ImageUpload";
 import { AiOutlineMail, AiOutlinePhone, AiOutlineUser } from "react-icons/ai";
-import { FaCheck, FaRegAddressCard } from "react-icons/fa";
+import { FaCheck, FaFlag, FaRegAddressCard } from "react-icons/fa";
 import { MdOutlineDateRange } from "react-icons/md";
 import "../../../styles/globals.css";
 import { API_URL } from "@/const";
 import useCommentsModal from "@/hook/useCommentsModal";
 import useRoomsModal from "@/hook/useRoomsModal";
+import useReportModal from "@/hook/useReportModal";
 import { useDispatch } from "react-redux";
 import { setLoggUser } from "@/components/slice/authSlice";
 import { useSelector } from "react-redux";
@@ -40,6 +41,7 @@ const data = {
 };
 
 function UserClient({ places, currentUser, role }) {
+  const reportModal = useReportModal();
   const commentsModal = useCommentsModal();
   const roomsModal = useRoomsModal();
   const dispatch = useDispatch();
@@ -50,6 +52,7 @@ function UserClient({ places, currentUser, role }) {
   const [isEditMode, setIsEditMode] = useState(false);
   const [isVendor, setIsVendor] = useState(loggedUser.role === 2);
   const [ratings, setRatings] = useState([]);
+  const verified = currentUser.id !== loggedUser.id && role === 2;
 
   const {
     register,
@@ -59,26 +62,25 @@ function UserClient({ places, currentUser, role }) {
     watch,
     formState: { errors },
   } = useForm({
-    defaultValues:
-      currentUser.id !== loggedUser.id && role === 2
-        ? {
-            username: currentUser.username || "",
-            full_name: currentUser.full_name || "",
-            avatar: currentUser.avatar || "",
-            address: currentUser.address || "",
-            phone: currentUser.phone || "",
-            dob: currentUser.dob || "",
-            email: currentUser.email || "",
-          }
-        : {
-            username: loggedUser.username || "",
-            full_name: loggedUser.full_name || "",
-            avatar: loggedUser.avatar || "",
-            address: loggedUser.address || "",
-            phone: loggedUser.phone || "",
-            dob: loggedUser.dob || "",
-            email: loggedUser.email || "",
-          },
+    defaultValues: verified
+      ? {
+          username: currentUser.username || "",
+          full_name: currentUser.full_name || "",
+          avatar: currentUser.avatar || "",
+          address: currentUser.address || "",
+          phone: currentUser.phone || "",
+          dob: currentUser.dob || "",
+          email: currentUser.email || "",
+        }
+      : {
+          username: loggedUser.username || "",
+          full_name: loggedUser.full_name || "",
+          avatar: loggedUser.avatar || "",
+          address: loggedUser.address || "",
+          phone: loggedUser.phone || "",
+          dob: loggedUser.dob || "",
+          email: loggedUser.email || "",
+        },
   });
 
   const avatar = watch("avatar");
@@ -219,7 +221,7 @@ function UserClient({ places, currentUser, role }) {
                   width={200}
                   height={200}
                   src={
-                    currentUser.id !== loggedUser.id && role === 2
+                    verified
                       ? currentUser.avatar
                       : loggedUser.avatar || emptyImageSrc
                   }
@@ -227,9 +229,7 @@ function UserClient({ places, currentUser, role }) {
                   className="rounded-full h-[200px] w-[200px]"
                 />
                 <h1 className="text-2xl font-bold my-3">
-                  {currentUser.id !== loggedUser.id && role === 2
-                    ? currentUser.username
-                    : loggedUser.username}
+                  {verified ? currentUser.username : loggedUser.username}
                 </h1>
                 <span className="text-xl">User</span>
               </>
@@ -247,43 +247,56 @@ function UserClient({ places, currentUser, role }) {
                 ></textarea>
               </>
             ) : (
-              <div className="mt-12 p-8 rounded-[24px] border-[1px] border-[#cdcdcd]">
-                <h1 className="text-xl font-bold mb-3">
-                  {currentUser.id !== loggedUser.id
-                    ? currentUser.full_name
-                    : "Your"}{" "}
-                  verified Information
-                </h1>
-                <div className="flex items-center space-x-4 mb-4 mt-4">
-                  <FaCheck className="text-[16px]" />
-                  {/* <IoClose className="text-[28px] font-bold" /> */}
-                  <span>Email Verification</span>
+              <>
+                <div className="mt-12 p-8 rounded-[24px] border-[1px] border-[#cdcdcd]">
+                  <h1 className="text-xl font-bold mb-3">
+                    {currentUser.id !== loggedUser.id
+                      ? currentUser.full_name
+                      : "Your"}{" "}
+                    verified Information
+                  </h1>
+                  <div className="flex items-center space-x-4 mb-4 mt-4">
+                    <FaCheck className="text-[16px]" />
+                    {/* <IoClose className="text-[28px] font-bold" /> */}
+                    <span>Email Verification</span>
+                  </div>
+                  <div
+                    className={`flex items-center space-x-4 ${
+                      currentUser.id === loggedUser.id && role === 1 && "mb-8"
+                    } mt-4`}
+                  >
+                    <FaCheck className="text-[16px]" />
+                    {/* <IoClose className="text-[28px] font-bold" /> */}
+                    <span>Profile Verification</span>
+                  </div>
+                  {currentUser.id === loggedUser.id && role === 1 && (
+                    <>
+                      <hr />
+                      <div className="my-8">
+                        You need to verify the above information if you want to
+                        start listing your place for rent.
+                      </div>
+                      <Button
+                        disabled={isVendor}
+                        outline={isVendor}
+                        label="Become A Vendor"
+                        onClick={handleSubmit(handleBecomeVendor)}
+                      />
+                    </>
+                  )}
                 </div>
-                <div
-                  className={`flex items-center space-x-4 ${
-                    currentUser.id === loggedUser.id && role === 1 && "mb-8"
-                  } mt-4`}
-                >
-                  <FaCheck className="text-[16px]" />
-                  {/* <IoClose className="text-[28px] font-bold" /> */}
-                  <span>Profile Verification</span>
-                </div>
-                {currentUser.id === loggedUser.id && role === 1 && (
-                  <>
-                    <hr />
-                    <div className="my-8">
-                      You need to verify the above information if you want to
-                      start listing your place for rent.
+                {verified && (
+                  <div className="w-full flex justify-center items-start mt-6">
+                    <div
+                      className="flex justify-center items-center gap-4 cursor-pointer"
+                      onClick={reportModal.onOpen}
+                    >
+                      <FaFlag size={16} />
+                      <span className="underline">Report this room</span>
                     </div>
-                    <Button
-                      disabled={isVendor}
-                      outline={isVendor}
-                      label="Become A Vendor"
-                      onClick={handleSubmit(handleBecomeVendor)}
-                    />
-                  </>
+                  </div>
                 )}
-              </div>
+              </>
             )}
           </>
         </div>
@@ -363,7 +376,7 @@ function UserClient({ places, currentUser, role }) {
                 {loggedUser || (currentUser && !isLoading) ? (
                   <>
                     <h1 className="text-2xl font-bold">
-                      {(currentUser.id !== loggedUser.id && role === 2
+                      {(verified
                         ? currentUser.username
                         : loggedUser.username) || "User"}{" "}
                       Profile
@@ -381,7 +394,7 @@ function UserClient({ places, currentUser, role }) {
                         <AiOutlineUser size={18} />
                         <p className="text-md">
                           Name:{" "}
-                          {currentUser.id !== loggedUser.id && role === 2
+                          {verified
                             ? currentUser.full_name
                             : loggedUser.full_name || "-"}
                         </p>
@@ -390,7 +403,7 @@ function UserClient({ places, currentUser, role }) {
                         <AiOutlineMail size={18} />
                         <p className="text-md">
                           Email:{" "}
-                          {currentUser.id !== loggedUser.id && role === 2
+                          {verified
                             ? currentUser.email
                             : loggedUser.email || "-"}
                         </p>
@@ -399,7 +412,7 @@ function UserClient({ places, currentUser, role }) {
                         <AiOutlinePhone size={18} />
                         <p className="text-md">
                           Phone:{" "}
-                          {currentUser.id !== loggedUser.id && role === 2
+                          {verified
                             ? currentUser.phone
                             : loggedUser.phone || "-"}
                         </p>
@@ -408,16 +421,14 @@ function UserClient({ places, currentUser, role }) {
                         <MdOutlineDateRange size={18} />
                         <p className="text-md">
                           Date of Birth:{" "}
-                          {currentUser.id !== loggedUser.id && role === 2
-                            ? currentUser.dob
-                            : loggedUser.dob || "-"}
+                          {verified ? currentUser.dob : loggedUser.dob || "-"}
                         </p>
                       </div>
                       <div className="flex justify-start items-center space-x-3">
                         <FaRegAddressCard size={18} />
                         <p className="text-md">
                           Address:{" "}
-                          {currentUser.id !== loggedUser.id && role === 2
+                          {verified
                             ? currentUser.address
                             : loggedUser.address || "-"}
                         </p>
@@ -434,7 +445,7 @@ function UserClient({ places, currentUser, role }) {
                     >
                       <h1 className="text-xl font-bold mt-[32px]">
                         About{" "}
-                        {currentUser.id !== loggedUser.id && role === 2
+                        {verified
                           ? currentUser.full_name
                           : loggedUser.full_name || "user"}
                       </h1>

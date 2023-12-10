@@ -241,7 +241,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
               </div>
             </div>
             <hr />
-            <ListingComments place_id={place.id}/>
+            <ListingComments place_id={place.id} />
             <hr />
             <div className="my-8 w-full">
               <p className="text-xl font-semibold mb-8">{`Where you’ll be`}</p>
@@ -400,6 +400,53 @@ function ListingClient({ reservations = [], place, currentUser }) {
                   />
                 )}
               </div>
+              {/* <hr />
+              <div className="mb-6">
+                <span className="text-lg font-bold mb-6 block">
+                  Payment info
+                </span>
+                <Input
+                  id="full_name"
+                  label="Full Name"
+                  disabled={isLoading}
+                  register={register}
+                  errors={errors}
+                  required
+                />
+                <div className="flex gap-6 my-6">
+                  <div className="flex-1">
+                    <Input
+                      id="phone"
+                      label="Phone"
+                      disabled={isLoading}
+                      register={register}
+                      errors={errors}
+                      required
+                      type="tel"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <Input
+                      id="email"
+                      label="Email"
+                      disabled={isLoading}
+                      register={register}
+                      errors={errors}
+                      required
+                      type="email"
+                    />
+                  </div>
+                </div>
+                <Input
+                  id="number_of_guest"
+                  label="No Guest"
+                  disabled={isLoading}
+                  register={register}
+                  errors={errors}
+                  required
+                  type="number"
+                />
+              </div> */}
               <hr />
               <div className="my-6">
                 <div className="flex flex-col justify-between items-start mt-4">
