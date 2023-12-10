@@ -91,7 +91,7 @@ function Search({}) {
           >
             Price Range
           </div>
-          <div className="p-2 bg-rose-500 rounded-full text-white">
+          <div className="ml-2 p-2 bg-rose-500 rounded-full text-white">
             <BiSearch size={16} />
           </div>
         </div>
