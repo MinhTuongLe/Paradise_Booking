@@ -3,13 +3,11 @@
 import React from "react";
 import { IconType } from "react-icons";
 import Avatar from "../Avatar";
-import ListingCategory from "./ListingCategory";
 import Sleep from "../Sleep";
 import Offers from "../Offers";
 
 function ListingInfo({
   user,
-  category,
   description,
   roomCount,
   guestCount,
@@ -39,16 +37,6 @@ function ListingInfo({
         </div>
       </div>
       <hr />
-      {category && (
-        <>
-          <ListingCategory
-            icon={category.icon}
-            label={category.label}
-            description={category.description}
-          />
-          <hr />
-        </>
-      )}
       <div className="flex flex-col">
         <p className="text-4xl font-bold text-[#FF5A5F]">
           paradise<span className="text-black">cover</span>

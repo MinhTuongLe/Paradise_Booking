@@ -15,9 +15,9 @@ import Counter from "../inputs/Counter";
 import Modal from "./Modal";
 
 const STEPS = {
-  LOCATION: 0,
-  DATE: 1,
-  INFO: 2,
+  LOCATION: 1,
+  DATE: 2,
+  INFO: 3,
 };
 
 function SearchModal({}) {
@@ -26,7 +26,7 @@ function SearchModal({}) {
   const searchModel = useSearchModal();
 
   const [location, setLocation] = useState();
-  const [step, setStep] = useState(STEPS.LOCATION);
+  const [step, setStep] = useState(searchModel.option);
   const [guestCount, setGuestCount] = useState(1);
   const [roomCount, setRoomCount] = useState(1);
   const [bathroomCount, setBathroomCount] = useState(1);
@@ -134,17 +134,16 @@ function SearchModal({}) {
     }
   }, [searchResult]);
 
+  useEffect(() => {
+    setStep(searchModel.option);
+  }, [searchModel.option]);
+
   let bodyContent = (
     <div className="flex flex-col gap-8">
       <Heading
         title="Where do you wanna go?"
         subtitle="Find the perfect location!"
       />
-      {/* <CountrySelect
-        value={location}
-        onChange={(value) => setLocation(value)}
-      /> */}
-      {/* <hr /> */}
       <div className="w-full relative">
         <input
           value={searchResult?.label || ""}

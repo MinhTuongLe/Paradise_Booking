@@ -17,7 +17,6 @@ import Container from "./Container";
 import ListingHead from "./listing/ListingHead";
 import ListingInfo from "./listing/ListingInfo";
 import ListingReservation from "./listing/ListingReservation";
-import { categories } from "./navbar/Categories";
 import ListingComments from "./listing/ListingComments";
 import { IoChevronBack } from "react-icons/io5";
 import Image from "next/image";
@@ -197,10 +196,6 @@ function ListingClient({ reservations = [], place, currentUser }) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [paymentMode]);
 
-  const category = useMemo(() => {
-    return categories.find((item) => item.label === place.category);
-  }, [place.category]);
-
   return (
     <Container>
       {!paymentMode ? (
@@ -216,7 +211,6 @@ function ListingClient({ reservations = [], place, currentUser }) {
             <div className="grid grid-cols-1 md:grid-cols-7 md:gap-10 my-8">
               <ListingInfo
                 user={currentUser}
-                category={category}
                 description={place.description}
                 roomCount={place.roomCount || 0}
                 guestCount={place.max_guest || 0}

@@ -105,14 +105,14 @@ function ReservationClient({ reservation, rating }) {
       <div className="mt-6">
         <div>
           <div className="flex justify-between items-center">
-            <span className="font-bold text-[16px]">{`${
+            <span className="font-bold text-[16px] max-w-[75%] text-ellipsis line-clamp-1">{`${
               reservation.data.place?.address
                 ? reservation.data.place?.address + ", "
                 : ""
             } ${reservation.data.place.city}, ${
               reservation.data.place.country
             }`}</span>
-            <span className="text-[#828080] font-bold">
+            <span className="text-[#828080] font-bold max-w-[25%] text-ellipsis">
               Booking ID: {reservation.data.id || "-"}
             </span>
           </div>
@@ -197,12 +197,12 @@ function ReservationClient({ reservation, rating }) {
                   Details
                 </span>
               </div>
-              <div className="text-[16px] font-semibold">{`${
+              <div className="text-[16px] font-semibold text-ellipsis line-clamp-1">{`${
                 reservation.data.place?.address
                   ? reservation.data.place?.address
                   : ""
               }`}</div>
-              <div className="text-[16px] font-semibold">{`${
+              <div className="text-[16px] font-semibold text-ellipsis line-clamp-1">{`${
                 reservation.data.place?.city
                   ? reservation.data.place?.city + ", "
                   : ""

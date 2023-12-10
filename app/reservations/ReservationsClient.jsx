@@ -347,7 +347,6 @@ function ReservationsClient() {
           <div className="flex items-center space-x-8">
             <div className="space-y-2">
               <div className="font-bold text-[16px]">From</div>
-
               <Input
                 id="date_from"
                 disabled={isLoading}

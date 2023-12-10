@@ -11,12 +11,9 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 import Heading from "../Heading";
-import CategoryInput from "../inputs/CategoryInput";
 import Counter from "../inputs/Counter";
-import CountrySelect from "../inputs/CountrySelect";
 import ImageUpload from "../inputs/ImageUpload";
 import Input from "../inputs/Input";
-import { categories } from "../navbar/Categories";
 import Modal from "./Modal";
 import Image from "next/image";
 import rent_room_1 from "@/public/assets/rent_room_1.png";

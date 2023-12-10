@@ -1,7 +1,5 @@
 "use client";
 
-import useCountries from "@/hook/useCountries";
-
 import { format } from "date-fns";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -24,12 +22,9 @@ function ListingCard({
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
 
-  const { getByValue } = useCountries();
   const pathName = usePathname();
   const router = useRouter();
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
-
-  const location = getByValue(data.country);
 
   const handleCancel = useCallback(
     (e) => {
@@ -100,7 +95,6 @@ function ListingCard({
         )}
         <div className="flex justify-between items-center space-x-4">
           <div className="font-light text-neutral-500 text-ellipsis line-clamp-1">
-            {/* {reservationDate || data.category} */}
             {data.city || ""} {data.state ? `, ${data.state}` : ""}
           </div>
           <div className="flex space-x-2 justify-between items-center">

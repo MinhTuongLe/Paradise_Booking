@@ -1,6 +1,5 @@
 "use client";
 
-import useCountries from "@/hook/useCountries";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";

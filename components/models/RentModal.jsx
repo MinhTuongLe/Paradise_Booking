@@ -11,12 +11,9 @@ import { toast } from "react-toastify";
 import Cookie from "js-cookie";
 
 import Heading from "../Heading";
-import CategoryInput from "../inputs/CategoryInput";
 import Counter from "../inputs/Counter";
-import CountrySelect from "../inputs/CountrySelect";
 import ImageUpload from "../inputs/ImageUpload";
 import Input from "../inputs/Input";
-import { categories } from "../navbar/Categories";
 import Modal from "./Modal";
 import Image from "next/image";
 import rent_room_1 from "@/public/assets/rent_room_1.png";
@@ -26,12 +23,10 @@ import { API_URL } from "@/const";
 
 const STEPS = {
   BECOME_VENDOR: 0,
-  CATEGORY: 1,
-  LOCATION: 2,
-  INFO: 3,
-  IMAGES: 4,
-  DESCRIPTION: 5,
-  PRICE: 6,
+  LOCATION: 1,
+  INFO: 2,
+  IMAGES: 3,
+  DESCRIPTION: 4,
 };
 
 function RentModal({}) {
@@ -49,7 +44,6 @@ function RentModal({}) {
     reset,
   } = useForm({
     defaultValues: {
-      category: "",
       max_guest: 0,
       roomCount: 0,
       bathroomCount: 0,
@@ -61,7 +55,6 @@ function RentModal({}) {
     },
   });
 
-  const category = watch("category");
   const location = watch("location");
   const guestCount = watch("max_guest");
   const roomCount = watch("roomCount");
@@ -116,7 +109,7 @@ function RentModal({}) {
   }
 
   const onSubmit = async (data) => {
-    if (step !== STEPS.PRICE) {
+    if (step !== STEPS.DESCRIPTION) {
       return onNext();
     }
 
@@ -161,6 +154,8 @@ function RentModal({}) {
           reset();
           setStep(STEPS.BECOME_VENDOR);
           rentModel.onClose();
+          reset();
+          setSearchResult("");
         })
         .catch(() => {
           toast.error("Something Went Wrong");
@@ -203,7 +198,7 @@ function RentModal({}) {
   };
 
   const actionLabel = useMemo(() => {
-    if (step === STEPS.PRICE) {
+    if (step === STEPS.DESCRIPTION) {
       return "Create";
     }
 
@@ -241,7 +236,7 @@ function RentModal({}) {
         </div>
         <div className="col-span-1 space-y-6">
           <div className="w-full flex justify-between items-start">
-            <div className="w-[80%] flex justify-start items-start space-x-3">
+            <div className="w-[70%] flex justify-start items-start space-x-3">
               <span className="text-lg font-bold">1</span>
               <div className="space-y-2">
                 <p className="text-lg font-bold">Share your room to us</p>
@@ -263,12 +258,12 @@ function RentModal({}) {
           </div>
           <hr />
           <div className="w-full flex justify-between items-start">
-            <div className="w-[80%] flex justify-start items-start space-x-3">
+            <div className="w-[70%] flex justify-start items-start space-x-3">
               <span className="text-lg font-bold">2</span>
               <div className="space-y-2">
                 <p className="text-lg font-bold">Make your room outstanding</p>
                 <p className="text-md font-normal">
-                  Add from 5 images with title and description
+                  Add an outstanding image with title and description
                 </p>
               </div>
             </div>
@@ -284,12 +279,12 @@ function RentModal({}) {
           </div>
           <hr />
           <div className="w-full flex justify-between items-start">
-            <div className="w-[80%] flex justify-start items-start space-x-3">
+            <div className="w-[70%] flex justify-start items-start space-x-3">
               <span className="text-lg font-bold">3</span>
               <div className="space-y-2">
                 <p className="text-lg font-bold">Finish and post</p>
                 <p className="text-md font-normal">
-                  Select options your want and post your room.
+                  Select options your want and post
                 </p>
               </div>
             </div>
@@ -308,23 +303,6 @@ function RentModal({}) {
     </div>
   );
 
-  if (step === STEPS.CATEGORY) {
-    bodyContent = (
-      <div className="grid md:grid-cols-2 gap-3 max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-[#FF5A5F]">
-        {categories.map((item, index) => (
-          <div key={index} className="col-span-1">
-            <CategoryInput
-              onClick={(category) => setCustomValue("category", category)}
-              selected={category === item.label}
-              label={item.label}
-              icon={item.icon}
-            />
-          </div>
-        ))}
-      </div>
-    );
-  }
-
   if (step === STEPS.LOCATION) {
     bodyContent = (
       <div className="flex flex-col gap-8">
@@ -332,10 +310,6 @@ function RentModal({}) {
           title="Where is your place located?"
           subtitle="Help guests find you!"
         />
-        {/* <CountrySelect
-          value={location}
-          onChange={(value) => setCustomValue("location", value)}
-        /> */}
         <div className="w-full relative">
           <input
             value={searchResult ? searchResult.label : ""}
@@ -406,8 +380,8 @@ function RentModal({}) {
     bodyContent = (
       <div className="flex flex-col gap-8">
         <Heading
-          title="Now, set your price"
-          subtitle="How much do you charge per night?"
+          title="Now, set your description"
+          subtitle="What is your place description?"
         />
         <Input
           id="name"
@@ -426,17 +400,7 @@ function RentModal({}) {
           errors={errors}
           required
         />
-      </div>
-    );
-  }
-
-  if (step == STEPS.PRICE) {
-    bodyContent = (
-      <div className="flex flex-col gap-8">
-        <Heading
-          title="Now, set your price"
-          subtitle="How much do you charge per night?"
-        />
+        <hr />
         <Input
           id="price_per_night"
           label="Price per Night"

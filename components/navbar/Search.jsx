@@ -1,7 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import useCountries from "@/hook/useCountries";
 import useSearchModal from "@/hook/useSearchModal";
 import { differenceInDays } from "date-fns";
 import { useSearchParams } from "next/navigation";
@@ -10,7 +9,6 @@ import { BiSearch } from "react-icons/bi";
 
 function Search({}) {
   const searchModel = useSearchModal();
-  const { getByValue } = useCountries();
   const params = useSearchParams();
 
   const locationValue = params?.get("locationValue");
@@ -20,11 +18,11 @@ function Search({}) {
 
   const locationLabel = useMemo(() => {
     if (locationValue) {
-      return getByValue(locationValue)?.label;
+      return "";
     }
 
     return "Anywhere";
-  }, [getByValue, locationValue]);
+  }, [locationValue]);
 
   const durationLabel = useMemo(() => {
     if (startDate && endDate) {
@@ -52,18 +50,40 @@ function Search({}) {
 
   return (
     <div
-      onClick={searchModel.onOpen}
-      className="border-[1px] w-full md:w-auto py-2 rounded-full shadow-sm hover:shadow-md transition cursor-pointer"
+      onClick={() => searchModel.onOpen(1)}
+      className="border-[1px] w-full md:w-auto rounded-full shadow-sm hover:shadow-md transition cursor-pointer"
     >
-      <div className="flex flex-row items-center justify-between">
-        <div className="text-sm font-semibold px-6">{locationLabel}</div>
-        <div className="hidden sm:block text-losm font-semibold px-6 border-x-[1px] flex-1 text-center">
+      <div className="flex flex-row items-center justify-between py-3">
+        <div
+          className="text-sm font-semibold px-6"
+          onClick={(e) => {
+            e.stopPropagation();
+            searchModel.onOpen(1);
+          }}
+        >
+          {locationLabel}
+        </div>
+        <div
+          className="hidden sm:block text-losm font-semibold px-6 border-x-[1px] flex-1 text-center"
+          onClick={(e) => {
+            e.stopPropagation();
+            searchModel.onOpen(2);
+          }}
+        >
           {durationLabel}
         </div>
         <div className="text-sm pl-6 pr-2 text-gray-600 flex flex-row items-center gap-3">
-          <div className="hidden sm:block text-center">{guessLabel}</div>
+          <div
+            className="hidden sm:block text-center"
+            onClick={(e) => {
+              e.stopPropagation();
+              searchModel.onOpen(3);
+            }}
+          >
+            {guessLabel}
+          </div>
           <div className="p-2 bg-rose-500 rounded-full text-white">
-            <BiSearch size={18} />
+            <BiSearch size={16} />
           </div>
         </div>
       </div>

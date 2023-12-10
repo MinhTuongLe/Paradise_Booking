@@ -46,7 +46,7 @@ export default async function RootLayout({ children }) {
             <WishlistModal />
             <Navbar />
           </ClientOnly>
-          <div className="pb-20 pt-[10vh] min-h-[70vh]">{children}</div>
+          <div className="pb-20 min-h-[70vh] pt-[10vh]">{children}</div>
           <Footer />
         </StoreProvider>
       </body>
