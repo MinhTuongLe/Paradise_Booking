@@ -62,9 +62,9 @@ function SearchModal({}) {
   };
 
   const onSubmit = useCallback(async () => {
-    if (step !== STEPS.PRICE) {
-      return onNext();
-    }
+    // if (step !== STEPS.PRICE) {
+    //   return onNext();
+    // }
 
     let currentQuery = {};
 
@@ -114,11 +114,11 @@ function SearchModal({}) {
   ]);
 
   const actionLabel = useMemo(() => {
-    if (step === STEPS.PRICE) {
-      return "Search";
-    }
-
-    return "Next";
+    // if (step === STEPS.PRICE) {
+    //   return "Search";
+    // }
+    // return "Next";
+    return "Search";
   }, [step]);
 
   const secondActionLabel = useMemo(() => {
@@ -235,7 +235,7 @@ function SearchModal({}) {
       secondaryAction={step === STEPS.LOCATION ? undefined : onBack}
       secondaryActionLabel={secondActionLabel}
       title="Filters"
-      actionLabel="Search"
+      actionLabel={actionLabel}
       body={bodyContent}
       reset={undefined}
       classname="md:w-2/3 lg:w-1/2 xl:w-1/3"
