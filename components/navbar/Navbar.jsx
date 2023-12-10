@@ -17,7 +17,6 @@ import { IoIosLogOut } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import AdminNavbar from "./AdminNavbar";
 import { BiFilterAlt } from "react-icons/bi";
-import useFiltersModal from "@/hook/useFiltersModal";
 
 function Navbar() {
   const authState = useSelector((state) => state.authSlice.authState);
@@ -26,7 +25,6 @@ function Navbar() {
   const router = useRouter();
   const [isShowed, setIsShowed] = useState(true);
   const pathname = usePathname();
-  const filtersModal = useFiltersModal();
 
   useEffect(() => {
     // remove cookie if expired
@@ -71,15 +69,6 @@ function Navbar() {
                     <Search />
                   </div>
                 )}
-                <button
-                  className="flex flex-row border border-solid border-gray-300 rounded-lg px-[16px] py-[8px] transition duration-300 hover:shadow-lg"
-                  onClick={filtersModal.onOpen}
-                >
-                  <BiFilterAlt className="text-xl h-[24px]" />
-                  <span className="text-base font-medium ml-[8px]">
-                    Filters
-                  </span>
-                </button>
                 <UserMenu authState={authState} loggedUser={loggedUser} />
               </div>
             </Container>

@@ -13,11 +13,13 @@ import Heading from "../Heading";
 import Calendar from "../inputs/Calendar";
 import Counter from "../inputs/Counter";
 import Modal from "./Modal";
+import RangeSlider from "../RangeSlider";
 
 const STEPS = {
   LOCATION: 1,
   DATE: 2,
   INFO: 3,
+  PRICE: 4,
 };
 
 function SearchModal({}) {
@@ -60,7 +62,7 @@ function SearchModal({}) {
   };
 
   const onSubmit = useCallback(async () => {
-    if (step !== STEPS.INFO) {
+    if (step !== STEPS.PRICE) {
       return onNext();
     }
 
@@ -112,7 +114,7 @@ function SearchModal({}) {
   ]);
 
   const actionLabel = useMemo(() => {
-    if (step === STEPS.INFO) {
+    if (step === STEPS.PRICE) {
       return "Search";
     }
 
@@ -201,6 +203,25 @@ function SearchModal({}) {
           value={bathroomCount}
           title="Bathrooms"
           subtitle="How many bahtrooms do you need?"
+        />
+      </div>
+    );
+  }
+
+  if (step === STEPS.PRICE) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="Price range you want"
+          subtitle="Find an expense that's right for you!"
+        />
+        <RangeSlider
+          initialMin={2500}
+          initialMax={7500}
+          min={0}
+          max={10000}
+          step={100}
+          priceCap={1000}
         />
       </div>
     );

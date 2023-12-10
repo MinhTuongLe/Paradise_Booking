@@ -38,9 +38,6 @@ const RangeSlider = ({ initialMin, initialMax, min, max, step, priceCap }) => {
 
   return (
     <div className="flex flex-col w-full bg-white shadow-xl rounded-lg px-6 py-4">
-      <h1 className="text-3xl font-bold text-gray-800 mb-1">Price Range</h1>
-      <p className="font-semibold text-lg text-gray-700">Price Per Night</p>
-
       <div className="flex justify-evenly items-center my-6 ">
         <div className="rounded-md">
           <span className="p-2 font-semibold"> Min</span>

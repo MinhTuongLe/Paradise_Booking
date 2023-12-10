@@ -6,7 +6,6 @@ import RegisterModal from "@/components/models/RegisterModal";
 import ForgotPasswordModal from "@/components/models/ForgotPasswordModal";
 import RentModal from "@/components/models/RentModal";
 import SearchModal from "@/components/models/SearchModal";
-import FiltersModal from "@/components/models/FiltersModal";
 import CommentsModal from "@/components/models/CommentsModal";
 import RoomCommentsModal from "@/components/models/RoomCommentsModal";
 import ReportModal from "@/components/models/ReportModal";
@@ -38,7 +37,6 @@ export default async function RootLayout({ children }) {
             <RegisterModal />
             <LoginModal />
             <ForgotPasswordModal />
-            <FiltersModal />
             <RentModal />
             <CommentsModal />
             <RoomCommentsModal />
