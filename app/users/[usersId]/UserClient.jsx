@@ -27,7 +27,7 @@ import { useDispatch } from "react-redux";
 import { setLoggUser } from "@/components/slice/authSlice";
 import { useSelector } from "react-redux";
 import Cookie from "js-cookie";
-import { IoBriefcaseOutline, IoClose } from "react-icons/io5";
+import { IoBriefcaseOutline } from "react-icons/io5";
 import EmptyState from "@/components/EmptyState";
 
 const data = {
@@ -36,7 +36,7 @@ const data = {
   phone: "0834091202",
   dob: "09/12/2002",
   address: "HCM",
-  bio: "Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile! Developer in HCM City ~~~ Welcome to my profile!",
+  bio: "Developer in HCM City ~~~ Welcome to my profile!",
 };
 
 function UserClient({ places, currentUser, role }) {
@@ -59,7 +59,7 @@ function UserClient({ places, currentUser, role }) {
     formState: { errors },
   } = useForm({
     defaultValues:
-      role === 2
+      currentUser.id !== loggedUser.id && role === 2
         ? {
             username: currentUser.username || "",
             full_name: currentUser.full_name || "",
@@ -191,7 +191,7 @@ function UserClient({ places, currentUser, role }) {
     getRatings();
   }, []);
 
-  if (loggedUser.id !== currentUser.id) {
+  if (!loggedUser && currentUser.role !== 2) {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;
   }
 
@@ -215,54 +215,73 @@ function UserClient({ places, currentUser, role }) {
                 <Image
                   width={200}
                   height={200}
-                  src={loggedUser.avatar || currentUser.avatar || emptyImageSrc}
+                  src={
+                    currentUser.id !== loggedUser.id && role === 2
+                      ? currentUser.avatar
+                      : loggedUser.avatar || emptyImageSrc
+                  }
                   alt="Avatar"
                   className="rounded-full h-[200px] w-[200px]"
                 />
                 <h1 className="text-2xl font-bold my-3">
-                  {loggedUser.username || currentUser.username}
+                  {currentUser.id !== loggedUser.id && role === 2
+                    ? currentUser.username
+                    : loggedUser.username}
                 </h1>
                 <span className="text-xl">User</span>
               </>
             )}
           </div>
-          {isEditMode ? (
-            <>
-              <h1 className="text-xl font-bold my-3">Your Bio</h1>
-              <textarea
-                className="resize-none border border-solid p-8 rounded-[24px] w-full focus:outline-none"
-                rows={5}
-                placeholder="Add your bio here ..."
-                value={data.bio}
-              ></textarea>
-            </>
-          ) : (
-            <div className="mt-12 p-8 rounded-[24px] border-[1px] border-[#cdcdcd]">
-              <h1 className="text-xl font-bold mb-3">
-                Your verified Information
-              </h1>
-              <div className="flex items-center space-x-4 mb-4 mt-4">
-                <FaCheck className="text-[16px]" />
-                {/* <IoClose className="text-[28px] font-bold" /> */}
-                <span>Email Verification</span>
+          <>
+            {isEditMode ? (
+              <>
+                <h1 className="text-xl font-bold my-3">Your Bio</h1>
+                <textarea
+                  className="resize-none border border-solid p-8 rounded-[24px] w-full focus:outline-none"
+                  rows={5}
+                  placeholder="Add your bio here ..."
+                  value={data.bio}
+                ></textarea>
+              </>
+            ) : (
+              <div className="mt-12 p-8 rounded-[24px] border-[1px] border-[#cdcdcd]">
+                <h1 className="text-xl font-bold mb-3">
+                  {currentUser.id !== loggedUser.id
+                    ? currentUser.full_name
+                    : "Your"}{" "}
+                  verified Information
+                </h1>
+                <div className="flex items-center space-x-4 mb-4 mt-4">
+                  <FaCheck className="text-[16px]" />
+                  {/* <IoClose className="text-[28px] font-bold" /> */}
+                  <span>Email Verification</span>
+                </div>
+                <div
+                  className={`flex items-center space-x-4 ${
+                    currentUser.id === loggedUser.id && role === 1 && "mb-8"
+                  } mt-4`}
+                >
+                  <FaCheck className="text-[16px]" />
+                  {/* <IoClose className="text-[28px] font-bold" /> */}
+                  <span>Profile Verification</span>
+                </div>
+                {currentUser.id === loggedUser.id && role === 1 && (
+                  <>
+                    <hr />
+                    <div className="my-8">
+                      You need to verify the above information if you want to
+                      start listing your place for rent.
+                    </div>
+                    <Button
+                      disabled={false}
+                      label="Become A Vendor"
+                      onClick={handleSubmit(handleBecomeVendor)}
+                    />
+                  </>
+                )}
               </div>
-              <div className="flex items-center space-x-4 mb-8 mt-4">
-                <FaCheck className="text-[16px]" />
-                {/* <IoClose className="text-[28px] font-bold" /> */}
-                <span>Profile Verification</span>
-              </div>
-              <hr />
-              <div className="my-8">
-                You need to verify the above information if you want to start
-                listing your place for rent.
-              </div>
-              <Button
-                disabled={false}
-                label="Become A Vendor"
-                onClick={handleSubmit(handleBecomeVendor)}
-              />
-            </div>
-          )}
+            )}
+          </>
         </div>
         <div className="sm:col-span-12 lg:col-span-8">
           <div className="px-8 pb-8 space-y-6">
@@ -340,10 +359,12 @@ function UserClient({ places, currentUser, role }) {
                 {loggedUser || (currentUser && !isLoading) ? (
                   <>
                     <h1 className="text-2xl font-bold">
-                      {loggedUser.username || currentUser.username || "User"}{" "}
+                      {(currentUser.id !== loggedUser.id && role === 2
+                        ? currentUser.username
+                        : loggedUser.username) || "User"}{" "}
                       Profile
                     </h1>
-                    {authState && currentUser?.email === loggedUser?.email && (
+                    {authState && currentUser?.id === loggedUser?.id && (
                       <button
                         className="mt-6 px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
                         onClick={() => setIsEditMode(true)}
@@ -356,41 +377,50 @@ function UserClient({ places, currentUser, role }) {
                         <AiOutlineUser size={18} />
                         <p className="text-md">
                           Name:{" "}
-                          {loggedUser.full_name || currentUser.full_name || "-"}
+                          {currentUser.id !== loggedUser.id && role === 2
+                            ? currentUser.full_name
+                            : loggedUser.full_name || "-"}
                         </p>
                       </div>
                       <div className="flex justify-start items-center space-x-3">
                         <AiOutlineMail size={18} />
                         <p className="text-md">
-                          Email: {loggedUser.email || currentUser.email || "-"}
+                          Email:{" "}
+                          {currentUser.id !== loggedUser.id && role === 2
+                            ? currentUser.email
+                            : loggedUser.email || "-"}
                         </p>
                       </div>
                       <div className="flex justify-start items-center space-x-3">
                         <AiOutlinePhone size={18} />
                         <p className="text-md">
-                          Phone: {loggedUser.phone || currentUser.phone || "-"}
+                          Phone:{" "}
+                          {currentUser.id !== loggedUser.id && role === 2
+                            ? currentUser.phone
+                            : loggedUser.phone || "-"}
                         </p>
                       </div>
                       <div className="flex justify-start items-center space-x-3">
                         <MdOutlineDateRange size={18} />
                         <p className="text-md">
                           Date of Birth:{" "}
-                          {loggedUser.dob || currentUser.dob || "-"}
+                          {currentUser.id !== loggedUser.id && role === 2
+                            ? currentUser.dob
+                            : loggedUser.dob || "-"}
                         </p>
                       </div>
                       <div className="flex justify-start items-center space-x-3">
                         <FaRegAddressCard size={18} />
                         <p className="text-md">
                           Address:{" "}
-                          {loggedUser.address || currentUser.address || "-"}
+                          {currentUser.id !== loggedUser.id && role === 2
+                            ? currentUser.address
+                            : loggedUser.address || "-"}
                         </p>
                       </div>
                       <div className="flex justify-start items-center space-x-3">
                         <IoBriefcaseOutline size={18} />
-                        <p className="text-md">
-                          Job: Developer
-                          {/* {loggedUser.address || currentUser.address || "-"} */}
-                        </p>
+                        <p className="text-md">Job: Developer</p>
                       </div>
                     </div>
                     <div
@@ -400,9 +430,9 @@ function UserClient({ places, currentUser, role }) {
                     >
                       <h1 className="text-xl font-bold mt-[32px]">
                         About{" "}
-                        {loggedUser.full_name ||
-                          currentUser.full_name ||
-                          "user"}
+                        {currentUser.id !== loggedUser.id && role === 2
+                          ? currentUser.full_name
+                          : loggedUser.full_name || "user"}
                       </h1>
                       <div className="border border-solid rounded-[24px] w-full p-6">
                         <p
@@ -414,7 +444,7 @@ function UserClient({ places, currentUser, role }) {
                         </p>
                       </div>
                     </div>
-                    {role === 2 && (
+                    {loggedUser && role === 2 && (
                       <>
                         <div className="w-full">
                           <div className="flex justify-between items-center w-full">
@@ -475,7 +505,7 @@ function UserClient({ places, currentUser, role }) {
                           <div className="w-full mt-4 border-t-[1px]">
                             <div className="mt-4 flex justify-between items-center w-full">
                               <h1 className="text-xl font-bold space-y-3">
-                                Le Minh Tuong's Rooms
+                                {currentUser.full_name || "-"}'s Rooms
                               </h1>
                               {places.length > 3 && (
                                 <button

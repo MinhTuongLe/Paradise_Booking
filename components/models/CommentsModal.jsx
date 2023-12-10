@@ -19,6 +19,7 @@ import "../../styles/globals.css";
 import { API_URL } from "@/const";
 import { useParams } from "next/navigation";
 import axios from "axios";
+import Loader from "../Loader";
 
 const data = {
   name: "Le Minh Tuong",
@@ -100,8 +101,12 @@ function CommentsModal({}) {
   }, [commentsModal.isOpen]);
 
   const bodyContent = (
-    <div className="flex flex-col gap-4">
-      {/* <div className="w-full p-2 space-y-2">
+    <>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div className="flex flex-col gap-4">
+          {/* <div className="w-full p-2 space-y-2">
         <div className="w-full p-2 space-y-1">
           <div className="w-full flex justify-between items-start">
             <h1 className="text-xl font-bold space-y-3">Place 1</h1>
@@ -149,48 +154,52 @@ function CommentsModal({}) {
         </div>
       </div>
       <hr /> */}
-      {ratings &&
-        ratings.length > 0 &&
-        ratings.map((rating, index) => (
-          <div key={index}>
-            <div className="w-full p-2 space-y-1">
-              <div className="w-full flex justify-between items-start">
-                <h1 className="text-xl font-bold space-y-3">My Paradise</h1>
-                <Image
-                  width={80}
-                  height={60}
-                  src={emptyImageSrc}
-                  alt="Avatar"
-                  className="rounded-xl h-[60px] w-[80px]"
-                  priority
-                />
-              </div>
-              <div className="flex justify-start items-center space-x-6">
-                <Image
-                  width={40}
-                  height={40}
-                  src={emptyImageSrc}
-                  priority
-                  alt="Avatar"
-                  className="rounded-full h-[40px] w-[40px]"
-                />
-                <div>
-                  <h1 className="text-md font-bold space-y-3">Conal</h1>
-                  <p>
-                    {rating?.created_at
-                      .split("T")[0]
-                      .split("-")
-                      .reverse()
-                      .join("-") || "-"}
-                  </p>
+          {ratings &&
+            ratings.length > 0 &&
+            ratings.map((rating, index) => (
+              <div key={index}>
+                <div className="w-full p-2 space-y-1">
+                  <div className="w-full flex justify-between items-start">
+                    <h1 className="text-xl font-bold space-y-3">My Paradise</h1>
+                    <Image
+                      width={80}
+                      height={60}
+                      src={emptyImageSrc}
+                      alt="Avatar"
+                      className="rounded-xl h-[60px] w-[80px]"
+                      priority
+                    />
+                  </div>
+                  <div className="flex justify-start items-center space-x-6">
+                    <Image
+                      width={40}
+                      height={40}
+                      src={emptyImageSrc}
+                      priority
+                      alt="Avatar"
+                      className="rounded-full h-[40px] w-[40px]"
+                    />
+                    <div>
+                      <h1 className="text-md font-bold space-y-3">Conal</h1>
+                      <p>
+                        {rating?.created_at
+                          .split("T")[0]
+                          .split("-")
+                          .reverse()
+                          .join("-") || "-"}
+                      </p>
+                    </div>
+                  </div>
+                  <p className="line-clamp-5">{`"...${
+                    rating.content || "-"
+                  }`}</p>
                 </div>
+                <hr />
               </div>
-              <p className="line-clamp-5">{`"...${rating.content || "-"}`}</p>
-            </div>
-            <hr />
-          </div>
-        ))}
-    </div>
+            ))}
+        </div>
+      )}
+    </>
   );
 
   const footerContent = (

@@ -5,7 +5,7 @@
 import useRoomsModal from "../../hook/useRoomsModal";
 import Modal from "./Modal";
 import ListingCard from "../listing/ListingCard";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { API_URL, LIMIT } from "@/const";
 import axios from "axios";
 import Cookie from "js-cookie";
@@ -16,23 +16,23 @@ import { toast } from "react-toastify";
 
 function RoomsModal({ currentUser }) {
   const roomsModal = useRoomsModal();
-  const params = useSearchParams();
+  const params = useParams();
+  const searchParams = useSearchParams();
 
   const [places, setPlaces] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   const getPlacesByVendorId = async () => {
     setIsLoading(true);
-    const user_id = Cookie.get("userId");
     const config = {
       params: {
-        page: params.get("page") || 1,
-        limit: params.get("limit") || LIMIT,
+        page: searchParams.get("page") || 1,
+        limit: searchParams.get("limit") || LIMIT,
       },
     };
 
     await axios
-      .get(`${API_URL}/places/owner/${user_id}`, config)
+      .get(`${API_URL}/places/owner/${params.usersId}`, config)
       .then((response) => {
         setPlaces(response.data);
         setIsLoading(false);
@@ -74,9 +74,9 @@ function RoomsModal({ currentUser }) {
     <>
       {places.paging?.total > (places.paging?.limit || LIMIT) && (
         <PaginationComponent
-          page={Number(params.get("page")) || 1}
-          total={places.paging?.total || LIMIT}
-          limit={places.paging?.limit || LIMIT}
+          page={Number(searchParams.get("page")) || 1}
+          total={searchParams.paging?.total || LIMIT}
+          limit={searchParams.paging?.limit || LIMIT}
         />
       )}
     </>

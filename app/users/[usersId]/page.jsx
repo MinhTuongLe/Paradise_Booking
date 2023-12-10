@@ -22,12 +22,14 @@ const UserPage = async ({ params, searchParams }) => {
       total: 0,
     },
   };
+
   if (user.role === 2)
     obj = await getPlaceByVendorId({
       vendor_id: user?.id,
       page: searchParams.page || 1,
       limit: searchParams.limit || LIMIT,
     });
+
   if (!accessToken && user.role !== 2) {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;
   }

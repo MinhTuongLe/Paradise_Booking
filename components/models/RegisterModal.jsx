@@ -50,7 +50,9 @@ function RegisterModal({}) {
       .post(`${API_URL}/register`, formData)
       .then(() => {
         setIsLoading(false);
-        toast.success("Register Successfully");
+        toast.success(
+          "Register Successfully. Check your email to confirm your registration"
+        );
         reset();
         registerModel.onClose();
         loginModel.onOpen();
