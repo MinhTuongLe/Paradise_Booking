@@ -23,7 +23,7 @@ export default async function Home({ searchParams }) {
   return (
     <ClientOnly>
       <Container>
-        <div className="pt-32 px-8 grid xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-8 overflow-x-hidden">
+        <div className="pt-16 px-8 grid xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-8 overflow-x-hidden">
           {places &&
             places.map((place) => {
               return (

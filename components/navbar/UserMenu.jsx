@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import Notification from "@/components/Notification";
 import Cookie from "js-cookie";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { AiOutlineMenu } from "react-icons/ai";
 import Avatar from "../Avatar";
 import MenuItem from "./MenuItem";
@@ -25,6 +25,7 @@ function UserMenu({ authState, loggedUser }) {
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenNotification, setIsOpenNotification] = useState(false);
   const [language, setLanguage] = useState("vi");
+  const menuRef = useRef(null);
 
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
@@ -67,8 +68,21 @@ function UserMenu({ authState, loggedUser }) {
     window.location.reload();
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuRef]);
+
   return (
     <div
+      ref={menuRef}
       className="relative h-full"
       onClick={(e) => {
         e.stopPropagation();
@@ -138,12 +152,10 @@ function UserMenu({ authState, loggedUser }) {
                     label="My reservations"
                   />
                 )}
-                <div className="block md:hidden">
-                  <MenuItem
-                    onClick={() => menuItemSelect(`/users/${loggedUser.id}`)}
-                    label="My profile"
-                  />
-                </div>
+                <MenuItem
+                  onClick={() => menuItemSelect(`/users/${loggedUser.id}`)}
+                  label="My profile"
+                />
                 {loggedUser.role === 2 && (
                   <>
                     <MenuItem

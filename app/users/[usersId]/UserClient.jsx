@@ -48,6 +48,7 @@ function UserClient({ places, currentUser, role }) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [isVendor, setIsVendor] = useState(loggedUser.role === 2);
   const [ratings, setRatings] = useState([]);
 
   const {
@@ -170,7 +171,9 @@ function UserClient({ places, currentUser, role }) {
     }
   };
 
-  const handleBecomeVendor = () => {};
+  const handleBecomeVendor = () => {
+    setIsVendor(true);
+  };
 
   const getRatings = async () => {
     setIsLoading(true);
@@ -273,7 +276,8 @@ function UserClient({ places, currentUser, role }) {
                       start listing your place for rent.
                     </div>
                     <Button
-                      disabled={false}
+                      disabled={isVendor}
+                      outline={isVendor}
                       label="Become A Vendor"
                       onClick={handleSubmit(handleBecomeVendor)}
                     />
