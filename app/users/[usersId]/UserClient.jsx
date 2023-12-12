@@ -17,7 +17,7 @@ import { toast } from "react-toastify";
 import Button from "@/components/Button";
 import ImageUpload from "@/components/inputs/ImageUpload";
 import { AiOutlineMail, AiOutlinePhone, AiOutlineUser } from "react-icons/ai";
-import { FaCheck, FaFlag, FaRegAddressCard } from "react-icons/fa";
+import { FaCheck, FaFlag, FaRegAddressCard, FaStar } from "react-icons/fa";
 import { MdOutlineDateRange } from "react-icons/md";
 import "../../../styles/globals.css";
 import { API_URL } from "@/const";
@@ -30,6 +30,7 @@ import { useSelector } from "react-redux";
 import Cookie from "js-cookie";
 import { IoBriefcaseOutline } from "react-icons/io5";
 import EmptyState from "@/components/EmptyState";
+import Loader from "@/components/Loader";
 
 const data = {
   name: "Le Minh Tuong",
@@ -181,9 +182,9 @@ function UserClient({ places, currentUser, role }) {
     setIsLoading(true);
 
     await axios
-      .get(`${API_URL}/booking_ratings/users/${currentUser.id}`)
+      .get(`${API_URL}/booking_ratings/vendors/${currentUser.id}`)
       .then((response) => {
-        setRatings(response.data.data.DataRating);
+        setRatings(response.data.data.ListRating);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -462,88 +463,115 @@ function UserClient({ places, currentUser, role }) {
                     {loggedUser && role === 2 && (
                       <>
                         <div className="w-full">
-                          <div className="flex justify-between items-center w-full">
-                            <h1 className="text-xl font-bold space-y-3">
-                              {currentUser.full_name || "User"}' Comments
-                            </h1>
-                            {ratings && ratings.length > 2 && (
-                              <button
-                                className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
-                                onClick={commentsModal.onOpen}
-                              >
-                                Show more comments
-                              </button>
-                            )}
-                          </div>
-                          <div className="vendor-room-places flex w-full space-x-4 mt-3">
-                            {ratings && ratings.length > 0 ? (
-                              ratings.slice(0, 2).map((rating, index) => (
-                                <div
-                                  key={index}
-                                  className="w-1/2 p-2 space-y-6 border-[1px] rounded-xl"
-                                >
-                                  <p className="line-clamp-5 text-ellipsis">{`"...${
-                                    rating.content || "-"
-                                  }`}</p>
-                                  <div className="flex justify-start items-center space-x-6">
-                                    <Image
-                                      width={40}
-                                      height={40}
-                                      src={emptyImageSrc}
-                                      alt="Avatar"
-                                      className="rounded-full h-[40px] w-[40px]"
-                                      priority
-                                    />
-                                    <div>
-                                      <h1 className="text-md font-bold space-y-3">
-                                        Conal
-                                      </h1>
-                                      <p>
-                                        {rating?.created_at
-                                          .split("T")[0]
-                                          .split("-")
-                                          .reverse()
-                                          .join("-") || "-"}
-                                      </p>
-                                    </div>
-                                  </div>
-                                </div>
-                              ))
-                            ) : (
-                              <div className="text-center text-xl font-bold">
-                                No comment to display
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        {places && places.length > 0 && (
-                          <div className="w-full mt-4 border-t-[1px]">
-                            <div className="mt-4 flex justify-between items-center w-full">
+                          {ratings && ratings.length > 0 && (
+                            <div className="flex justify-between items-center w-full">
                               <h1 className="text-xl font-bold space-y-3">
-                                {currentUser.full_name || "-"}'s Rooms
+                                {currentUser.full_name || "User"}' Comments
                               </h1>
-                              {places.length > 3 && (
+                              {ratings && ratings.length > 2 && (
                                 <button
                                   className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
-                                  onClick={roomsModal.onOpen}
+                                  onClick={commentsModal.onOpen}
                                 >
-                                  Show more rooms
+                                  Show more comments
                                 </button>
                               )}
                             </div>
-                            <div className="vendor-room-places flex w-full mt-2">
-                              {places.slice(0, 3).map((list) => (
-                                <div key={list.id} className="w-1/3 p-4">
-                                  <ListingCard
-                                    data={list}
-                                    currentUser={currentUser}
-                                    shrink={true}
-                                  />
-                                </div>
-                              ))}
-                            </div>
+                          )}
+                          <div className="vendor-room-places flex w-full space-x-4 mt-3 justify-center items-center">
+                            {!isLoading ? (
+                              <>
+                                {ratings && ratings.length > 0 ? (
+                                  ratings.slice(0, 2).map((rating, index) => (
+                                    <div
+                                      key={index}
+                                      className="w-1/2 p-2 space-y-6 border-[1px] rounded-xl"
+                                    >
+                                      <p className="line-clamp-5 text-ellipsis">{`"...${
+                                        rating.DataRating.content || "-"
+                                      }"`}</p>
+                                      <div className="flex justify-start items-start space-x-6">
+                                        <div>
+                                          <Image
+                                            width={40}
+                                            height={40}
+                                            src={
+                                              rating.user?.avatar ||
+                                              emptyImageSrc
+                                            }
+                                            alt="Avatar"
+                                            className="rounded-full h-[40px] w-[40px]"
+                                            priority
+                                          />
+                                          <div className="flex space-x-2 justify-between items-center">
+                                            <FaStar size={16} />
+                                            <span className="text-lg">
+                                              {rating?.DataRating?.rating || 0}
+                                            </span>
+                                          </div>
+                                        </div>
+                                        <div>
+                                          <h1 className="text-md font-bold space-y-3">
+                                            {rating.user?.full_name || "-"}
+                                          </h1>
+                                          <p>
+                                            {rating.DataRating.created_at
+                                              .split("T")[0]
+                                              .split("-")
+                                              .reverse()
+                                              .join("-") || "-"}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  ))
+                                ) : (
+                                  <div className="text-center text-xl font-bold">
+                                    No comment to display
+                                  </div>
+                                )}
+                              </>
+                            ) : (
+                              <Loader />
+                            )}
                           </div>
-                        )}
+                        </div>
+                        <div className="w-full mt-4 border-t-[1px] flex flex-col justify-center items-center">
+                          {!isLoading ? (
+                            <>
+                              {places && places.length > 0 && (
+                                <>
+                                  <div className="mt-4 flex justify-between items-center w-full">
+                                    <h1 className="text-xl font-bold space-y-3">
+                                      {currentUser.full_name || "-"}'s Rooms
+                                    </h1>
+                                    {places.length > 3 && (
+                                      <button
+                                        className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
+                                        onClick={roomsModal.onOpen}
+                                      >
+                                        Show more rooms
+                                      </button>
+                                    )}
+                                  </div>
+                                  <div className="vendor-room-places flex w-full mt-2">
+                                    {places.slice(0, 3).map((list) => (
+                                      <div key={list.id} className="w-1/3 p-4">
+                                        <ListingCard
+                                          data={list}
+                                          currentUser={currentUser}
+                                          shrink={true}
+                                        />
+                                      </div>
+                                    ))}
+                                  </div>
+                                </>
+                              )}
+                            </>
+                          ) : (
+                            <Loader />
+                          )}
+                        </div>
                       </>
                     )}
                   </>

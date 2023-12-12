@@ -1,5 +1,6 @@
 "use client";
-import { MdManageAccounts } from "react-icons/md";
+import { MdManageAccounts, MdReport  } from "react-icons/md";
+import { IoMdGitPullRequest } from "react-icons/io";
 import CategoryBox from "../CategoryBox";
 import Container from "../Container";
 
@@ -7,6 +8,14 @@ export const categories = [
   {
     label: "Accounts",
     icon: MdManageAccounts,
+  },
+  {
+    label: "Requests",
+    icon: IoMdGitPullRequest,
+  },
+  {
+    label: "Reports",
+    icon: MdReport ,
   },
 ];
 
@@ -18,11 +27,7 @@ function AdminNavbar({}) {
         style={{ display: "flex", flexDirection: "row" }}
       >
         {categories.map((items, index) => (
-          <CategoryBox
-            key={index}
-            icon={items.icon}
-            label={items.label}
-          />
+          <CategoryBox key={index} icon={items.icon} label={items.label} />
         ))}
       </div>
     </Container>

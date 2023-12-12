@@ -27,6 +27,9 @@ const STEPS = {
   INFO: 2,
   IMAGES: 3,
   DESCRIPTION: 4,
+  POLICY: 5,
+  AMENITY: 6,
+  PAYMENT: 7,
 };
 
 function RentModal({}) {
@@ -46,7 +49,7 @@ function RentModal({}) {
     defaultValues: {
       max_guest: 0,
       roomCount: 0,
-      bathroomCount: 0,
+      bedCount: 0,
       cover: "",
       price_per_night: 0,
       title: "",
@@ -58,7 +61,7 @@ function RentModal({}) {
   const location = watch("location");
   const guestCount = watch("max_guest");
   const roomCount = watch("roomCount");
-  const bathroomCount = watch("bathroomCount");
+  const bedCount = watch("bedCount");
   const cover = watch("cover");
 
   const [lat, setLat] = useState(51);
@@ -92,6 +95,7 @@ function RentModal({}) {
 
     if (searchResult) {
       const array = searchResult?.label.split(", ");
+      console.log(searchResult);
 
       if (array) {
         const length = array.length;
@@ -109,7 +113,7 @@ function RentModal({}) {
   }
 
   const onSubmit = async (data) => {
-    if (step !== STEPS.DESCRIPTION) {
+    if (step !== STEPS.PAYMENT) {
       return onNext();
     }
 
@@ -198,7 +202,7 @@ function RentModal({}) {
   };
 
   const actionLabel = useMemo(() => {
-    if (step === STEPS.DESCRIPTION) {
+    if (step === STEPS.PAYMENT) {
       return "Create";
     }
 
@@ -351,10 +355,10 @@ function RentModal({}) {
         />
         <hr />
         <Counter
-          title="Bathrooms"
-          subtitle="How many Bathrooms do you have?"
-          value={bathroomCount}
-          onChange={(value) => setCustomValue("bathroomCount", value)}
+          title="Bed"
+          subtitle="How many beds do you have?"
+          value={bedCount}
+          onChange={(value) => setCustomValue("bedCount", value)}
         />
       </div>
     );
@@ -411,6 +415,63 @@ function RentModal({}) {
           errors={errors}
           required
         />
+      </div>
+    );
+  }
+
+  if (step === STEPS.POLICY) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="What is your policies?"
+          subtitle="These policies must be followed by customers at all times"
+        />
+        <div className="space-y-4">
+          <span className="text-xl font-bold text-[#222]">House rules</span>
+          <div className="flex justify-between items-center space-x-8">
+            <Input
+              id="checkinTime"
+              label="Checkin Time"
+              disabled={isLoading}
+              register={register}
+              errors={errors}
+              required
+              type="time"
+            />
+            <div className="text-neutral-400 text-[64px]">-</div>
+            <Input
+              id="checkoutTime"
+              label="Checkout Time"
+              disabled={isLoading}
+              register={register}
+              errors={errors}
+              required
+              type="time"
+            />
+          </div>
+        </div>
+        <hr />
+        <div className="space-y-4">
+          <span className="text-xl font-bold text-[#222]">Safe rules</span>
+          <div className="flex justify-between items-center space-x-8">
+            <textarea
+              className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none h-[120px] resize-none"
+              placeholder="Content ..."
+              id="content"
+            ></textarea>
+          </div>
+        </div>
+        <hr />
+        <div className="space-y-4">
+          <span className="text-xl font-bold text-[#222]">Cancel rules</span>
+          <div className="flex justify-between items-center space-x-8">
+            <textarea
+              className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none h-[120px] resize-none"
+              placeholder="Content ..."
+              id="content"
+            ></textarea>
+          </div>
+        </div>
       </div>
     );
   }

@@ -19,7 +19,7 @@ export default async function getRatingByReservationId(reservationId) {
       }
     );
 
-    const reservation = response.data.data[0];
+    const reservation = response.data.data[0].DataRating;
 
     return reservation;
   } catch (error) {

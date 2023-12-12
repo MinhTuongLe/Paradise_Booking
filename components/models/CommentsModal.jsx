@@ -20,6 +20,7 @@ import { API_URL } from "@/const";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import Loader from "../Loader";
+import { FaStar } from "react-icons/fa";
 
 const data = {
   name: "Le Minh Tuong",
@@ -38,6 +39,8 @@ function CommentsModal({}) {
 
   const emptyImageSrc =
     "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
+
+  const emptyAvatarSrc = "/assets/avatar.png";
 
   const {
     register,
@@ -85,9 +88,9 @@ function CommentsModal({}) {
     setIsLoading(true);
 
     await axios
-      .get(`${API_URL}/booking_ratings/users/${params.usersId}`)
+      .get(`${API_URL}/booking_ratings/vendors/${params.usersId}`)
       .then((response) => {
-        setRatings(response.data.data.DataRating);
+        setRatings(response.data.data.ListRating);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -160,29 +163,57 @@ function CommentsModal({}) {
               <div key={index}>
                 <div className="w-full p-2 space-y-1">
                   <div className="w-full flex justify-between items-start">
-                    <h1 className="text-xl font-bold space-y-3">My Paradise</h1>
-                    <Image
-                      width={80}
-                      height={60}
-                      src={emptyImageSrc}
-                      alt="Avatar"
-                      className="rounded-xl h-[60px] w-[80px]"
-                      priority
-                    />
+                    <div className="flex w-[70%] flex-col justify-start items-start space-y-1">
+                      <h1 className="text-xl font-bold space-y-3 text-ellipsis line-clamp-1">
+                        {rating?.place.name || "-"}
+                      </h1>
+                      <div className="text-sm font-bold space-y-2 text-ellipsis line-clamp-1">
+                        {`${
+                          rating?.place.address
+                            ? rating?.place.address + ", "
+                            : ""
+                        } ${rating?.place.city}, ${rating?.place.country}`}
+                      </div>
+                    </div>
+                    <div
+                      className="w-[20%] flex justify-end items-start cursor-pointer"
+                      onClick={() =>
+                        window.open(`/listings/${rating?.place.id}`, "_blank")
+                      }
+                    >
+                      <Image
+                        width={80}
+                        height={60}
+                        src={rating?.place.cover || emptyImageSrc}
+                        alt="Avatar"
+                        className="rounded-xl h-[60px] w-[80px]"
+                        priority
+                      />
+                    </div>
                   </div>
-                  <div className="flex justify-start items-center space-x-6">
-                    <Image
-                      width={40}
-                      height={40}
-                      src={emptyImageSrc}
-                      priority
-                      alt="Avatar"
-                      className="rounded-full h-[40px] w-[40px]"
-                    />
+                  <div className="flex justify-start items-start space-x-6">
                     <div>
-                      <h1 className="text-md font-bold space-y-3">Conal</h1>
+                      <Image
+                        width={40}
+                        height={40}
+                        src={rating?.user.avatar || emptyAvatarSrc}
+                        priority
+                        alt="Image"
+                        className="rounded-full h-[40px] w-[40px]"
+                      />
+                      <div className="flex space-x-2 justify-between items-center">
+                        <FaStar size={16} />
+                        <span className="text-lg">
+                          {rating?.DataRating?.rating || 0}
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <h1 className="text-md font-bold space-y-3">
+                        {rating?.user.full_name}
+                      </h1>
                       <p>
-                        {rating?.created_at
+                        {rating.DataRating.created_at
                           .split("T")[0]
                           .split("-")
                           .reverse()
@@ -191,8 +222,8 @@ function CommentsModal({}) {
                     </div>
                   </div>
                   <p className="line-clamp-5">{`"...${
-                    rating.content || "-"
-                  }`}</p>
+                    rating.DataRating.content || "-"
+                  }"`}</p>
                 </div>
                 <hr />
               </div>
@@ -220,7 +251,7 @@ function CommentsModal({}) {
     <Modal
       disabled={isLoading}
       isOpen={commentsModal.isOpen}
-      title="20 comments"
+      title={`${ratings.length || 0} comments`}
       onClose={commentsModal.onClose}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}

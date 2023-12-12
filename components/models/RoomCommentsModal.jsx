@@ -38,7 +38,7 @@ function RoomCommentsModal({}) {
     await axios
       .get(`${API_URL}/booking_ratings/places/${params.listingId}`, config)
       .then((response) => {
-        setRatings(response.data.data);
+        setRatings(response.data.data.ListRating);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -62,7 +62,7 @@ function RoomCommentsModal({}) {
         0
       );
       const average = totalRatingSum / totalRatings;
-      setAverageRating(average);
+      setAverageRating(average.toFixed(1));
 
       // Tính phần trăm xuất hiện của các giá trị rating từ 1 đến 5
       const ratingCounts = {
@@ -114,7 +114,7 @@ function RoomCommentsModal({}) {
                 <div className="flex flex-col space-y-1">
                   <div className="flex space-x-2 items-center justify-start">
                     <span className="text-xs">5</span>
-                    <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+                    <div className="w-full bg-gray-200 rounded-full h-1.5">
                       <div
                         className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
                         style={{ width: `${ratingDistribution[5]}%` }}
@@ -123,7 +123,7 @@ function RoomCommentsModal({}) {
                   </div>
                   <div className="flex space-x-2 items-center justify-start">
                     <span className="text-xs">4</span>
-                    <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+                    <div className="w-full bg-gray-200 rounded-full h-1.5">
                       <div
                         className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
                         style={{ width: `${ratingDistribution[4]}%` }}
@@ -132,7 +132,7 @@ function RoomCommentsModal({}) {
                   </div>
                   <div className="flex space-x-2 items-center justify-start">
                     <span className="text-xs">3</span>
-                    <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+                    <div className="w-full bg-gray-200 rounded-full h-1.5">
                       <div
                         className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
                         style={{ width: `${ratingDistribution[3]}%` }}
@@ -141,7 +141,7 @@ function RoomCommentsModal({}) {
                   </div>
                   <div className="flex space-x-2 items-center justify-start">
                     <span className="text-xs">2</span>
-                    <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+                    <div className="w-full bg-gray-200 rounded-full h-1.5">
                       <div
                         className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
                         style={{ width: `${ratingDistribution[2]}%` }}
@@ -150,7 +150,7 @@ function RoomCommentsModal({}) {
                   </div>
                   <div className="flex space-x-2 items-center justify-start">
                     <span className="text-xs">1</span>
-                    <div className="w-full bg-gray-200 rounded-full h-1.5 dark:bg-gray-700">
+                    <div className="w-full bg-gray-200 rounded-full h-1.5">
                       <div
                         className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
                         style={{ width: `${ratingDistribution[1]}%` }}
@@ -173,7 +173,7 @@ function RoomCommentsModal({}) {
                         <Image
                           width={40}
                           height={40}
-                          src={emptyImageSrc}
+                          src={comment?.user?.avatar || emptyImageSrc}
                           alt="Avatar"
                           className="rounded-full h-[40px] w-[40px]"
                           priority
@@ -204,7 +204,7 @@ function RoomCommentsModal({}) {
                       </div>
                       <p className="line-clamp-3 text-md">{`"...${
                         comment?.DataRating?.content || "-"
-                      }`}</p>
+                      }"`}</p>
                     </div>
                   );
                 })}

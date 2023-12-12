@@ -28,7 +28,7 @@ function ListingComments({ place_id }) {
     await axios
       .get(`${API_URL}/booking_ratings/places/${place_id}`, config)
       .then((response) => {
-        setRatings(response.data.data);
+        setRatings(response.data.data.ListRating);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -87,7 +87,7 @@ function ListingComments({ place_id }) {
                   </div>
                   <p className="line-clamp-3 text-md">{`"...${
                     comment?.DataRating?.content || "-"
-                  }`}</p>
+                  }"`}</p>
                 </div>
               );
             })}
@@ -98,7 +98,7 @@ function ListingComments({ place_id }) {
           No comment to display
         </div>
       )}
-      {!isLoading && ratings && ratings.length > 6 && (
+      {!isLoading && ratings && ratings.length > 0 && (
         <div className="flex justify-between items-center w-full">
           <button
             className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-md border-[1px]"
