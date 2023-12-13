@@ -9,20 +9,72 @@ import { useEffect, useState, useMemo, Fragment } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Button from "@/components/Button";
+import { useDispatch, useSelector } from "react-redux";
+import Cookie from "js-cookie";
+import dynamic from "next/dynamic";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { FaCalendarAlt, FaCalendarCheck, FaCheckCircle } from "react-icons/fa";
+import { MdCancel, MdIncompleteCircle, MdPending } from "react-icons/md";
+import { AiOutlineCar, AiOutlineWifi } from "react-icons/ai";
+import { BiCctv } from "react-icons/bi";
+import { BsFire } from "react-icons/bs";
+import { FaFireExtinguisher } from "react-icons/fa";
+import { GiButterflyFlower } from "react-icons/gi";
+import { GrWorkshop } from "react-icons/gr";
+import { MdOutlineBathtub, MdOutlineCoffeeMaker } from "react-icons/md";
+import { RiSafeLine } from "react-icons/ri";
+
 import "../../../styles/globals.css";
 import { API_URL, booking_status, classNames } from "@/const";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import Cookie from "js-cookie";
-import { useRouter } from "next/navigation";
-import dynamic from "next/dynamic";
 import ImageUpload from "@/components/inputs/ImageUpload";
-import Image from "next/image";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
-import { MdCancel, MdIncompleteCircle, MdPending } from "react-icons/md";
-import { FaCalendarAlt, FaCalendarCheck, FaCheckCircle } from "react-icons/fa";
 import EmptyState from "@/components/EmptyState";
+
+const offers = [
+  {
+    label: "Garden view",
+    icon: GiButterflyFlower,
+  },
+  {
+    label: "Hot water",
+    icon: BsFire,
+  },
+
+  {
+    label: "Wifi",
+    icon: AiOutlineWifi,
+  },
+  {
+    label: "Coffee",
+    icon: MdOutlineCoffeeMaker,
+  },
+  {
+    label: "Security cameras on property",
+    icon: BiCctv,
+  },
+  {
+    label: "Bathtub",
+    icon: MdOutlineBathtub,
+  },
+  {
+    label: "Dedicated workspace",
+    icon: GrWorkshop,
+  },
+  {
+    label: "Safe",
+    icon: RiSafeLine,
+  },
+  {
+    label: "Free parking on premises",
+    icon: AiOutlineCar,
+  },
+  {
+    label: "Fire extinguisher",
+    icon: FaFireExtinguisher,
+  },
+];
 
 function PropertyClient({ place, reservations }) {
   const emptyImageSrc = "/assets/avatar.png";
@@ -79,6 +131,7 @@ function PropertyClient({ place, reservations }) {
   );
 
   const [searchResult, setSearchResult] = useState(null);
+  const [selectedAmenities, setSelectedAmenities] = useState([]);
   const handleSearchResult = (result) => {
     setSearchResult(result);
   };
@@ -156,6 +209,18 @@ function PropertyClient({ place, reservations }) {
         toast.error("Update Booking Status Failed");
         setIsLoading(false);
       });
+  };
+
+  const handleAmenityCheckboxChange = (e, label) => {
+    const isChecked = e.target.checked;
+
+    if (isChecked) {
+      setSelectedAmenities((prevAmenities) => [...prevAmenities, label]);
+    } else {
+      setSelectedAmenities((prevAmenities) =>
+        prevAmenities.filter((amenity) => amenity !== label)
+      );
+    }
   };
 
   const onSubmit = async (data) => {
@@ -247,14 +312,31 @@ function PropertyClient({ place, reservations }) {
               errors={errors}
               required
             />
-            <Input
-              id="description"
-              label="Description"
-              disabled={isLoading}
-              register={register}
-              errors={errors}
-              required
-            />
+            <div className="grid grid-cols-12 gap-6">
+              <div className="col-span-6">
+                <Input
+                  id="max_guest"
+                  label="Max Guest(s)"
+                  disabled={isLoading}
+                  register={register}
+                  errors={errors}
+                  type="number"
+                  required
+                />
+              </div>
+              <div className="col-span-6">
+                <Input
+                  id="price_per_night"
+                  label="Price per Night"
+                  formatPrice
+                  type="number"
+                  disabled={isLoading}
+                  register={register}
+                  errors={errors}
+                  required
+                />
+              </div>
+            </div>
             {!isLoading && (
               <ImageUpload
                 onChange={(value) => setCustomValue("cover", value)}
@@ -262,14 +344,50 @@ function PropertyClient({ place, reservations }) {
                 fill={true}
               />
             )}
+            <Input
+              id="price_per_night"
+              label="Address"
+              disabled={isLoading}
+              register={register}
+              errors={errors}
+              required
+            />
+            <div className="w-full relative">
+              <input
+                value={
+                  searchResult
+                    ? searchResult.label
+                    : `${place?.address ? place?.address + ", " : ""} ${
+                        place?.city ? place?.city + ", " : ""
+                      } ${place?.country || "-"}`
+                }
+                id="_location"
+                readOnly={true}
+                className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition opacity-70 cursor-not-allowed border-neutral-300 focus:outline-none`}
+              />
+              <label
+                className={`absolute text-md duration-150 transform -translate-y-3 top-5 left-4 text-zinc-400`}
+              >
+                Location
+              </label>
+            </div>
+            <Map center={[lat, lng]} onSearchResult={handleSearchResult} />
           </div>
         </div>
         <div className="col-span-6 space-y-6">
+          <Input
+            id="description"
+            label="Description"
+            disabled={isLoading}
+            register={register}
+            errors={errors}
+            required
+          />
           <div className="grid grid-cols-12 gap-6">
             <div className="col-span-6">
               <Input
                 id="max_guest"
-                label="Max Guest(s)"
+                label="Room(s)"
                 disabled={isLoading}
                 register={register}
                 errors={errors}
@@ -280,8 +398,7 @@ function PropertyClient({ place, reservations }) {
             <div className="col-span-6">
               <Input
                 id="price_per_night"
-                label="Price per Night"
-                formatPrice
+                label="Bed(s)"
                 type="number"
                 disabled={isLoading}
                 register={register}
@@ -290,26 +407,80 @@ function PropertyClient({ place, reservations }) {
               />
             </div>
           </div>
-          <div className="w-full relative">
-            <input
-              value={
-                searchResult
-                  ? searchResult.label
-                  : `${place?.address ? place?.address + ", " : ""} ${
-                      place?.city ? place?.city + ", " : ""
-                    } ${place?.country || "-"}`
-              }
-              id="_location"
-              readOnly={true}
-              className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition opacity-70 cursor-not-allowed border-neutral-300 focus:outline-none`}
-            />
-            <label
-              className={`absolute text-md duration-150 transform -translate-y-3 top-5 left-4 text-zinc-400`}
-            >
-              Location
-            </label>
+          <div>
+            <span className="text-xl font-bold text-[#222]">Amenities</span>
+            <div className="flex flex-col w-ful">
+              {offers.map((item, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between items-center text-center gap-4 my-1 cursor-pointer"
+                >
+                  <label
+                    htmlFor={`type-${index}`}
+                    className="text-lg text-zinc-600 font-thin cursor-pointer flex items-center justify-between space-x-6"
+                  >
+                    <item.icon size={25} className="text-gray-700" />
+                    <p className="text-neutral-500">{item.label}</p>
+                  </label>
+                  <input
+                    id={`type-${index}`}
+                    name="type"
+                    type="checkbox"
+                    className="w-6 h-6 rounded-full cursor-pointer"
+                    onChange={(e) => handleAmenityCheckboxChange(e, item.label)}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
-          <Map center={[lat, lng]} onSearchResult={handleSearchResult} />
+          <div className="space-y-4">
+            <span className="text-xl font-bold text-[#222]">House rules</span>
+            <div className="flex justify-between items-center space-x-8">
+              <Input
+                id="checkinTime"
+                label="Checkin Time"
+                disabled={isLoading}
+                register={register}
+                errors={errors}
+                required
+                type="time"
+              />
+              <div className="text-neutral-400 text-[64px]">-</div>
+              <Input
+                id="checkoutTime"
+                label="Checkout Time"
+                disabled={isLoading}
+                register={register}
+                errors={errors}
+                required
+                type="time"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <span className="text-xl font-bold text-[#222]">Safe rules</span>
+            <div className="flex justify-between items-center space-x-8">
+              <textarea
+                className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none h-[120px] resize-none"
+                placeholder="Content ..."
+                id="safeRules"
+                onChange={(e) => setCustomValue("safeRules", e.target.value)}
+              ></textarea>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <span className="text-xl font-bold text-[#222]">Cancel rules</span>
+            <div className="flex justify-between items-center space-x-8">
+              <textarea
+                className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none h-[120px] resize-none"
+                placeholder="Content ..."
+                id="cancelRules"
+                onChange={(e) => setCustomValue("cancelRules", e.target.value)}
+              ></textarea>
+            </div>
+          </div>
           <div className="grid grid-cols-12 gap-8">
             <div className="col-span-6">
               <Button
