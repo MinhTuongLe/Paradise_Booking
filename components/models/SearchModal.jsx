@@ -75,17 +75,19 @@ function SearchModal({}) {
     const updatedQuery = {
       ...currentQuery,
       locationValue: location?.value,
+      lat,
+      lng,
       guestCount,
       roomCount,
       bathroomCount,
     };
 
     if (dateRange.startDate) {
-      updatedQuery.startDate = formatISO(dateRange.startDate);
+      updatedQuery.startDate = formatISO(dateRange.startDate).split("T")[0];
     }
 
     if (dateRange.endDate) {
-      updatedQuery.endDate = formatISO(dateRange.endDate);
+      updatedQuery.endDate = formatISO(dateRange.endDate).split("T")[0];
     }
 
     const url = qs.stringifyUrl(

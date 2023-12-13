@@ -24,6 +24,7 @@ import { API_URL } from "@/const";
 import useCommentsModal from "@/hook/useCommentsModal";
 import useRoomsModal from "@/hook/useRoomsModal";
 import useReportModal from "@/hook/useReportModal";
+import useBecomeVendorModal from "@/hook/useBecomeVendorModal";
 import { useDispatch } from "react-redux";
 import { setLoggUser } from "@/components/slice/authSlice";
 import { useSelector } from "react-redux";
@@ -45,6 +46,7 @@ function UserClient({ places, currentUser, role }) {
   const reportModal = useReportModal();
   const commentsModal = useCommentsModal();
   const roomsModal = useRoomsModal();
+  const becomeVendorModal = useBecomeVendorModal();
   const dispatch = useDispatch();
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
   const authState = useSelector((state) => state.authSlice.authState);
@@ -175,7 +177,7 @@ function UserClient({ places, currentUser, role }) {
   };
 
   const handleBecomeVendor = () => {
-    setIsVendor(true);
+    becomeVendorModal.onOpen();
   };
 
   const getRatings = async () => {
