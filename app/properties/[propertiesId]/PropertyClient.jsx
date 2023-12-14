@@ -5,7 +5,7 @@
 
 import Input from "@/components/inputs/Input";
 import axios from "axios";
-import { useEffect, useState, useMemo, Fragment } from "react";
+import React, { useEffect, useState, useMemo, Fragment } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Button from "@/components/Button";
@@ -24,6 +24,7 @@ import { GiButterflyFlower } from "react-icons/gi";
 import { GrWorkshop } from "react-icons/gr";
 import { MdOutlineBathtub, MdOutlineCoffeeMaker } from "react-icons/md";
 import { RiSafeLine } from "react-icons/ri";
+import * as Icons from "react-icons";
 
 import "../../../styles/globals.css";
 import { API_URL, booking_status, classNames } from "@/const";
@@ -31,6 +32,13 @@ import ImageUpload from "@/components/inputs/ImageUpload";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
 import EmptyState from "@/components/EmptyState";
+import Loader from "@/components/Loader";
+
+const steps = {
+  GENERAL: 1,
+  AMENITIES: 2,
+  POLICIES: 3,
+};
 
 const offers = [
   {
@@ -85,6 +93,7 @@ function PropertyClient({ place, reservations }) {
 
   const [selected, setSelected] = useState(booking_status[0]);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentStep, setCurrentStep] = useState(steps.GENERAL);
 
   const {
     register,
@@ -132,8 +141,19 @@ function PropertyClient({ place, reservations }) {
 
   const [searchResult, setSearchResult] = useState(null);
   const [selectedAmenities, setSelectedAmenities] = useState([]);
+  const [notSelectedAmenities, setNotSelectedAmenities] = useState([]);
+  const [amenities, setAmenities] = useState([]);
+
   const handleSearchResult = (result) => {
     setSearchResult(result);
+  };
+
+  const onBack = () => {
+    setStep((value) => value - 1);
+  };
+
+  const onNext = () => {
+    setStep((value) => value + 1);
   };
 
   function processSearchResult() {
@@ -211,15 +231,22 @@ function PropertyClient({ place, reservations }) {
       });
   };
 
-  const handleAmenityCheckboxChange = (e, label) => {
+  const handleAmenityCheckboxChange = (e, item) => {
     const isChecked = e.target.checked;
 
     if (isChecked) {
-      setSelectedAmenities((prevAmenities) => [...prevAmenities, label]);
+      setSelectedAmenities((prevAmenities) => [...prevAmenities, item]);
+      setNotSelectedAmenities((prevAmenities) =>
+        prevAmenities.filter((amenity) => amenity.description !== item.name)
+      );
     } else {
       setSelectedAmenities((prevAmenities) =>
-        prevAmenities.filter((amenity) => amenity !== label)
+        prevAmenities.filter((amenity) => amenity.description !== item.name)
       );
+      setNotSelectedAmenities((prevNotSelectedAmenities) => [
+        ...prevNotSelectedAmenities,
+        item,
+      ]);
     }
   };
 
@@ -227,60 +254,137 @@ function PropertyClient({ place, reservations }) {
     try {
       setIsLoading(true);
 
-      // upload photo
-      let imageUrl = "";
-      if (data.cover) {
-        const file = data.cover;
-        if (typeof file === "string") {
-          imageUrl = place?.cover;
-        } else {
-          imageUrl = await handleFileUpload(file);
+      if (currentStep === steps.GENERAL) {
+        // upload photo
+        let imageUrl = "";
+        if (data.cover) {
+          const file = data.cover;
+          if (typeof file === "string") {
+            imageUrl = place?.cover;
+          } else {
+            imageUrl = await handleFileUpload(file);
+          }
         }
-      }
 
-      const { country, city, address } = processSearchResult();
+        const { country, city, address } = processSearchResult();
 
-      const submitValues = {
-        name: data?.name || "",
-        description: data?.description || "",
-        price_per_night: Number(data?.price_per_night) || 0,
-        address: address || place.address,
-        lat: lat || place.lat,
-        lng: lng || place.lng,
-        country: country || place.country,
-        state: city || place.city,
-        city: city || place.city,
-        cover: imageUrl || "",
-        max_guest: Number(data?.max_guest) || place.max_guest || 1,
-      };
+        const submitValues = {
+          name: data?.name || "",
+          description: data?.description || "",
+          price_per_night: Number(data?.price_per_night) || 0,
+          address: data?.address || place.address,
+          lat: lat || place.lat,
+          lng: lng || place.lng,
+          cover: imageUrl || "",
+          max_guest: Number(data?.max_guest) || place.max_guest || 1,
+        };
 
-      const accessToken = Cookie.get("accessToken");
-      const config = {
-        params: {
+        const accessToken = Cookie.get("accessToken");
+        const config = {
+          params: {
+            place_id: place.id,
+          },
+          headers: {
+            "content-type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        };
+        axios
+          .put(`${API_URL}/places`, submitValues, config)
+          .then(() => {
+            setIsLoading(false);
+            toast.success("Update Room Successfully");
+            router.refresh();
+          })
+          .catch((err) => {
+            toast.error("Update Room Failed");
+            setIsLoading(false);
+          });
+      } else if (currentStep === steps.AMENITIES) {
+        const accessToken = Cookie.get("accessToken");
+        const config = {
+          headers: {
+            "content-type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        };
+
+        // console.log(selectedAmenities);
+        // console.log(notSelectedAmenities);
+
+        const submitValues = {
           place_id: place.id,
-        },
-        headers: {
-          "content-type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      };
-      axios
-        .put(`${API_URL}/places`, submitValues, config)
-        .then(() => {
-          setIsLoading(false);
-          toast.success("Update Room Successfully");
-          router.refresh();
-        })
-        .catch((err) => {
-          toast.error("Update Room Failed");
-          setIsLoading(false);
-        });
+          list_detail_amenity: selectedAmenities.map((item) => ({
+            description: item.description || item.name,
+            config_amenity_id: item.id,
+          })),
+        };
+
+        // console.log(submitValues);
+
+        axios
+          .post(`${API_URL}/amenities`, submitValues, config)
+          .then(() => {
+            setIsLoading(false);
+            toast.success("Update Amenities Successfully");
+            router.refresh();
+          })
+          .catch((err) => {
+            toast.error("Update Amenities Failed");
+            setIsLoading(false);
+          });
+      } else {
+      }
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const getDefaultAmenities = async () => {
+    setIsLoading(true);
+    const accessToken = Cookie.get("accessToken");
+    const config = {
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+
+    await axios
+      .get(`${API_URL}/amenities/config`, config)
+      .then((response) => {
+        setAmenities(response.data.data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        toast.error("Something Went Wrong");
+        setIsLoading(false);
+      });
+  };
+
+  const getAmenities = async () => {
+    setIsLoading(true);
+    const accessToken = Cookie.get("accessToken");
+    const config = {
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+
+    await axios
+      .get(`${API_URL}/amenities/place/${place.id}`, config)
+      .then((response) => {
+        setSelectedAmenities(response.data.data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        toast.error("Something Went Wrong");
+        setIsLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -290,9 +394,14 @@ function PropertyClient({ place, reservations }) {
     }
   }, [searchResult]);
 
+  const get = async () => {
+    await getDefaultAmenities();
+    await getAmenities();
+  };
+
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, []);
+    if (currentStep === steps.AMENITIES) get();
+  }, [currentStep]);
 
   if (!authState || loggedUser.role !== 2) {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;
@@ -300,416 +409,534 @@ function PropertyClient({ place, reservations }) {
 
   return (
     <div className="max-w-[1200px] mx-auto px-4">
-      <h1 className="text-2xl font-bold mt-10 mb-4">Property Information</h1>
-      <div className="grid grid-cols-12 gap-8">
-        <div className="col-span-6">
-          <div className="pb-8 space-y-6">
-            <Input
-              id="name"
-              label="Name"
-              disabled={isLoading}
-              register={register}
-              errors={errors}
-              required
-            />
-            <div className="grid grid-cols-12 gap-6">
-              <div className="col-span-6">
-                <Input
-                  id="max_guest"
-                  label="Max Guest(s)"
-                  disabled={isLoading}
-                  register={register}
-                  errors={errors}
-                  type="number"
-                  required
-                />
-              </div>
-              <div className="col-span-6">
-                <Input
-                  id="price_per_night"
-                  label="Price per Night"
-                  formatPrice
-                  type="number"
-                  disabled={isLoading}
-                  register={register}
-                  errors={errors}
-                  required
-                />
-              </div>
-            </div>
-            {!isLoading && (
-              <ImageUpload
-                onChange={(value) => setCustomValue("cover", value)}
-                value={cover || ""}
-                fill={true}
-              />
-            )}
-            <Input
-              id="price_per_night"
-              label="Address"
-              disabled={isLoading}
-              register={register}
-              errors={errors}
-              required
-            />
-            <div className="w-full relative">
-              <input
-                value={
-                  searchResult
-                    ? searchResult.label
-                    : `${place?.address ? place?.address + ", " : ""} ${
-                        place?.city ? place?.city + ", " : ""
-                      } ${place?.country || "-"}`
-                }
-                id="_location"
-                readOnly={true}
-                className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition opacity-70 cursor-not-allowed border-neutral-300 focus:outline-none`}
-              />
-              <label
-                className={`absolute text-md duration-150 transform -translate-y-3 top-5 left-4 text-zinc-400`}
-              >
-                Location
-              </label>
-            </div>
-            <Map center={[lat, lng]} onSearchResult={handleSearchResult} />
-          </div>
-        </div>
-        <div className="col-span-6 space-y-6">
-          <Input
-            id="description"
-            label="Description"
-            disabled={isLoading}
-            register={register}
-            errors={errors}
-            required
-          />
-          <div className="grid grid-cols-12 gap-6">
-            <div className="col-span-6">
-              <Input
-                id="max_guest"
-                label="Room(s)"
-                disabled={isLoading}
-                register={register}
-                errors={errors}
-                type="number"
-                required
-              />
-            </div>
-            <div className="col-span-6">
-              <Input
-                id="price_per_night"
-                label="Bed(s)"
-                type="number"
-                disabled={isLoading}
-                register={register}
-                errors={errors}
-                required
-              />
-            </div>
-          </div>
-          <div>
-            <span className="text-xl font-bold text-[#222]">Amenities</span>
-            <div className="flex flex-col w-ful">
-              {offers.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex justify-between items-center text-center gap-4 my-1 cursor-pointer"
-                >
-                  <label
-                    htmlFor={`type-${index}`}
-                    className="text-lg text-zinc-600 font-thin cursor-pointer flex items-center justify-between space-x-6"
-                  >
-                    <item.icon size={25} className="text-gray-700" />
-                    <p className="text-neutral-500">{item.label}</p>
-                  </label>
-                  <input
-                    id={`type-${index}`}
-                    name="type"
-                    type="checkbox"
-                    className="w-6 h-6 rounded-full cursor-pointer"
-                    onChange={(e) => handleAmenityCheckboxChange(e, item.label)}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="space-y-4">
-            <span className="text-xl font-bold text-[#222]">House rules</span>
-            <div className="flex justify-between items-center space-x-8">
-              <Input
-                id="checkinTime"
-                label="Checkin Time"
-                disabled={isLoading}
-                register={register}
-                errors={errors}
-                required
-                type="time"
-              />
-              <div className="text-neutral-400 text-[64px]">-</div>
-              <Input
-                id="checkoutTime"
-                label="Checkout Time"
-                disabled={isLoading}
-                register={register}
-                errors={errors}
-                required
-                type="time"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <span className="text-xl font-bold text-[#222]">Safe rules</span>
-            <div className="flex justify-between items-center space-x-8">
-              <textarea
-                className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none h-[120px] resize-none"
-                placeholder="Content ..."
-                id="safeRules"
-                onChange={(e) => setCustomValue("safeRules", e.target.value)}
-              ></textarea>
-            </div>
-          </div>
-
-          <div className="space-y-4">
-            <span className="text-xl font-bold text-[#222]">Cancel rules</span>
-            <div className="flex justify-between items-center space-x-8">
-              <textarea
-                className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none h-[120px] resize-none"
-                placeholder="Content ..."
-                id="cancelRules"
-                onChange={(e) => setCustomValue("cancelRules", e.target.value)}
-              ></textarea>
-            </div>
-          </div>
+      <h1 className="text-2xl font-bold mt-10 mb-4">
+        {currentStep === steps.GENERAL
+          ? "General Information"
+          : currentStep === steps.AMENITIES
+          ? "Amenities Information"
+          : "Policies Information"}
+      </h1>
+      {currentStep === steps.GENERAL && (
+        <>
           <div className="grid grid-cols-12 gap-8">
             <div className="col-span-6">
-              <Button
-                outline
-                label="Cancel"
-                onClick={() => {
-                  reset();
-                  router.push("/properties");
-                }}
-              />
+              <div className="pb-8 space-y-6">
+                <Input
+                  id="name"
+                  label="Name"
+                  disabled={isLoading}
+                  register={register}
+                  errors={errors}
+                  required
+                />
+                <Input
+                  id="description"
+                  label="Description"
+                  disabled={isLoading}
+                  register={register}
+                  errors={errors}
+                  required
+                />
+                <div className="grid grid-cols-12 gap-6">
+                  <div className="col-span-6">
+                    <Input
+                      id="max_guest"
+                      label="Max Guest(s)"
+                      disabled={isLoading}
+                      register={register}
+                      errors={errors}
+                      type="number"
+                      required
+                    />
+                  </div>
+                  <div className="col-span-6">
+                    <Input
+                      id="price_per_night"
+                      label="Price per Night"
+                      formatPrice
+                      type="number"
+                      disabled={isLoading}
+                      register={register}
+                      errors={errors}
+                      required
+                    />
+                  </div>
+                </div>
+                {!isLoading && (
+                  <ImageUpload
+                    onChange={(value) => setCustomValue("cover", value)}
+                    value={cover || ""}
+                    fill={true}
+                  />
+                )}
+                <div className="space-x-8">
+                  <span
+                    className="font-semibold text-[#222] text-lg underline cursor-pointer hover:text-rose-500"
+                    onClick={() => setCurrentStep(steps.AMENITIES)}
+                  >
+                    Amenities Settings
+                  </span>
+                  <span
+                    className="font-semibold text-[#222] text-lg underline cursor-pointer hover:text-rose-500"
+                    onClick={() => setCurrentStep(steps.POLICIES)}
+                  >
+                    Policies Settings
+                  </span>
+                </div>
+              </div>
             </div>
-            <div className="col-span-6">
-              <Button
+            <div className="col-span-6 space-y-6">
+              <div className="grid grid-cols-12 gap-6">
+                <div className="col-span-6">
+                  <Input
+                    id="max_guest"
+                    label="Room(s)"
+                    disabled={isLoading}
+                    register={register}
+                    errors={errors}
+                    type="number"
+                    required
+                  />
+                </div>
+                <div className="col-span-6">
+                  <Input
+                    id="price_per_night"
+                    label="Bed(s)"
+                    type="number"
+                    disabled={isLoading}
+                    register={register}
+                    errors={errors}
+                    required
+                  />
+                </div>
+              </div>
+              <Input
+                id="address"
+                label="Address"
                 disabled={isLoading}
-                label="Update"
-                onClick={handleSubmit(onSubmit)}
+                register={register}
+                errors={errors}
+                required
               />
+              <div className="w-full relative">
+                <input
+                  value={
+                    searchResult
+                      ? searchResult.label
+                      : `${place?.address ? place?.address + ", " : ""} ${
+                          place?.city ? place?.city + ", " : ""
+                        } ${place?.country || "-"}`
+                  }
+                  id="_location"
+                  readOnly={true}
+                  className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition opacity-70 cursor-not-allowed border-neutral-300 focus:outline-none`}
+                />
+                <label
+                  className={`absolute text-md duration-150 transform -translate-y-3 top-5 left-4 text-zinc-400`}
+                >
+                  Location
+                </label>
+              </div>
+              <Map center={[lat, lng]} onSearchResult={handleSearchResult} />
+              <div className="grid grid-cols-12 gap-8">
+                <div className="col-span-6">
+                  <Button
+                    outline
+                    label="Cancel"
+                    onClick={() => {
+                      reset();
+                      router.push("/properties");
+                    }}
+                  />
+                </div>
+                <div className="col-span-6">
+                  <Button
+                    disabled={isLoading}
+                    label="Update"
+                    onClick={handleSubmit(onSubmit)}
+                  />
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-      {reservations &&
-        reservations?.map((item, index) => {
-          return (
-            <div key={index} className="mt-16">
-              <hr />
-              <div className="mt-12">
-                <div>
-                  <div className="flex justify-between items-center">
-                    <span className="font-bold text-[16px]">
-                      {`${
-                        item.place?.address ? item.place?.address + ", " : ""
-                      } ${item.place.city}, ${item.place.country}`}
-                    </span>
-                    <span className="text-[#828080] font-bold">
-                      Booking ID: {item.id}
-                    </span>
-                  </div>
-                  <div className="mt-3 rounded-xl border-[#cdcdcd] border-[1px]">
-                    <div className="flex justify-between items-center border-b-[#cdcdcd] border-b-[1px] p-4">
-                      <Listbox
-                        value={booking_status.map(
-                          (status) => status.id === item.status_id
-                        )}
-                        onChange={(e) =>
-                          handleUpdateBookingStatus(item.id, e.id)
-                        }
-                      >
-                        {({ open }) => (
-                          <>
-                            <div className="relative mt-2">
-                              <Listbox.Button className="relative w-[180px] cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-500 sm:text-sm sm:leading-6">
-                                <span className="flex items-center">
-                                  {booking_status.map(
-                                    (status) =>
-                                      status.id === item.status_id && (
-                                        <div
-                                          key={status.id}
-                                          className={`text-[${status.color}]`}
-                                        >
-                                          {status.icon}
-                                        </div>
-                                      )
-                                  )}
-                                  <span className="ml-3 block truncate">
-                                    {booking_status.map(
-                                      (status) =>
-                                        status.id === item.status_id &&
-                                        status.name
-                                    )}
-                                  </span>
-                                </span>
-                                <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
-                                  <ChevronUpDownIcon
-                                    className="h-5 w-5 text-gray-400"
-                                    aria-hidden="true"
-                                  />
-                                </span>
-                              </Listbox.Button>
-
-                              <Transition
-                                show={open}
-                                as={Fragment}
-                                leave="transition ease-in duration-100"
-                                leaveFrom="opacity-100"
-                                leaveTo="opacity-0"
-                              >
-                                <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                  {booking_status.map((person) => (
-                                    <Listbox.Option
-                                      key={person.id}
-                                      className={({ active }) =>
-                                        classNames(
-                                          active
-                                            ? "bg-rose-100"
-                                            : "text-gray-900",
-                                          "relative cursor-default select-none py-2 pl-3 pr-9"
-                                        )
-                                      }
-                                      value={person}
-                                    >
-                                      {({ selected, active }) => (
-                                        <>
-                                          <div
-                                            className={`flex items-center text-[${person.color}]`}
-                                          >
-                                            {person.icon}
-                                            <span
-                                              className={classNames(
-                                                selected
-                                                  ? "font-semibold"
-                                                  : "font-normal",
-                                                "ml-3 block truncate"
-                                              )}
-                                            >
-                                              {person.name}
-                                            </span>
-                                          </div>
-
-                                          {selected ? (
-                                            <span
-                                              className={classNames(
-                                                active
-                                                  ? "text-gray-900"
-                                                  : "text-rose-500",
-                                                "absolute inset-y-0 right-0 flex items-center pr-4"
-                                              )}
-                                            >
-                                              <CheckIcon
-                                                className="h-5 w-5"
-                                                aria-hidden="true"
-                                              />
-                                            </span>
-                                          ) : null}
-                                        </>
-                                      )}
-                                    </Listbox.Option>
-                                  ))}
-                                </Listbox.Options>
-                              </Transition>
-                            </div>
-                          </>
-                        )}
-                      </Listbox>
-                      <div className="font-extrabold text-[20px]">
-                        Total Price:
-                        <span className="pl-2 font-bold text-[18px]">
-                          ${item.place.price_per_night}
+          {reservations &&
+            reservations?.map((item, index) => {
+              return (
+                <div key={index} className="mt-16">
+                  <hr />
+                  <div className="mt-12">
+                    <div>
+                      <div className="flex justify-between items-center">
+                        <span className="font-bold text-[16px]">
+                          {`${
+                            item.place?.address
+                              ? item.place?.address + ", "
+                              : ""
+                          } ${item.place.city}, ${item.place.country}`}
+                        </span>
+                        <span className="text-[#828080] font-bold">
+                          Booking ID: {item.id}
                         </span>
                       </div>
-                    </div>
-                    <div className="border-b-[#cdcdcd] border-b-[1px] p-4 w-full">
-                      <div className="text-[#828080] font-bold text-[14px] mb-2">
-                        USER INFORMATION
-                      </div>
-                      <div className="flex justify-start items-start space-x-6 w-full">
-                        <Image
-                          src={item.user.avatar || emptyImageSrc}
-                          width={64}
-                          height={64}
-                          className="rounded-full"
-                          alt="Avatar"
-                        />
-                        <div className="flex justify-between items-start w-[60%]">
-                          <div>
-                            <div className="text-[16px] font-semibold">
-                              Fullname:{" "}
-                              <span className="ml-1 font-normal">
-                                {item.user.full_name || "-"}
-                              </span>
-                            </div>
-                            <div className="text-[16px] font-semibold">
-                              Email:
-                              <span className="ml-1 font-normal">
-                                {item.user.email || "-"}
-                              </span>
-                            </div>
-                          </div>
-                          {/* <div>
-                          <div className="text-[16px] font-semibold">
-                            Guestname:
-                            <span className="ml-1 font-normal">
-                              {loggedUser.full_name || "-"}
+                      <div className="mt-3 rounded-xl border-[#cdcdcd] border-[1px]">
+                        <div className="flex justify-between items-center border-b-[#cdcdcd] border-b-[1px] p-4">
+                          <Listbox
+                            value={booking_status.map(
+                              (status) => status.id === item.status_id
+                            )}
+                            onChange={(e) =>
+                              handleUpdateBookingStatus(item.id, e.id)
+                            }
+                          >
+                            {({ open }) => (
+                              <>
+                                <div className="relative mt-2">
+                                  <Listbox.Button className="relative w-[180px] cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-500 sm:text-sm sm:leading-6">
+                                    <span className="flex items-center">
+                                      {booking_status.map(
+                                        (status) =>
+                                          status.id === item.status_id && (
+                                            <div
+                                              key={status.id}
+                                              className={`text-[${status.color}]`}
+                                            >
+                                              {status.icon}
+                                            </div>
+                                          )
+                                      )}
+                                      <span className="ml-3 block truncate">
+                                        {booking_status.map(
+                                          (status) =>
+                                            status.id === item.status_id &&
+                                            status.name
+                                        )}
+                                      </span>
+                                    </span>
+                                    <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
+                                      <ChevronUpDownIcon
+                                        className="h-5 w-5 text-gray-400"
+                                        aria-hidden="true"
+                                      />
+                                    </span>
+                                  </Listbox.Button>
+
+                                  <Transition
+                                    show={open}
+                                    as={Fragment}
+                                    leave="transition ease-in duration-100"
+                                    leaveFrom="opacity-100"
+                                    leaveTo="opacity-0"
+                                  >
+                                    <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                      {booking_status.map((person) => (
+                                        <Listbox.Option
+                                          key={person.id}
+                                          className={({ active }) =>
+                                            classNames(
+                                              active
+                                                ? "bg-rose-100"
+                                                : "text-gray-900",
+                                              "relative cursor-default select-none py-2 pl-3 pr-9"
+                                            )
+                                          }
+                                          value={person}
+                                        >
+                                          {({ selected, active }) => (
+                                            <>
+                                              <div
+                                                className={`flex items-center text-[${person.color}]`}
+                                              >
+                                                {person.icon}
+                                                <span
+                                                  className={classNames(
+                                                    selected
+                                                      ? "font-semibold"
+                                                      : "font-normal",
+                                                    "ml-3 block truncate"
+                                                  )}
+                                                >
+                                                  {person.name}
+                                                </span>
+                                              </div>
+
+                                              {selected ? (
+                                                <span
+                                                  className={classNames(
+                                                    active
+                                                      ? "text-gray-900"
+                                                      : "text-rose-500",
+                                                    "absolute inset-y-0 right-0 flex items-center pr-4"
+                                                  )}
+                                                >
+                                                  <CheckIcon
+                                                    className="h-5 w-5"
+                                                    aria-hidden="true"
+                                                  />
+                                                </span>
+                                              ) : null}
+                                            </>
+                                          )}
+                                        </Listbox.Option>
+                                      ))}
+                                    </Listbox.Options>
+                                  </Transition>
+                                </div>
+                              </>
+                            )}
+                          </Listbox>
+                          <div className="font-extrabold text-[20px]">
+                            Total Price:
+                            <span className="pl-2 font-bold text-[18px]">
+                              ${item.place.price_per_night}
                             </span>
                           </div>
-                          <div className="text-[16px] font-semibold">
-                            Phone:
-                            <span className="ml-1 font-normal">
-                              {loggedUser.phone || "-"}
-                            </span>
+                        </div>
+                        <div className="border-b-[#cdcdcd] border-b-[1px] p-4 w-full">
+                          <div className="text-[#828080] font-bold text-[14px] mb-2">
+                            USER INFORMATION
                           </div>
-                        </div> */}
+                          <div className="flex justify-start items-start space-x-6 w-full">
+                            <Image
+                              src={item.user.avatar || emptyImageSrc}
+                              width={64}
+                              height={64}
+                              className="rounded-full"
+                              alt="Avatar"
+                            />
+                            <div className="flex justify-between items-start w-[60%]">
+                              <div>
+                                <div className="text-[16px] font-semibold">
+                                  Fullname:{" "}
+                                  <span className="ml-1 font-normal">
+                                    {item.user.full_name || "-"}
+                                  </span>
+                                </div>
+                                <div className="text-[16px] font-semibold">
+                                  Email:
+                                  <span className="ml-1 font-normal">
+                                    {item.user.email || "-"}
+                                  </span>
+                                </div>
+                              </div>
+                              {/* <div>
+                                  <div className="text-[16px] font-semibold">
+                                    Guestname:
+                                    <span className="ml-1 font-normal">
+                                      {loggedUser.full_name || "-"}
+                                    </span>
+                                  </div>
+                                  <div className="text-[16px] font-semibold">
+                                    Phone:
+                                    <span className="ml-1 font-normal">
+                                      {loggedUser.phone || "-"}
+                                    </span>
+                                  </div>
+                                </div> */}
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                    <div className="flex justify-start items-center space-x-[100px] border-b-[#cdcdcd] border-b-[1px] p-4">
-                      <div className="text-[16px] font-semibold">
-                        To: {item.checkin_date}
-                      </div>
-                      <div className="text-[16px] font-semibold">
-                        From: {item.checkout_date}
-                      </div>
-                    </div>
-                    <div className="flex justify-start items-center space-x-32 p-4">
-                      <div className="">
-                        <div className="text-[#828080] font-bold text-[14px]">
-                          PURCHASED ON
+                        <div className="flex justify-start items-center space-x-[100px] border-b-[#cdcdcd] border-b-[1px] p-4">
+                          <div className="text-[16px] font-semibold">
+                            To: {item.checkin_date}
+                          </div>
+                          <div className="text-[16px] font-semibold">
+                            From: {item.checkout_date}
+                          </div>
                         </div>
-                        <div className="text-[16px] font-semibold">
-                          {item.created_at
-                            .split("T")[0]
-                            .split("-")
-                            .reverse()
-                            .join("-") || "-"}
+                        <div className="flex justify-start items-center space-x-32 p-4">
+                          <div className="">
+                            <div className="text-[#828080] font-bold text-[14px]">
+                              PURCHASED ON
+                            </div>
+                            <div className="text-[16px] font-semibold">
+                              {item.created_at
+                                .split("T")[0]
+                                .split("-")
+                                .reverse()
+                                .join("-") || "-"}
+                            </div>
+                          </div>
+                          <div className="">
+                            <div className="text-[#828080] font-bold text-[14px]">
+                              PAYMENT METHOD
+                            </div>
+                            <div className="text-[16px] font-semibold">COD</div>
+                          </div>
                         </div>
-                      </div>
-                      <div className="">
-                        <div className="text-[#828080] font-bold text-[14px]">
-                          PAYMENT METHOD
-                        </div>
-                        <div className="text-[16px] font-semibold">COD</div>
                       </div>
                     </div>
                   </div>
                 </div>
+              );
+            })}
+        </>
+      )}
+
+      {currentStep === steps.AMENITIES && (
+        <>
+          {!isLoading ? (
+            <div className="grid grid-cols-12 gap-x-12 gap-y-3 mb-8 w-full">
+              <>
+                {amenities &&
+                  amenities.map((item, index) => {
+                    const offerItem = offers.find(
+                      (offer) => offer.label === item.name
+                    );
+                    const isChecked = selectedAmenities.some(
+                      (selected) => selected.description === item.name
+                    );
+
+                    return (
+                      <div
+                        key={index}
+                        className="col-span-6 flex justify-between items-center text-center gap-4 my-1 cursor-pointer"
+                      >
+                        <label
+                          htmlFor={`type-${index}`}
+                          className="text-lg text-zinc-600 font-thin cursor-pointer flex items-center justify-between space-x-6"
+                        >
+                          {offerItem && (
+                            <>
+                              {React.createElement(offerItem.icon, {
+                                size: 25,
+                                className: "text-gray-700",
+                              })}
+                            </>
+                          )}
+                          <p className="text-neutral-500">
+                            {item?.name || "-"}
+                          </p>
+                        </label>
+                        <input
+                          id={`type-${index}`}
+                          name="type"
+                          type="checkbox"
+                          className="w-6 h-6 rounded-full cursor-pointer"
+                          onChange={(e) => handleAmenityCheckboxChange(e, item)}
+                          defaultChecked={isChecked}
+                        />
+                      </div>
+                    );
+                  })}
+              </>
+            </div>
+          ) : (
+            <Loader />
+          )}
+          <hr />
+          <div className="grid grid-cols-12 gap-8 mt-8">
+            <div className="col-span-6"></div>
+            <div className="col-span-6 flex justify-between items-start space-x-8">
+              <div className="w-1/2">
+                <Button
+                  outline
+                  label="Cancel"
+                  onClick={() => {
+                    reset();
+                    setCurrentStep(steps.GENERAL);
+                  }}
+                />
+              </div>
+              <div className="w-1/2">
+                <Button
+                  disabled={isLoading}
+                  label="Update"
+                  onClick={handleSubmit(onSubmit)}
+                />
               </div>
             </div>
-          );
-        })}
+          </div>
+        </>
+      )}
+
+      {currentStep === steps.POLICIES && (
+        <>
+          <div className="gap-x-12 mb-8">
+            <span className="text-xl font-bold text-[#222]">House rules</span>
+            {isLoading ? (
+              <Loader />
+            ) : (
+              <div className="flex justify-between items-center space-x-8">
+                <Input
+                  id="checkinTime"
+                  label="Checkin Time"
+                  disabled={isLoading}
+                  register={register}
+                  errors={errors}
+                  required
+                  type="time"
+                />
+                <div className="text-neutral-400 text-[64px]">-</div>
+                <Input
+                  id="checkoutTime"
+                  label="Checkout Time"
+                  disabled={isLoading}
+                  register={register}
+                  errors={errors}
+                  required
+                  type="time"
+                />
+              </div>
+            )}
+          </div>
+
+          <div className="grid grid-cols-12 gap-x-12 mb-8">
+            <div className="col-span-6">
+              <span className="text-xl font-bold text-[#222] block mb-4">
+                Safe rules
+              </span>
+              <div className="flex justify-between items-center space-x-8">
+                <textarea
+                  className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none h-[120px] resize-none"
+                  placeholder="Content ..."
+                  id="safeRules"
+                  onChange={(e) => setCustomValue("safeRules", e.target.value)}
+                ></textarea>
+              </div>
+            </div>
+
+            <div className="col-span-6">
+              <span className="text-xl font-bold text-[#222] block mb-4">
+                Cancel rules
+              </span>
+              <div className="flex justify-between items-center space-x-8">
+                <textarea
+                  className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none h-[120px] resize-none"
+                  placeholder="Content ..."
+                  id="cancelRules"
+                  onChange={(e) =>
+                    setCustomValue("cancelRules", e.target.value)
+                  }
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <hr />
+          <div className="grid grid-cols-12 gap-8 mt-8">
+            <div className="col-span-6"></div>
+            <div className="col-span-6 flex justify-between items-start space-x-8">
+              <div className="w-1/2">
+                <Button
+                  outline
+                  label="Cancel"
+                  onClick={() => {
+                    reset();
+                    setCurrentStep(steps.GENERAL);
+                  }}
+                />
+              </div>
+              <div className="w-1/2">
+                <Button
+                  disabled={isLoading}
+                  label="Update"
+                  onClick={handleSubmit(onSubmit)}
+                />
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }

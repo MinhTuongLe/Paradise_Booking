@@ -35,64 +35,13 @@ const STEPS = {
   INFO: 2,
   IMAGES: 3,
   DESCRIPTION: 4,
-  POLICY: 5,
-  AMENITY: 6,
-  // PAYMENT: 7,
 };
-
-const offersRowOne = [
-  {
-    label: "Garden view",
-    icon: GiButterflyFlower,
-  },
-  {
-    label: "Hot water",
-    icon: BsFire,
-  },
-
-  {
-    label: "Wifi",
-    icon: AiOutlineWifi,
-  },
-  {
-    label: "Coffee",
-    icon: MdOutlineCoffeeMaker,
-  },
-  {
-    label: "Security cameras on property",
-    icon: BiCctv,
-  },
-];
-
-const offersRowTwo = [
-  {
-    label: "Bathtub",
-    icon: MdOutlineBathtub,
-  },
-  {
-    label: "Dedicated workspace",
-    icon: GrWorkshop,
-  },
-  {
-    label: "Safe",
-    icon: RiSafeLine,
-  },
-  {
-    label: "Free parking on premises",
-    icon: AiOutlineCar,
-  },
-  {
-    label: "Fire extinguisher",
-    icon: FaFireExtinguisher,
-  },
-];
 
 function RentModal({}) {
   const router = useRouter();
   const rentModel = useRentModal();
   const [step, setStep] = useState(STEPS.BECOME_VENDOR);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedAmenities, setSelectedAmenities] = useState([]);
 
   const {
     register,
@@ -104,23 +53,16 @@ function RentModal({}) {
   } = useForm({
     defaultValues: {
       max_guest: 0,
-      roomCount: 0,
-      bedCount: 0,
+      num_bed: 0,
       cover: "",
       price_per_night: 0,
       description: "",
       address: "",
-      checkinTime: "",
-      checkoutTime: "",
-      safeRules: "",
-      cancelRules: "",
-      amenities: [],
     },
   });
 
   const guestCount = watch("max_guest");
-  const roomCount = watch("roomCount");
-  const bedCount = watch("bedCount");
+  const num_bed = watch("num_bed");
   const cover = watch("cover");
 
   const [lat, setLat] = useState(51);
@@ -146,88 +88,58 @@ function RentModal({}) {
     setStep((value) => value + 1);
   };
 
-  function processSearchResult() {
-    const numberRegex = /^[0-9]+$/;
-    let country = "";
-    let city = "";
-    let address = "";
-
-    if (searchResult) {
-      const array = searchResult?.label.split(", ");
-      console.log(searchResult);
-
-      if (array) {
-        const length = array.length;
-        country = array[length - 1];
-        city = numberRegex.test(array[length - 2])
-          ? array[length - 3]
-          : array[length - 2];
-        const temp = numberRegex.test(array[length - 2])
-          ? array.slice(0, length - 3)
-          : array.slice(0, length - 2);
-        address = temp && temp.length > 1 ? temp.join(", ") : temp.join("");
-      }
-    }
-    return { country, city, address };
-  }
-
   const onSubmit = async (data) => {
-    if (step !== STEPS.AMENITY) {
+    if (step !== STEPS.DESCRIPTION) {
       return onNext();
     }
 
     try {
       console.log(data, lat, lng);
-      // setIsLoading(true);
+      setIsLoading(true);
 
-      // // upload photo
-      // const file = data.cover;
-      // let imageUrl = "";
-      // if (file) {
-      //   imageUrl = await handleFileUpload(file);
-      // }
+      // upload photo
+      const file = data.cover;
+      let imageUrl = "";
+      if (file) {
+        imageUrl = await handleFileUpload(file);
+      }
 
-      // const { country, city, address } = processSearchResult();
+      const submitValues = {
+        name: data.name,
+        description: data.description,
+        price_per_night: Number(data.price_per_night),
+        address: data.address,
+        max_guest: data.max_guest,
+        lat: lat,
+        lng: lng,
+        cover: imageUrl,
+      };
 
-      // const submitValues = {
-      //   name: data.name,
-      //   description: data.description,
-      //   price_per_night: Number(data.price_per_night),
-      //   address: address,
-      //   max_guest: data.max_guest,
-      //   lat: lat,
-      //   lng: lng,
-      //   country: country,
-      //   state: city,
-      //   city: city,
-      //   cover: imageUrl,
-      // };
+      // create place
+      const accessToken = Cookie.get("accessToken");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      };
 
-      // // create place
-      // const accessToken = Cookie.get("accessToken");
-      // const config = {
-      //   headers: {
-      //     Authorization: `Bearer ${accessToken}`,
-      //   },
-      // };
-
-      // axios
-      //   .post(`${API_URL}/places`, submitValues, config)
-      //   .then(() => {
-      //     toast.success("Create place successfully");
-      //     reset();
-      //     setStep(STEPS.BECOME_VENDOR);
-      //     rentModel.onClose();
-      //     reset();
-      //     setSearchResult("");
-      //   })
-      //   .catch(() => {
-      //     toast.error("Something Went Wrong");
-      //   })
-      //   .finally(() => {
-      //     setIsLoading(false);
-      //   });
-      // router.refresh();
+      axios
+        .post(`${API_URL}/places`, submitValues, config)
+        .then(() => {
+          toast.success("Create place successfully");
+          reset();
+          setStep(STEPS.BECOME_VENDOR);
+          rentModel.onClose();
+          reset();
+          setSearchResult("");
+        })
+        .catch(() => {
+          toast.error("Something Went Wrong");
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+      router.refresh();
     } catch (error) {
       toast.error("Something went wrong");
     } finally {
@@ -262,7 +174,7 @@ function RentModal({}) {
   };
 
   const actionLabel = useMemo(() => {
-    if (step === STEPS.AMENITY) {
+    if (step === STEPS.DESCRIPTION) {
       return "Create";
     }
 
@@ -283,18 +195,12 @@ function RentModal({}) {
     setSearchResult(result);
   };
 
-
-
   useEffect(() => {
     if (searchResult) {
       setLat(searchResult.y);
       setLng(searchResult.x);
     }
   }, [searchResult]);
-
-  useEffect(() => {
-    setValue("amenities", selectedAmenities);
-  }, [selectedAmenities, setValue]);
 
   let bodyContent = (
     <div className="flex flex-col gap-8">
@@ -413,7 +319,7 @@ function RentModal({}) {
       <div className="flex flex-col gap-8">
         <Heading
           title="Share some basics about your place"
-          subtitle="What amenities do you have?"
+          subtitle="What do you have?"
         />
         <Counter
           title="Guests"
@@ -423,17 +329,10 @@ function RentModal({}) {
         />
         <hr />
         <Counter
-          title="Rooms"
-          subtitle="How many rooms do you have?"
-          value={roomCount}
-          onChange={(value) => setCustomValue("roomCount", value)}
-        />
-        <hr />
-        <Counter
           title="Bed"
           subtitle="How many beds do you have?"
-          value={bedCount}
-          onChange={(value) => setCustomValue("bedCount", value)}
+          value={num_bed}
+          onChange={(value) => setCustomValue("num_bed", value)}
         />
       </div>
     );
@@ -490,126 +389,6 @@ function RentModal({}) {
           errors={errors}
           required
         />
-      </div>
-    );
-  }
-
-  if (step === STEPS.POLICY) {
-    bodyContent = (
-      <div className="flex flex-col gap-8">
-        <Heading
-          title="What is your policies?"
-          subtitle="These policies must be followed by customers at all times"
-        />
-        <div className="space-y-4">
-          <span className="text-xl font-bold text-[#222]">House rules</span>
-          <div className="flex justify-between items-center space-x-8">
-            <Input
-              id="checkinTime"
-              label="Checkin Time"
-              disabled={isLoading}
-              register={register}
-              errors={errors}
-              required
-              type="time"
-            />
-            <div className="text-neutral-400 text-[64px]">-</div>
-            <Input
-              id="checkoutTime"
-              label="Checkout Time"
-              disabled={isLoading}
-              register={register}
-              errors={errors}
-              required
-              type="time"
-            />
-          </div>
-        </div>
-        <hr />
-        <div className="space-y-4">
-          <span className="text-xl font-bold text-[#222]">Safe rules</span>
-          <div className="flex justify-between items-center space-x-8">
-            <textarea
-              className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none h-[120px] resize-none"
-              placeholder="Content ..."
-              id="safeRules"
-              onChange={(e) => setCustomValue("safeRules", e.target.value)}
-            ></textarea>
-          </div>
-        </div>
-        <hr />
-        <div className="space-y-4">
-          <span className="text-xl font-bold text-[#222]">Cancel rules</span>
-          <div className="flex justify-between items-center space-x-8">
-            <textarea
-              className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none h-[120px] resize-none"
-              placeholder="Content ..."
-              id="cancelRules"
-              onChange={(e) => setCustomValue("cancelRules", e.target.value)}
-            ></textarea>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (step === STEPS.AMENITY) {
-    bodyContent = (
-      <div className="flex flex-col gap-8">
-        <Heading
-          title="What this place offers?"
-          subtitle="Amenities that your accommodation has, to bring the most comfort and convenience to visitors"
-        />
-        <div className="flex w-ful space-x-12">
-          <div className="flex flex-col gap-4 w-1/2">
-            {offersRowOne.map((item, index) => (
-              <div
-                key={index}
-                className="flex justify-between items-center text-center gap-4 my-1 cursor-pointer"
-              >
-                <label
-                  htmlFor={`type-${index}`}
-                  className="text-lg text-zinc-600 font-thin cursor-pointer flex items-center justify-between space-x-6"
-                >
-                  <item.icon size={25} className="text-gray-700" />
-                  <p className="text-neutral-500">{item.label}</p>
-                </label>
-                <input
-                  id={`type-${index}`}
-                  name="type"
-                  type="checkbox"
-                  className="w-6 h-6 rounded-full cursor-pointer"
-                  onChange={(e) => handleAmenityCheckboxChange(e, item.label)}
-                />
-              </div>
-            ))}
-          </div>
-
-          <div className="flex flex-col gap-4 w-1/2">
-            {offersRowTwo.map((item, index) => (
-              <div
-                key={index}
-                className="flex justify-between items-center text-center gap-4 my-1 cursor-pointer"
-              >
-                <label
-                  htmlFor={`type-${index}`}
-                  className="text-lg text-zinc-600 font-thin cursor-pointer flex items-center justify-between space-x-6"
-                >
-                  <item.icon size={25} className="text-gray-700" />
-                  <p className="text-neutral-500">{item.label}</p>
-                </label>
-                <input
-                  id={`type-${index}`}
-                  name="type"
-                  type="checkbox"
-                  className="w-6 h-6 rounded-full cursor-pointer"
-                  onChange={(e) => handleAmenityCheckboxChange(e, item.label)}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-        <hr />
       </div>
     );
   }
