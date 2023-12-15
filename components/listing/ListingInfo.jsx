@@ -5,8 +5,9 @@ import { IconType } from "react-icons";
 import Avatar from "../Avatar";
 import Sleep from "../Sleep";
 import Offers from "../Offers";
+import { offers } from "@/const";
 
-function ListingInfo({ user, description, bedCount, guestCount }) {
+function ListingInfo({ user, description, bedCount, guestCount, amenities }) {
   const emptyImageSrc = "/assets/avatar.png";
 
   return (
@@ -26,7 +27,7 @@ function ListingInfo({ user, description, bedCount, guestCount }) {
         </div>
         <div className="flex flex-row items-center gap-4 font-light text-neutral-500">
           <p>{guestCount} guests</p>
-          <p>{bedCount} rooms</p>
+          <p>{bedCount} beds</p>
         </div>
       </div>
       <hr />
@@ -47,7 +48,36 @@ function ListingInfo({ user, description, bedCount, guestCount }) {
       <hr />
       <Sleep />
       <hr /> */}
-      <Offers />
+      {/* <Offers /> */}
+      <div className="grid grid-cols-12 gap-x-12 gap-y-3 mb-8 w-full">
+        {amenities &&
+          amenities.map((item, index) => {
+            const offerItem = offers.find(
+              (offer) => offer.label === item.description
+            );
+            return (
+              <div
+                key={index}
+                className="col-span-6 flex justify-between items-center text-center gap-4 my-1 cursor-pointer"
+              >
+                <label
+                  htmlFor={`type-${index}`}
+                  className="text-lg text-zinc-600 font-thin cursor-pointer flex items-center justify-between space-x-6"
+                >
+                  {offerItem && (
+                    <>
+                      {React.createElement(offerItem.icon, {
+                        size: 25,
+                        className: "text-gray-700",
+                      })}
+                    </>
+                  )}
+                  <p className="text-neutral-500">{item?.description || "-"}</p>
+                </label>
+              </div>
+            );
+          })}
+      </div>
     </div>
   );
 }

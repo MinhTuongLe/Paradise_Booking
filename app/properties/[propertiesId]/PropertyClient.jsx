@@ -14,20 +14,9 @@ import Cookie from "js-cookie";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { FaCalendarAlt, FaCalendarCheck, FaCheckCircle } from "react-icons/fa";
-import { MdCancel, MdIncompleteCircle, MdPending } from "react-icons/md";
-import { AiOutlineCar, AiOutlineWifi } from "react-icons/ai";
-import { BiCctv } from "react-icons/bi";
-import { BsFire } from "react-icons/bs";
-import { FaFireExtinguisher } from "react-icons/fa";
-import { GiButterflyFlower } from "react-icons/gi";
-import { GrWorkshop } from "react-icons/gr";
-import { MdOutlineBathtub, MdOutlineCoffeeMaker } from "react-icons/md";
-import { RiSafeLine } from "react-icons/ri";
-import * as Icons from "react-icons";
 
 import "../../../styles/globals.css";
-import { API_URL, booking_status, classNames } from "@/const";
+import { API_URL, booking_status, classNames, offers } from "@/const";
 import ImageUpload from "@/components/inputs/ImageUpload";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
@@ -40,50 +29,6 @@ const steps = {
   POLICIES: 3,
 };
 
-const offers = [
-  {
-    label: "Garden view",
-    icon: GiButterflyFlower,
-  },
-  {
-    label: "Hot water",
-    icon: BsFire,
-  },
-
-  {
-    label: "Wifi",
-    icon: AiOutlineWifi,
-  },
-  {
-    label: "Coffee",
-    icon: MdOutlineCoffeeMaker,
-  },
-  {
-    label: "Security cameras on property",
-    icon: BiCctv,
-  },
-  {
-    label: "Bathtub",
-    icon: MdOutlineBathtub,
-  },
-  {
-    label: "Dedicated workspace",
-    icon: GrWorkshop,
-  },
-  {
-    label: "Safe",
-    icon: RiSafeLine,
-  },
-  {
-    label: "Free parking on premises",
-    icon: AiOutlineCar,
-  },
-  {
-    label: "Fire extinguisher",
-    icon: FaFireExtinguisher,
-  },
-];
-
 function PropertyClient({ place, reservations }) {
   const emptyImageSrc = "/assets/avatar.png";
   const dispatch = useDispatch();
@@ -91,9 +36,17 @@ function PropertyClient({ place, reservations }) {
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
   const authState = useSelector((state) => state.authSlice.authState);
 
-  const [selected, setSelected] = useState(booking_status[0]);
   const [isLoading, setIsLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(steps.GENERAL);
+  const [searchResult, setSearchResult] = useState(null);
+  const [selectedAmenities, setSelectedAmenities] = useState([]);
+  const [newSelectedAmenities, setNewSelectedAmenities] = useState([]);
+  const [notSelectedAmenities, setNotSelectedAmenities] = useState([]);
+  const [amenities, setAmenities] = useState([]);
+  const [checkinTime, setCheckinTime] = useState();
+  const [checkoutTime, setCheckoutTime] = useState();
+  const [safePolicy, setSafePolicy] = useState("");
+  const [cancelPolicy, setCancelPolicy] = useState("");
 
   const {
     register,
@@ -115,6 +68,7 @@ function PropertyClient({ place, reservations }) {
       city: place?.city,
       cover: place?.cover || "",
       max_guest: place?.max_guest,
+      num_bed: place?.num_bed,
     },
   });
 
@@ -138,12 +92,6 @@ function PropertyClient({ place, reservations }) {
       }),
     [lat, lng]
   );
-
-  const [searchResult, setSearchResult] = useState(null);
-  const [selectedAmenities, setSelectedAmenities] = useState([]);
-  const [newSelectedAmenities, setNewSelectedAmenities] = useState([]);
-  const [notSelectedAmenities, setNotSelectedAmenities] = useState([]);
-  const [amenities, setAmenities] = useState([]);
 
   const handleSearchResult = (result) => {
     setSearchResult(result);
@@ -302,9 +250,6 @@ function PropertyClient({ place, reservations }) {
           },
         };
 
-        // console.log(newSelectedAmenities);
-        // console.log(notSelectedAmenities);
-
         const newItems = newSelectedAmenities.filter(
           (item) =>
             !selectedAmenities.some(
@@ -318,8 +263,6 @@ function PropertyClient({ place, reservations }) {
           )
         );
 
-        // console.log(newItems, oldItems);
-
         const submitValues = {
           place_id: place.id,
           list_detail_amenity: newItems.map((item) => ({
@@ -332,9 +275,6 @@ function PropertyClient({ place, reservations }) {
           place_id: place.id,
           list_config_amenity_id: oldItems.map((item) => item.id),
         };
-
-        // console.log(submitValues);
-        // console.log(submitValues_2);
 
         const response_create = await axios.post(
           `${API_URL}/amenities`,
@@ -360,6 +300,42 @@ function PropertyClient({ place, reservations }) {
 
         setIsLoading(false);
       } else {
+        console.log(checkinTime, checkoutTime, safePolicy, cancelPolicy);
+        const submitValues = {
+          place_id: place.id,
+          list_policy: [
+            {
+              group_policy_id: 1,
+              name: `Checkin after: ${checkinTime}. Checkout before: ${checkoutTime}`,
+            },
+            {
+              group_policy_id: 2,
+              name: safePolicy,
+            },
+            {
+              group_policy_id: 3,
+              name: cancelPolicy,
+            },
+          ],
+        };
+        console.log(submitValues);
+        const accessToken = Cookie.get("accessToken");
+        const config = {
+          headers: {
+            "content-type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        };
+        axios
+          .post(`${API_URL}/policies`, { data: submitValues }, config)
+          .then(() => {
+            toast.success("Update Policies Successfully");
+            router.refresh();
+          })
+          .catch((err) => {
+            toast.error("Update Policies Failed");
+          });
+        setIsLoading(false);
       }
     } catch (error) {
       console.log(error);
@@ -424,9 +400,19 @@ function PropertyClient({ place, reservations }) {
     };
 
     await axios
-      .get(`${API_URL}/amenities/place/${place.id}`, config)
+      .get(`${API_URL}/policies/${place.id}`, config)
       .then((response) => {
-        setSelectedAmenities(response.data.data);
+        const houseRules = response.data.data[0].name;
+        const regex = /(\d{1,2}:\d{2})/g;
+        const matches = houseRules.match(regex);
+
+        const checkinTime = matches[0];
+        const checkoutTime = matches[1];
+
+        setCheckinTime(checkinTime);
+        setCheckoutTime(checkoutTime);
+        setSafePolicy(response.data.data[1].name);
+        setCancelPolicy(response.data.data[2].name);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -449,6 +435,7 @@ function PropertyClient({ place, reservations }) {
 
   useEffect(() => {
     if (currentStep === steps.AMENITIES) get();
+    else if (currentStep === steps.POLICIES) getPolicies();
   }, [currentStep]);
 
   if (!authState || loggedUser.role !== 2) {
@@ -548,7 +535,7 @@ function PropertyClient({ place, reservations }) {
                 </div>
                 <div className="col-span-6">
                   <Input
-                    id="price_per_night"
+                    id="num_bed"
                     label="Bed(s)"
                     type="number"
                     disabled={isLoading}
@@ -899,90 +886,105 @@ function PropertyClient({ place, reservations }) {
 
       {currentStep === steps.POLICIES && (
         <>
-          <div className="gap-x-12 mb-8">
-            <span className="text-xl font-bold text-[#222]">House rules</span>
-            {isLoading ? (
-              <Loader />
-            ) : (
-              <div className="flex justify-between items-center space-x-8">
-                <Input
-                  id="checkinTime"
-                  label="Checkin Time"
-                  disabled={isLoading}
-                  register={register}
-                  errors={errors}
-                  required
-                  type="time"
-                />
-                <div className="text-neutral-400 text-[64px]">-</div>
-                <Input
-                  id="checkoutTime"
-                  label="Checkout Time"
-                  disabled={isLoading}
-                  register={register}
-                  errors={errors}
-                  required
-                  type="time"
-                />
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <>
+              <div className="gap-x-12 mb-8">
+                <span className="text-xl font-bold text-[#222]">
+                  House rules
+                </span>
+                <div className="flex justify-between items-center space-x-8">
+                  <div className="w-full relative">
+                    <input
+                      onChange={(e) => setCheckinTime(e.target.value)}
+                      type="time"
+                      value={checkinTime}
+                      id="_location"
+                      className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition opacity-70 border-neutral-300 focus:outline-none`}
+                    />
+                    <label
+                      className={`absolute text-md duration-150 transform -translate-y-3 top-5 left-4 text-zinc-400`}
+                    >
+                      Checkin Time
+                    </label>
+                  </div>
+                  <div className="text-neutral-400 text-[64px]">-</div>
+                  <div className="w-full relative">
+                    <input
+                      onChange={(e) => setCheckoutTime(e.target.value)}
+                      type="time"
+                      value={checkoutTime}
+                      id="_location"
+                      className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition opacity-70 border-neutral-300 focus:outline-none`}
+                    />
+                    <label
+                      className={`absolute text-md duration-150 transform -translate-y-3 top-5 left-4 text-zinc-400`}
+                    >
+                      Checkout Time
+                    </label>
+                  </div>
+                </div>
               </div>
-            )}
-          </div>
 
-          <div className="grid grid-cols-12 gap-x-12 mb-8">
-            <div className="col-span-6">
-              <span className="text-xl font-bold text-[#222] block mb-4">
-                Safe rules
-              </span>
-              <div className="flex justify-between items-center space-x-8">
-                <textarea
-                  className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none h-[120px] resize-none"
-                  placeholder="Content ..."
-                  id="safeRules"
-                  onChange={(e) => setCustomValue("safeRules", e.target.value)}
-                ></textarea>
-              </div>
-            </div>
+              <div className="grid grid-cols-12 gap-x-12 mb-8">
+                <div className="col-span-6">
+                  <span className="text-xl font-bold text-[#222] block mb-4">
+                    Safe rules
+                  </span>
+                  <div className="flex justify-between items-center space-x-8">
+                    <textarea
+                      className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none h-[120px] resize-none"
+                      placeholder="Content ..."
+                      value={safePolicy}
+                      onChange={(e) => setSafePolicy(e.target.value)}
+                    ></textarea>
+                  </div>
+                </div>
 
-            <div className="col-span-6">
-              <span className="text-xl font-bold text-[#222] block mb-4">
-                Cancel rules
-              </span>
-              <div className="flex justify-between items-center space-x-8">
-                <textarea
-                  className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none h-[120px] resize-none"
-                  placeholder="Content ..."
-                  id="cancelRules"
-                  onChange={(e) =>
-                    setCustomValue("cancelRules", e.target.value)
-                  }
-                ></textarea>
+                <div className="col-span-6">
+                  <span className="text-xl font-bold text-[#222] block mb-4">
+                    Cancel rules
+                  </span>
+                  <div className="flex justify-between items-center space-x-8">
+                    <textarea
+                      className="order border-solid border-[1px] p-4 rounded-lg w-full focus:outline-none h-[120px] resize-none"
+                      placeholder="Content ..."
+                      value={cancelPolicy}
+                      onChange={(e) => setCancelPolicy(e.target.value)}
+                    ></textarea>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
 
-          <hr />
-          <div className="grid grid-cols-12 gap-8 mt-8">
-            <div className="col-span-6"></div>
-            <div className="col-span-6 flex justify-between items-start space-x-8">
-              <div className="w-1/2">
-                <Button
-                  outline
-                  label="Cancel"
-                  onClick={() => {
-                    reset();
-                    setCurrentStep(steps.GENERAL);
-                  }}
-                />
+              <hr />
+              <div className="grid grid-cols-12 gap-8 mt-8">
+                <div className="col-span-6"></div>
+                <div className="col-span-6 flex justify-between items-start space-x-8">
+                  <div className="w-1/2">
+                    <Button
+                      outline
+                      label="Cancel"
+                      onClick={() => {
+                        setCheckinTime();
+                        setCheckoutTime();
+                        setSafePolicy("");
+                        setCancelPolicy("");
+                        setCurrentStep(steps.GENERAL);
+                      }}
+                    />
+                  </div>
+                  <div className="w-1/2">
+                    <Button
+                      disabled={isLoading}
+                      label="Update"
+                      onClick={handleSubmit(onSubmit)}
+                    />
+                  </div>
+                </div>
               </div>
-              <div className="w-1/2">
-                <Button
-                  disabled={isLoading}
-                  label="Update"
-                  onClick={handleSubmit(onSubmit)}
-                />
-              </div>
-            </div>
-          </div>
+            </>
+          )}
         </>
       )}
     </div>

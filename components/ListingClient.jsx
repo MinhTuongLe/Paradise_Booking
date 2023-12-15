@@ -99,6 +99,11 @@ function ListingClient({ reservations = [], place, currentUser }) {
   const [paymentMode, setPaymentMode] = useState(false);
   const [dayCount, setDayCount] = useState(1);
   const [bookingMode, setBookingMode] = useState(1);
+  const [selectedAmenities, setSelectedAmenities] = useState([]);
+  const [checkinTime, setCheckinTime] = useState();
+  const [checkoutTime, setCheckoutTime] = useState();
+  const [safePolicy, setSafePolicy] = useState("");
+  const [cancelPolicy, setCancelPolicy] = useState("");
 
   const [searchResult, setSearchResult] = useState(null);
   const handleSearchResult = (result) => {
@@ -169,6 +174,65 @@ function ListingClient({ reservations = [], place, currentUser }) {
     }
   };
 
+  const getAmenities = async () => {
+    setIsLoading(true);
+    const accessToken = Cookie.get("accessToken");
+    const config = {
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+
+    await axios
+      .get(`${API_URL}/amenities/place/${place.id}`, config)
+      .then((response) => {
+        setSelectedAmenities(response.data.data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        toast.error("Something Went Wrong");
+        setIsLoading(false);
+      });
+  };
+
+  const getPolicies = async () => {
+    setIsLoading(true);
+    const accessToken = Cookie.get("accessToken");
+    const config = {
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+
+    await axios
+      .get(`${API_URL}/policies/${place.id}`, config)
+      .then((response) => {
+        const houseRules = response.data.data[0].name;
+        const regex = /(\d{1,2}:\d{2})/g;
+        const matches = houseRules.match(regex);
+
+        const checkinTime = matches[0];
+        const checkoutTime = matches[1];
+
+        setCheckinTime(checkinTime);
+        setCheckoutTime(checkoutTime);
+        setSafePolicy(response.data.data[1].name);
+        setCancelPolicy(response.data.data[2].name);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        toast.error("Something Went Wrong");
+        setIsLoading(false);
+      });
+  };
+
+  const get = async () => {
+    await getAmenities();
+    await getPolicies();
+  };
+
   useEffect(() => {
     if (dateRange.startDate && dateRange.endDate) {
       const count = differenceInCalendarDays(
@@ -196,6 +260,10 @@ function ListingClient({ reservations = [], place, currentUser }) {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [paymentMode]);
 
+  useEffect(() => {
+    get();
+  }, []);
+
   return (
     <Container>
       {!paymentMode ? (
@@ -214,6 +282,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
                 description={place.description}
                 bedCount={place.num_bed || 0}
                 guestCount={place.max_guest || 0}
+                amenities={selectedAmenities || []}
               />
               <div className="order-first mb-10 md:order-last md:col-span-3 space-y-6">
                 <ListingReservation
@@ -257,9 +326,19 @@ function ListingClient({ reservations = [], place, currentUser }) {
                     House rules
                   </p>
                   <ul className="flex flex-col justify-between items-start text-md font-thin space-y-2">
-                    <li className="text-md font-thin">Checkin after 15:00</li>
-                    <li className="text-md font-thin">Checkout before 12:00</li>
-                    <li className="text-md font-thin">Maximum 14 guest</li>
+                    {checkinTime && (
+                      <li className="text-md font-thin">
+                        Checkin after {checkinTime}
+                      </li>
+                    )}
+                    {checkoutTime && (
+                      <li className="text-md font-thin">
+                        Checkout before {checkoutTime}
+                      </li>
+                    )}
+                    <li className="text-md font-thin">
+                      Maximum {place?.max_guest || 0} guest
+                    </li>
                   </ul>
                 </div>
                 <div className="col-span-4">
@@ -267,13 +346,13 @@ function ListingClient({ reservations = [], place, currentUser }) {
                     Safe rules
                   </p>
                   <ul className="flex flex-col justify-between items-start text-md font-thin space-y-2">
-                    <li className="text-md font-thin">
-                      There is no information about having a CO gas detector
-                    </li>
-                    <li className="text-md font-thin">
-                      There is no information about the presence of smoke
-                      detectors
-                    </li>
+                    {safePolicy
+                      ? safePolicy.split("\n").map((item, index) => (
+                          <li className="text-md font-thin" key={index}>
+                            {item}
+                          </li>
+                        ))
+                      : "-"}
                   </ul>
                 </div>
                 <div className="col-span-4">
@@ -281,16 +360,13 @@ function ListingClient({ reservations = [], place, currentUser }) {
                     Cancel rules
                   </p>
                   <ul className="flex flex-col justify-between items-start text-md font-thin space-y-2">
-                    <li className="text-md font-thin">
-                      Partial refund: Receive a refund for all nights 24 hours
-                      or more before your cancellation. There are no refunds for
-                      service fees or charges for nights you have stayed
-                    </li>
-                    <li className="text-md font-thin">
-                      Please read the entire Host/Organizer cancellation policy
-                      which applies even if you cancel due to illness or
-                      disruption due to COVID-19
-                    </li>
+                    {cancelPolicy
+                      ? cancelPolicy.split("\n").map((item, index) => (
+                          <li className="text-md font-thin" key={index}>
+                            {item}
+                          </li>
+                        ))
+                      : "-"}
                   </ul>
                 </div>
               </div>
