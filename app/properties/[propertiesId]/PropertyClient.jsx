@@ -149,14 +149,6 @@ function PropertyClient({ place, reservations }) {
     setSearchResult(result);
   };
 
-  const onBack = () => {
-    setStep((value) => value - 1);
-  };
-
-  const onNext = () => {
-    setStep((value) => value + 1);
-  };
-
   function processSearchResult() {
     const numberRegex = /^[0-9]+$/;
     let country = place.country;
