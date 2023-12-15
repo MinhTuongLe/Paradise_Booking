@@ -141,6 +141,7 @@ function PropertyClient({ place, reservations }) {
 
   const [searchResult, setSearchResult] = useState(null);
   const [selectedAmenities, setSelectedAmenities] = useState([]);
+  const [newSelectedAmenities, setNewSelectedAmenities] = useState([]);
   const [notSelectedAmenities, setNotSelectedAmenities] = useState([]);
   const [amenities, setAmenities] = useState([]);
 
@@ -235,18 +236,18 @@ function PropertyClient({ place, reservations }) {
     const isChecked = e.target.checked;
 
     if (isChecked) {
-      setSelectedAmenities((prevAmenities) => [...prevAmenities, item]);
+      setNewSelectedAmenities((prevAmenities) => [...prevAmenities, item]);
       setNotSelectedAmenities((prevAmenities) =>
-        prevAmenities.filter((amenity) => amenity.description !== item.name)
+        prevAmenities.filter((amenity) => amenity.name !== item.name)
       );
     } else {
-      setSelectedAmenities((prevAmenities) =>
-        prevAmenities.filter((amenity) => amenity.description !== item.name)
-      );
       setNotSelectedAmenities((prevNotSelectedAmenities) => [
         ...prevNotSelectedAmenities,
         item,
       ]);
+      setNewSelectedAmenities((prevAmenities) =>
+        prevAmenities.filter((amenity) => amenity.name !== item.name)
+      );
     }
   };
 
@@ -309,30 +310,63 @@ function PropertyClient({ place, reservations }) {
           },
         };
 
-        // console.log(selectedAmenities);
+        // console.log(newSelectedAmenities);
         // console.log(notSelectedAmenities);
+
+        const newItems = newSelectedAmenities.filter(
+          (item) =>
+            !selectedAmenities.some(
+              (selectedItem) => selectedItem.description === item.name
+            )
+        );
+
+        const oldItems = notSelectedAmenities.filter((item) =>
+          selectedAmenities.some(
+            (selectedItem) => selectedItem.description === item.name
+          )
+        );
+
+        // console.log(newItems, oldItems);
 
         const submitValues = {
           place_id: place.id,
-          list_detail_amenity: selectedAmenities.map((item) => ({
+          list_detail_amenity: newItems.map((item) => ({
             description: item.description || item.name,
             config_amenity_id: item.id,
           })),
         };
 
-        // console.log(submitValues);
+        const submitValues_2 = {
+          place_id: place.id,
+          list_config_amenity_id: oldItems.map((item) => item.id),
+        };
 
-        axios
-          .post(`${API_URL}/amenities`, submitValues, config)
-          .then(() => {
-            setIsLoading(false);
-            toast.success("Update Amenities Successfully");
-            router.refresh();
-          })
-          .catch((err) => {
-            toast.error("Update Amenities Failed");
-            setIsLoading(false);
-          });
+        // console.log(submitValues);
+        // console.log(submitValues_2);
+
+        const response_create = await axios.post(
+          `${API_URL}/amenities`,
+          submitValues,
+          config
+        );
+        const response_remove = await axios.post(
+          `${API_URL}/amenities/place/remove`,
+          submitValues_2,
+          config
+        );
+
+        if (
+          response_create.data.data === true &&
+          response_remove.data.data === true
+        ) {
+          toast.success("Update Amenities Successfully");
+          await getAmenities();
+          router.refresh();
+        } else {
+          toast.error("Update Amenities Failed");
+        }
+
+        setIsLoading(false);
       } else {
       }
     } catch (error) {
@@ -366,6 +400,28 @@ function PropertyClient({ place, reservations }) {
   };
 
   const getAmenities = async () => {
+    setIsLoading(true);
+    const accessToken = Cookie.get("accessToken");
+    const config = {
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+
+    await axios
+      .get(`${API_URL}/amenities/place/${place.id}`, config)
+      .then((response) => {
+        setSelectedAmenities(response.data.data);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        toast.error("Something Went Wrong");
+        setIsLoading(false);
+      });
+  };
+
+  const getPolicies = async () => {
     setIsLoading(true);
     const accessToken = Cookie.get("accessToken");
     const config = {

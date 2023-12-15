@@ -212,9 +212,8 @@ function ListingClient({ reservations = [], place, currentUser }) {
               <ListingInfo
                 user={currentUser}
                 description={place.description}
-                roomCount={place.roomCount || 0}
+                bedCount={place.num_bed || 0}
                 guestCount={place.max_guest || 0}
-                bathroomCount={place.bathroomCount || 0}
               />
               <div className="order-first mb-10 md:order-last md:col-span-3 space-y-6">
                 <ListingReservation

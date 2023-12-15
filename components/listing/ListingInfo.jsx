@@ -6,13 +6,7 @@ import Avatar from "../Avatar";
 import Sleep from "../Sleep";
 import Offers from "../Offers";
 
-function ListingInfo({
-  user,
-  description,
-  roomCount,
-  guestCount,
-  bathroomCount,
-}) {
+function ListingInfo({ user, description, bedCount, guestCount }) {
   const emptyImageSrc = "/assets/avatar.png";
 
   return (
@@ -32,8 +26,7 @@ function ListingInfo({
         </div>
         <div className="flex flex-row items-center gap-4 font-light text-neutral-500">
           <p>{guestCount} guests</p>
-          <p>{roomCount} rooms</p>
-          <p>{bathroomCount} bathrooms</p>
+          <p>{bedCount} rooms</p>
         </div>
       </div>
       <hr />
@@ -45,15 +38,15 @@ function ListingInfo({
           Every booking includes free protection from Host cancellations,
           listing inaccuracies, and other issues like trouble checking in.
         </p>
-        <p className="text-black font-bold underline pt-3 cursor-pointer">
+        {/* <p className="text-black font-bold underline pt-3 cursor-pointer">
           Learn more
-        </p>
+        </p> */}
       </div>
       <hr />
-      <p className="text-lg font-light text-neutral-500">{description}</p>
+      {/* <p className="text-lg font-light text-neutral-500">{description}</p>
       <hr />
       <Sleep />
-      <hr />
+      <hr /> */}
       <Offers />
     </div>
   );
