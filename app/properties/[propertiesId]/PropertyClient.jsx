@@ -362,61 +362,52 @@ function PropertyClient({ place, reservations }) {
         setIsLoading(false);
       })
       .catch((err) => {
-        toast.error("Something Went Wrong");
+        console.log(err);
         setIsLoading(false);
       });
   };
 
   const getAmenities = async () => {
     setIsLoading(true);
-    const accessToken = Cookie.get("accessToken");
-    const config = {
-      headers: {
-        "content-type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    };
-
     await axios
-      .get(`${API_URL}/amenities/place/${place.id}`, config)
+      .get(`${API_URL}/amenities/place/${place.id}`)
       .then((response) => {
         setSelectedAmenities(response.data.data);
         setIsLoading(false);
       })
       .catch((err) => {
-        toast.error("Something Went Wrong");
+        console.log(err);
         setIsLoading(false);
       });
   };
 
   const getPolicies = async () => {
     setIsLoading(true);
-    const accessToken = Cookie.get("accessToken");
-    const config = {
-      headers: {
-        "content-type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    };
 
     await axios
-      .get(`${API_URL}/policies/${place.id}`, config)
+      .get(`${API_URL}/policies/${place.id}`)
       .then((response) => {
-        const houseRules = response.data.data[0].name;
-        const regex = /(\d{1,2}:\d{2})/g;
-        const matches = houseRules.match(regex);
+        if (response.data.data && response.data.data.length > 0) {
+          if (response.data.data[0]?.name) {
+            const houseRules = response.data.data[0]?.name;
+            const regex = /(\d{1,2}:\d{2})/g;
+            const matches = houseRules.match(regex);
 
-        const checkinTime = matches[0];
-        const checkoutTime = matches[1];
+            const checkinTime = matches[0];
+            const checkoutTime = matches[1];
 
-        setCheckinTime(checkinTime);
-        setCheckoutTime(checkoutTime);
-        setSafePolicy(response.data.data[1].name);
-        setCancelPolicy(response.data.data[2].name);
+            setCheckinTime(checkinTime);
+            setCheckoutTime(checkoutTime);
+          }
+          if (response.data.data[1]?.name)
+            setSafePolicy(response.data.data[1]?.name);
+          if (response.data.data[2]?.name)
+            setCancelPolicy(response.data.data[2]?.name);
+        }
         setIsLoading(false);
       })
       .catch((err) => {
-        toast.error("Something Went Wrong");
+        console.log(err);
         setIsLoading(false);
       });
   };
