@@ -95,9 +95,9 @@ function ReservationClient({ reservation, rating }) {
     }
   };
 
-  if (!authState || loggedUser.id !== reservation.user_id) {
-    return <EmptyState title="Unauthorized" subtitle="Please login" />;
-  }
+  // if (!authState || loggedUser.id !== reservation.user_id) {
+  //   return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  // }
 
   return (
     <div className="max-w-[768px] mx-auto px-4">
@@ -135,7 +135,7 @@ function ReservationClient({ reservation, rating }) {
                   )
               )}
               <div className="font-extrabold text-[20px]">
-                ${reservation.data.place.price_per_night || 0}
+                ${reservation.data.total_price || 0}
               </div>
             </div>
             <div className="flex justify-start items-center space-x-[100px] border-b-[#cdcdcd] border-b-[1px] p-4">
@@ -227,7 +227,9 @@ function ReservationClient({ reservation, rating }) {
                 <div className="text-[16px] font-semibold">
                   Fullname:{" "}
                   <span className="ml-1 font-normal">
-                    {reservation.user.full_name || "-"}
+                    {reservation.user.full_name ||
+                      reservation.user.username ||
+                      "-"}
                   </span>
                 </div>
                 <div className="text-[16px] font-semibold">
@@ -240,6 +242,20 @@ function ReservationClient({ reservation, rating }) {
                   Phone:
                   <span className="ml-1 font-normal">
                     {reservation.user.phone || "-"}
+                  </span>
+                </div>
+                {reservation.data.guest_name && (
+                  <div className="text-[16px] font-semibold">
+                    Guest:
+                    <span className="ml-1 font-normal">
+                      {reservation.data.guest_name || "-"}
+                    </span>
+                  </div>
+                )}
+                <div className="text-[16px] font-semibold">
+                  Content to vendor:
+                  <span className="ml-1 font-normal">
+                    {reservation.data.content_to_vendor || "-"}
                   </span>
                 </div>
               </div>

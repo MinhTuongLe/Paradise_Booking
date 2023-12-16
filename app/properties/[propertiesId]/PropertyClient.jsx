@@ -718,7 +718,7 @@ function PropertyClient({ place, reservations }) {
                           <div className="font-extrabold text-[20px]">
                             Total Price:
                             <span className="pl-2 font-bold text-[18px]">
-                              ${item.place.price_per_night}
+                              ${item.total_price}
                             </span>
                           </div>
                         </div>
@@ -734,35 +734,50 @@ function PropertyClient({ place, reservations }) {
                               className="rounded-full"
                               alt="Avatar"
                             />
-                            <div className="flex justify-between items-start w-[60%]">
-                              <div>
-                                <div className="text-[16px] font-semibold">
-                                  Fullname:{" "}
-                                  <span className="ml-1 font-normal">
-                                    {item.user.full_name || "-"}
-                                  </span>
-                                </div>
-                                <div className="text-[16px] font-semibold">
-                                  Email:
-                                  <span className="ml-1 font-normal">
-                                    {item.user.email || "-"}
-                                  </span>
-                                </div>
-                              </div>
-                              {/* <div>
+                            <div className="w-[60%]">
+                              <div className="flex justify-between items-start w-full space-x-12">
+                                <div>
                                   <div className="text-[16px] font-semibold">
-                                    Guestname:
+                                    Fullname:{" "}
                                     <span className="ml-1 font-normal">
-                                      {loggedUser.full_name || "-"}
+                                      {item.user.full_name ||
+                                        item.user.username ||
+                                        "-"}
                                     </span>
                                   </div>
+                                  <div className="text-[16px] font-semibold">
+                                    Email:
+                                    <span className="ml-1 font-normal">
+                                      {item.user.email || "-"}
+                                    </span>
+                                  </div>
+                                </div>
+                                <div>
+                                  {item?.guest_name && (
+                                    <div className="text-[16px] font-semibold">
+                                      Guestname:
+                                      <span className="ml-1 font-normal">
+                                        {item.guest_name || "-"}
+                                      </span>
+                                    </div>
+                                  )}
                                   <div className="text-[16px] font-semibold">
                                     Phone:
                                     <span className="ml-1 font-normal">
-                                      {loggedUser.phone || "-"}
+                                      {item.user.phone || "-"}
                                     </span>
                                   </div>
-                                </div> */}
+                                </div>
+                              </div>
+                              {item?.content_to_vendor && (
+                                <div className="text-[16px] font-semibold">
+                                  Content from{" "}
+                                  {item.user.full_name || item.user.username}:
+                                  <span className="ml-1 font-normal">
+                                    {item.content_to_vendor || "-"}
+                                  </span>
+                                </div>
+                              )}
                             </div>
                           </div>
                         </div>

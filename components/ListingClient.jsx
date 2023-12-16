@@ -124,8 +124,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
       const checkin_date = `${dateRange.startDate.getDate()}-${dateRange.startDate.getMonth()}-${dateRange.startDate.getFullYear()}`;
       const checkout_date = `${dateRange.endDate.getDate()}-${dateRange.endDate.getMonth()}-${dateRange.endDate.getFullYear()}`;
 
-      const submitValues = {
-        user_id: loggedUser.id,
+      let submitValues = {
         place_id: place.id,
         checkin_date,
         checkout_date,
@@ -136,6 +135,13 @@ function ListingClient({ reservations = [], place, currentUser }) {
           number_of_guest: Number(data.number_of_guest),
         },
       };
+
+      if (authState) {
+        submitValues = {
+          ...submitValues,
+          user_id: loggedUser.id,
+        };
+      }
 
       if (data.number_of_guest > place.max_guest) {
         toast.error(
@@ -151,6 +157,8 @@ function ListingClient({ reservations = [], place, currentUser }) {
           Authorization: `Bearer ${accessToken}`,
         },
       };
+
+      console.log(submitValues);
 
       await axios
         .post(`${API_URL}/bookings`, submitValues, config)
@@ -281,10 +289,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
                   totalPrice={totalPrice}
                   onChangeDate={(value) => setDateRange(value)}
                   dateRange={dateRange}
-                  onSubmit={() => {
-                    if (authState) setPaymentMode(true);
-                    else loginModal.onOpen();
-                  }}
+                  onSubmit={() => setPaymentMode(true)}
                   disabled={isLoading}
                   disabledDates={disableDates}
                 />
@@ -364,7 +369,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
             </div>
           </div>
         </div>
-      ) : authState ? (
+      ) : (
         <div className="w-[80%] mx-auto mt-12">
           <div className="flex justify-start items-start space-x-6">
             <IoChevronBack
@@ -467,52 +472,52 @@ function ListingClient({ reservations = [], place, currentUser }) {
                 )}
               </div>
               {/* <hr />
-              <div className="mb-6">
-                <span className="text-lg font-bold mb-6 block">
-                  Payment info
-                </span>
+          <div className="mb-6">
+            <span className="text-lg font-bold mb-6 block">
+              Payment info
+            </span>
+            <Input
+              id="full_name"
+              label="Full Name"
+              disabled={isLoading}
+              register={register}
+              errors={errors}
+              required
+            />
+            <div className="flex gap-6 my-6">
+              <div className="flex-1">
                 <Input
-                  id="full_name"
-                  label="Full Name"
+                  id="phone"
+                  label="Phone"
                   disabled={isLoading}
                   register={register}
                   errors={errors}
                   required
+                  type="tel"
                 />
-                <div className="flex gap-6 my-6">
-                  <div className="flex-1">
-                    <Input
-                      id="phone"
-                      label="Phone"
-                      disabled={isLoading}
-                      register={register}
-                      errors={errors}
-                      required
-                      type="tel"
-                    />
-                  </div>
-                  <div className="flex-1">
-                    <Input
-                      id="email"
-                      label="Email"
-                      disabled={isLoading}
-                      register={register}
-                      errors={errors}
-                      required
-                      type="email"
-                    />
-                  </div>
-                </div>
+              </div>
+              <div className="flex-1">
                 <Input
-                  id="number_of_guest"
-                  label="No Guest"
+                  id="email"
+                  label="Email"
                   disabled={isLoading}
                   register={register}
                   errors={errors}
                   required
-                  type="number"
+                  type="email"
                 />
-              </div> */}
+              </div>
+            </div>
+            <Input
+              id="number_of_guest"
+              label="No Guest"
+              disabled={isLoading}
+              register={register}
+              errors={errors}
+              required
+              type="number"
+            />
+          </div> */}
               <hr />
               <div className="my-6">
                 <div className="flex flex-col justify-between items-start mt-4">
@@ -651,8 +656,6 @@ function ListingClient({ reservations = [], place, currentUser }) {
             </div>
           </div>
         </div>
-      ) : (
-        <EmptyState title="Unauthorized" subtitle="Please login" />
       )}
     </Container>
   );

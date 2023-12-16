@@ -9,21 +9,24 @@ import getRatingByReservationId from "@/app/actions/getRatingByReservationId";
 export const dynamic = "force-dynamic";
 
 const ReservationPage = async ({ params }) => {
-  const accessToken = cookies().get("accessToken")?.value;
-  const userId = cookies().get("userId")?.value;
-  const user = await getUserById(userId);
+  // const accessToken = cookies().get("accessToken")?.value;
+  // const userId = cookies().get("userId")?.value;
+  // const user = await getUserById(userId);
   // const reservation = await getReservationById(params.reservationsId);
 
-  let authorized = false;
-  let reservation, rating;
-  if (accessToken && user.role !== 3) {
-    reservation = await getReservationById(params.reservationsId);
-    rating = await getRatingByReservationId(params.reservationsId);
-    authorized = true;
-  }
+  // // let authorized = false;
+  // let reservation, rating;
+  // if (user.role !== 3) {
+  //   reservation = await getReservationById(params.reservationsId);
+  //   rating = await getRatingByReservationId(params.reservationsId);
+  //   // authorized = true;
+  // }
 
-  if (!authorized)
-    return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  const reservation = await getReservationById(params.reservationsId);
+  const rating = await getRatingByReservationId(params.reservationsId);
+
+  // if (!authorized)
+  //   return <EmptyState title="Unauthorized" subtitle="Please login" />;
 
   return (
     <ClientOnly>

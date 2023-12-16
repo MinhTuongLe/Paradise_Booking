@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
@@ -14,6 +15,8 @@ function ListingComments({ place_id }) {
   const emptyImageSrc = "/assets/avatar.png";
   const [isLoading, setIsLoading] = useState(true);
   const [ratings, setRatings] = useState([]);
+  const [averageRating, setAverageRating] = useState(0);
+  const [ratingDistribution, setRatingDistribution] = useState({});
 
   const getRatings = async () => {
     setIsLoading(true);
@@ -41,56 +44,181 @@ function ListingComments({ place_id }) {
     getRatings();
   }, []);
 
+  useEffect(() => {
+    if (ratings) {
+      // Tính trung bình rating
+      const totalRatings = ratings.length;
+      const totalRatingSum = ratings.reduce(
+        (sum, rating) => sum + rating.DataRating.rating,
+        0
+      );
+      const average = totalRatingSum / totalRatings;
+      setAverageRating(average.toFixed(1));
+
+      // Tính phần trăm xuất hiện của các giá trị rating từ 1 đến 5
+      const ratingCounts = {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+      };
+
+      ratings.forEach((rating) => {
+        const ratingValue = rating.DataRating.rating;
+        if (ratingValue >= 1 && ratingValue <= 5) {
+          ratingCounts[ratingValue]++;
+        }
+      });
+
+      const distributionPercentages = {};
+      Object.keys(ratingCounts).forEach((key) => {
+        const percentage = (ratingCounts[key] / totalRatings) * 100;
+        distributionPercentages[key] = percentage.toFixed(0);
+      });
+
+      setRatingDistribution(distributionPercentages);
+    }
+  }, [ratings]);
+
   const roomCommentsModal = useRoomCommentsModal();
   return (
     <div className="bg-white overflow-hidden w-full my-8">
       {!isLoading && ratings && ratings.length > 0 ? (
         <>
-          <p className="flex gap-1 text-2xl font-semibold mb-4">
-            Recent comments
-          </p>
-          <div className="grid grid-cols-2">
-            {ratings.slice(0, 6).map((comment, index) => {
-              return (
-                <div key={index} className="w-full p-2 pr-[92px] mb-8">
-                  <div className="flex justify-start items-center space-x-6 mb-2">
-                    <Image
-                      width={40}
-                      height={40}
-                      src={emptyImageSrc}
-                      alt="Avatar"
-                      className="rounded-full h-[40px] w-[40px]"
-                      priority
-                    />
-                    <div>
-                      <h1 className="text-lg font-bold space-y-3">
-                        {comment?.user?.full_name || "-"}
-                      </h1>
-                      <p className="text-lg">{comment?.user?.address || "-"}</p>
-                    </div>
+          {/*  */}
+          <div className="block mb-8">
+            <div className="flex flex-col justify-start items-center">
+              <div className="flex flex-col items-center justify-center">
+                <div className="flex justify-center items-center space-x-4">
+                  <Image
+                    width={100}
+                    height={100}
+                    src="https://a0.muscache.com/pictures/ec500a26-609d-440f-b5d0-9e5f92afd478.jpg"
+                    alt="Avatar"
+                    priority
+                  />
+                  <div className="text-[92px] font-extrabold text-[#222]">
+                    {averageRating || 0}
                   </div>
-                  <div className="flex justify-start items-center space-x-6 mb-2">
-                    <div className="flex space-x-2 justify-between items-center">
-                      <FaStar size={16} />
-                      <span className="text-lg">
-                        {comment?.DataRating?.rating || 0}
-                      </span>
-                    </div>
-                    <p className="text-md">
-                      {" "}
-                      {comment?.DataRating.created_at
-                        .split("T")[0]
-                        .split("-")
-                        .reverse()
-                        .join("-") || "-"}
-                    </p>
-                  </div>
-                  <p className="line-clamp-3 text-md">{`"...${
-                    comment?.DataRating?.content || "-"
-                  }"`}</p>
+                  <Image
+                    width={100}
+                    height={100}
+                    src="https://a0.muscache.com/pictures/65bb2a6c-0bdf-42fc-8e1c-38cec04b2fa5.jpg"
+                    alt="Avatar"
+                    priority
+                  />
                 </div>
-              );
-            })}
+                <div className="text-2xl font-bold text-[#222] mb-2">
+                  Ratings by clients
+                </div>
+                <div className="text-xl font-normal text-[#222] w-1/2 text-center">
+                  One of Paradise's favorite places based on ratings, reviews
+                  and trust
+                </div>
+              </div>
+              {/* <div className="w-1/4">
+                <div className="space-y-1">
+                  <span className="text-md font-bold">Summary Rating</span>
+                  <div className="flex flex-col space-y-1">
+                    <div className="flex space-x-2 items-center justify-start">
+                      <span className="text-xs">5</span>
+                      <div className="w-full bg-gray-200 rounded-full h-1.5">
+                        <div
+                          className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
+                          style={{ width: `${ratingDistribution[5]}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    <div className="flex space-x-2 items-center justify-start">
+                      <span className="text-xs">4</span>
+                      <div className="w-full bg-gray-200 rounded-full h-1.5">
+                        <div
+                          className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
+                          style={{ width: `${ratingDistribution[4]}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    <div className="flex space-x-2 items-center justify-start">
+                      <span className="text-xs">3</span>
+                      <div className="w-full bg-gray-200 rounded-full h-1.5">
+                        <div
+                          className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
+                          style={{ width: `${ratingDistribution[3]}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    <div className="flex space-x-2 items-center justify-start">
+                      <span className="text-xs">2</span>
+                      <div className="w-full bg-gray-200 rounded-full h-1.5">
+                        <div
+                          className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
+                          style={{ width: `${ratingDistribution[2]}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    <div className="flex space-x-2 items-center justify-start">
+                      <span className="text-xs">1</span>
+                      <div className="w-full bg-gray-200 rounded-full h-1.5">
+                        <div
+                          className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
+                          style={{ width: `${ratingDistribution[1]}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div> */}
+            </div>
+          </div>
+          <hr />
+          {/*  */}
+          <div className="mt-8">
+            <div className="grid grid-cols-2">
+              {ratings.slice(0, 6).map((comment, index) => {
+                return (
+                  <div key={index} className="w-full p-2 pr-[92px] mb-8">
+                    <div className="flex justify-start items-center space-x-6 mb-2">
+                      <Image
+                        width={40}
+                        height={40}
+                        src={emptyImageSrc}
+                        alt="Avatar"
+                        className="rounded-full h-[40px] w-[40px]"
+                        priority
+                      />
+                      <div>
+                        <h1 className="text-lg font-bold space-y-3">
+                          {comment?.user?.full_name || "-"}
+                        </h1>
+                        <p className="text-lg">
+                          {comment?.user?.address || "-"}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex justify-start items-center space-x-6 mb-2">
+                      <div className="flex space-x-2 justify-between items-center">
+                        <FaStar size={16} />
+                        <span className="text-lg">
+                          {comment?.DataRating?.rating || 0}
+                        </span>
+                      </div>
+                      <p className="text-md">
+                        {" "}
+                        {comment?.DataRating.created_at
+                          .split("T")[0]
+                          .split("-")
+                          .reverse()
+                          .join("-") || "-"}
+                      </p>
+                    </div>
+                    <p className="line-clamp-3 text-md">{`"...${
+                      comment?.DataRating?.content || "-"
+                    }"`}</p>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </>
       ) : (
@@ -98,7 +226,7 @@ function ListingComments({ place_id }) {
           No comment to display
         </div>
       )}
-      {!isLoading && ratings && ratings.length > 0 && (
+      {!isLoading && ratings && ratings.length > 6 && (
         <div className="flex justify-between items-center w-full">
           <button
             className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-md border-[1px]"
