@@ -67,8 +67,8 @@ function PropertyClient({ place, reservations }) {
       state: place?.city,
       city: place?.city,
       cover: place?.cover || "",
-      max_guest: place?.max_guest,
-      num_bed: place?.num_bed,
+      max_guest: place?.max_guest || 0,
+      num_bed: place?.num_bed || 0,
     },
   });
 
@@ -213,11 +213,15 @@ function PropertyClient({ place, reservations }) {
           name: data?.name || "",
           description: data?.description || "",
           price_per_night: Number(data?.price_per_night) || 0,
-          address: data?.address || place.address,
+          address: address || place.address,
+          city: city || place.city,
+          state: city || place.city,
+          country: country || place.country,
           lat: lat || place.lat,
           lng: lng || place.lng,
           cover: imageUrl || "",
           max_guest: Number(data?.max_guest) || place.max_guest || 1,
+          num_bed: Number(data?.num_bed) || place?.num_bed || 0,
         };
 
         const accessToken = Cookie.get("accessToken");
@@ -238,6 +242,7 @@ function PropertyClient({ place, reservations }) {
             router.refresh();
           })
           .catch((err) => {
+            console.log(err);
             toast.error("Update Room Failed");
             setIsLoading(false);
           });
