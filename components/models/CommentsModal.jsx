@@ -172,7 +172,9 @@ function CommentsModal({}) {
                           rating?.place.address
                             ? rating?.place.address + ", "
                             : ""
-                        } ${rating?.place.city}, ${rating?.place.country}`}
+                        } ${rating?.place.district}, ${rating?.place.state}, ${
+                          rating?.place.country
+                        }`}
                       </div>
                     </div>
                     <div

@@ -50,7 +50,6 @@ function Search({}) {
 
   return (
     <div
-      onClick={() => searchModel.onOpen(1)}
       className="border-[1px] w-full rounded-full shadow-sm hover:shadow-md transition cursor-pointer"
     >
       <div className="flex flex-row items-center justify-between py-3">

@@ -109,9 +109,9 @@ function ReservationClient({ reservation, rating }) {
               reservation.data.place?.address
                 ? reservation.data.place?.address + ", "
                 : ""
-            } ${reservation.data.place.city}, ${
-              reservation.data.place.country
-            }`}</span>
+            } ${reservation.data.place.district}, ${
+              reservation.data.place.state
+            }, ${reservation.data.place.country}`}</span>
             <span className="text-[#828080] font-bold max-w-[20%] text-ellipsis">
               Booking ID: {reservation.data.id || "-"}
             </span>

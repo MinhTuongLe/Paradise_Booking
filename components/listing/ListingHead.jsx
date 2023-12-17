@@ -22,9 +22,11 @@ function ListingHead({ title, locationValue, imageSrc, id, currentUser }) {
       <div className="flex justify-between items-end mb-4">
         <Heading
           title={title}
-          subtitle={`${
-            locationValue?.address ? locationValue?.address + ", " : ""
-          } ${locationValue.city}, ${locationValue.country}`}
+          subtitle={`${locationValue?.address ? locationValue?.address : ""}${
+            locationValue.district ? ", " + locationValue.district : ""
+          }${locationValue.state ? ", " + locationValue.state : ""}${
+            locationValue.country ? ", " + locationValue.country : ""
+          }`}
         />
         <div className="flex justify-between items-end gap-6">
           <div

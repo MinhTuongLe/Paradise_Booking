@@ -89,13 +89,12 @@ function ListingCard({
         </div>
         {shrink === false && (
           <div className="font-semibold text-lg text-ellipsis line-clamp-1">
-            {data.address ? data.address + ", " : ""}{" "}
-            {data.country ? data.country : ""}
+            {data.address ? data.address + ", " : ""}
           </div>
         )}
         <div className="flex justify-between items-center space-x-4">
           <div className="font-light text-neutral-500 text-ellipsis line-clamp-1 max-w-[70%]">
-            {data.city || ""} {data.state ? `, ${data.state}` : ""}
+            {data.district || "-"} {data.state ? `, ${data.state}` : "-"}
           </div>
           <div className="flex space-x-2 justify-between items-center max-w-[20%]">
             <FaStar size={16} />

@@ -64,8 +64,8 @@ function PropertyClient({ place, reservations }) {
       lat: place?.lat,
       lng: place?.lng,
       country: place?.country,
-      state: place?.city,
-      city: place?.city,
+      state: place?.state,
+      district: place?.district,
       cover: place?.cover || "",
       max_guest: place?.max_guest || 0,
       num_bed: place?.num_bed || 0,
@@ -97,28 +97,28 @@ function PropertyClient({ place, reservations }) {
     setSearchResult(result);
   };
 
-  function processSearchResult() {
-    const numberRegex = /^[0-9]+$/;
-    let country = place.country;
-    let city = place.city;
-    let address = place.address;
-    if (searchResult) {
-      const array = searchResult?.label.split(", ");
+  // function processSearchResult() {
+  //   const numberRegex = /^[0-9]+$/;
+  //   let country = place.country;
+  //   let city = place.city;
+  //   let address = place.address;
+  //   if (searchResult) {
+  //     const array = searchResult?.label.split(", ");
 
-      if (array) {
-        const length = array.length;
-        country = array[length - 1];
-        city = numberRegex.test(array[length - 2])
-          ? array[length - 3]
-          : array[length - 2];
-        const temp = numberRegex.test(array[length - 2])
-          ? array.slice(0, length - 3)
-          : array.slice(0, length - 2);
-        address = temp && temp.length > 1 ? temp.join(", ") : temp.join("");
-      }
-    }
-    return { country, city, address };
-  }
+  //     if (array) {
+  //       const length = array.length;
+  //       country = array[length - 1];
+  //       city = numberRegex.test(array[length - 2])
+  //         ? array[length - 3]
+  //         : array[length - 2];
+  //       const temp = numberRegex.test(array[length - 2])
+  //         ? array.slice(0, length - 3)
+  //         : array.slice(0, length - 2);
+  //       address = temp && temp.length > 1 ? temp.join(", ") : temp.join("");
+  //     }
+  //   }
+  //   return { country, city, address };
+  // }
 
   const handleFileUpload = async (file) => {
     try {
@@ -207,22 +207,24 @@ function PropertyClient({ place, reservations }) {
           }
         }
 
-        const { country, city, address } = processSearchResult();
+        // const { country, city, address } = processSearchResult();
 
         const submitValues = {
           name: data?.name || "",
           description: data?.description || "",
           price_per_night: Number(data?.price_per_night) || 0,
-          address: address || place.address,
-          city: city || place.city,
-          state: city || place.city,
-          country: country || place.country,
+          address: data?.address || place.address,
+          // city: city || place.city,
+          // state: city || place.city,
+          // country: country || place.country,
           lat: lat || place.lat,
           lng: lng || place.lng,
           cover: imageUrl || "",
           max_guest: Number(data?.max_guest) || place.max_guest || 1,
           num_bed: Number(data?.num_bed) || place?.num_bed || 0,
         };
+
+        console.log(submitValues);
 
         const accessToken = Cookie.get("accessToken");
         const config = {
@@ -554,8 +556,8 @@ function PropertyClient({ place, reservations }) {
                   value={
                     searchResult
                       ? searchResult.label
-                      : `${place?.address ? place?.address + ", " : ""} ${
-                          place?.city ? place?.city + ", " : ""
+                      : `${place?.district ? place?.district + ", " : ""} ${
+                          place?.state ? place?.state + ", " : ""
                         } ${place?.country || "-"}`
                   }
                   id="_location"
@@ -565,7 +567,7 @@ function PropertyClient({ place, reservations }) {
                 <label
                   className={`absolute text-md duration-150 transform -translate-y-3 top-5 left-4 text-zinc-400`}
                 >
-                  Location
+                  District, State and Country
                 </label>
               </div>
               <Map center={[lat, lng]} onSearchResult={handleSearchResult} />
@@ -599,11 +601,16 @@ function PropertyClient({ place, reservations }) {
                     <div>
                       <div className="flex justify-between items-center">
                         <span className="font-bold text-[16px]">
-                          {`${
+                          {/* {`${
                             item.place?.address
                               ? item.place?.address + ", "
                               : ""
-                          } ${item.place.city}, ${item.place.country}`}
+                          } ${item.place.city}, ${item.place.country}`} */}
+                          {`${place?.address ? place?.address + ", " : ""} ${
+                            place?.district ? place?.district + ", " : ""
+                          } ${place?.state ? place?.state + ", " : ""} ${
+                            place?.country || "-"
+                          }`}
                         </span>
                         <span className="text-[#828080] font-bold">
                           Booking ID: {item.id}

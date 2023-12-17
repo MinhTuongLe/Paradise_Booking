@@ -1,7 +1,22 @@
-import { useState, useEffect, useRef } from "react";
+"use client";
 
-const RangeSlider = ({ initialMin, initialMax, min, max, step, priceCap }) => {
+import { useState, useEffect, useRef } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import qs from "query-string";
+
+const RangeSlider = ({
+  initialMin,
+  initialMax,
+  min,
+  max,
+  step,
+  priceCap,
+  onSubmitCallback,
+}) => {
   const progressRef = useRef(null);
+  const params = useSearchParams();
+  const router = useRouter();
+
   const [minValue, setMinValue] = useState(initialMin);
   const [maxValue, setMaxValue] = useState(initialMax);
 
@@ -36,27 +51,60 @@ const RangeSlider = ({ initialMin, initialMax, min, max, step, priceCap }) => {
     progressRef.current.style.right = step - (maxValue / max) * step + "%";
   }, [minValue, maxValue, max, step]);
 
+  useEffect(() => {
+    // let currentQuery = {};
+
+    // if (params) {
+    //   currentQuery = qs.parse(params.toString());
+    // }
+
+    // const updatedQuery = {
+    //   ...currentQuery,
+    //   price_from: minValue,
+    //   price_to: maxValue,
+    // };
+
+    // const url = qs.stringifyUrl(
+    //   {
+    //     url: "/",
+    //     query: updatedQuery,
+    //   },
+    //   { skipNull: true }
+    // );
+
+    // router.push(url);
+    onSubmitCallback(minValue, maxValue);
+  }, [onSubmitCallback, minValue, maxValue]);
+
   return (
     <div className="flex flex-col w-full bg-white shadow-xl rounded-lg px-6 py-4">
       <div className="flex justify-evenly items-center my-6 ">
-        <div className="rounded-md">
-          <span className="p-2 font-semibold"> Min</span>
+        <div className="w-full relative">
           <input
             onChange={(e) => setMinValue(e.target.value)}
             type="number"
             value={minValue}
-            className="w-24 rounded-md border border-gray-400 px-4 py-1"
+            className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition opacity-70 border-neutral-300 focus:outline-none`}
           />
+          <label
+            className={`absolute text-md duration-150 transform -translate-y-3 top-5 left-4 text-zinc-400`}
+          >
+            Min
+          </label>
         </div>
-        <div className="ml-2 font-semibold text-lg"> - </div>
-        <div className=" ">
-          <span className="p-2 font-semibold"> Max</span>
+        <div className="mx-6 font-semibold text-lg"> - </div>
+        <div className="w-full relative">
           <input
             onChange={(e) => setMaxValue(e.target.value)}
             type="number"
             value={maxValue}
-            className="w-24 rounded-md border border-gray-400 px-4 py-1"
+            className={`peer w-full p-4 pt-6 font-light bg-white border-2 rounded-md outline-none transition opacity-70 border-neutral-300 focus:outline-none`}
           />
+          <label
+            className={`absolute text-md duration-150 transform -translate-y-3 top-5 left-4 text-zinc-400`}
+          >
+            Max
+          </label>
         </div>
       </div>
 
@@ -68,7 +116,7 @@ const RangeSlider = ({ initialMin, initialMax, min, max, step, priceCap }) => {
           ></div>
         </div>
 
-        <div className="range-input relative  ">
+        <div className="range-input relative w-full">
           <input
             onChange={handleMin}
             type="range"

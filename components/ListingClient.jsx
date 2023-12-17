@@ -43,7 +43,8 @@ function ListingClient({ reservations = [], place, currentUser }) {
 
   const location = {
     address: place.address,
-    city: place.city,
+    district: place.district,
+    state: place.state,
     country: place.country,
   };
   const [lat, setLat] = useState(place?.lat);

@@ -9,7 +9,15 @@ export const dynamic = "force-dynamic";
 
 export default async function Home({ searchParams }) {
   const { places, paging } = await getPlaces(
-    searchParams || { page: 1, limit: LIMIT }
+    searchParams || {
+      page: 1,
+      limit: LIMIT,
+      guest: 0,
+      price_from: 0,
+      price_to: "",
+      lat: "",
+      lng: "",
+    }
   );
 
   if (places?.length === 0) {

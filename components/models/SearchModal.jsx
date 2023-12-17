@@ -14,6 +14,7 @@ import Calendar from "../inputs/Calendar";
 import Counter from "../inputs/Counter";
 import Modal from "./Modal";
 import RangeSlider from "../RangeSlider";
+import { maxPrice } from "@/const";
 
 const STEPS = {
   LOCATION: 1,
@@ -29,9 +30,8 @@ function SearchModal({}) {
 
   const [location, setLocation] = useState();
   const [step, setStep] = useState(searchModel.option);
-  const [guestCount, setGuestCount] = useState(1);
-  const [roomCount, setRoomCount] = useState(1);
-  const [bathroomCount, setBathroomCount] = useState(1);
+  const [guest, setGuest] = useState(1);
+  // const [bedCount, setBedCount] = useState(1);
   const [dateRange, setDateRange] = useState({
     startDate: new Date(),
     endDate: new Date(),
@@ -40,6 +40,13 @@ function SearchModal({}) {
   const [lat, setLat] = useState(51);
   const [lng, setLng] = useState(-0.09);
   const [searchResult, setSearchResult] = useState(null);
+  const [price_from, setPriceFrom] = useState(0);
+  const [price_to, setPriceTo] = useState(maxPrice);
+
+  const onSubmitCallback = (minValue, maxValue) => {
+    setPriceFrom(minValue);
+    setPriceTo(maxValue);
+  };
 
   const handleSearchResult = (result) => {
     setSearchResult(result);
@@ -71,24 +78,24 @@ function SearchModal({}) {
     if (params) {
       currentQuery = qs.parse(params.toString());
     }
-
     const updatedQuery = {
       ...currentQuery,
-      locationValue: location?.value,
-      lat,
-      lng,
-      guestCount,
-      roomCount,
-      bathroomCount,
+      // locationValue: location?.value,
+      // lat,
+      // lng,
+      guest,
+      price_from,
+      price_to,
+      // bedCount,
     };
 
-    if (dateRange.startDate) {
-      updatedQuery.startDate = formatISO(dateRange.startDate).split("T")[0];
-    }
+    // if (dateRange.startDate) {
+    //   updatedQuery.startDate = formatISO(dateRange.startDate).split("T")[0];
+    // }
 
-    if (dateRange.endDate) {
-      updatedQuery.endDate = formatISO(dateRange.endDate).split("T")[0];
-    }
+    // if (dateRange.endDate) {
+    //   updatedQuery.endDate = formatISO(dateRange.endDate).split("T")[0];
+    // }
 
     const url = qs.stringifyUrl(
       {
@@ -107,9 +114,8 @@ function SearchModal({}) {
     searchModel,
     location,
     router,
-    guestCount,
-    roomCount,
-    bathroomCount,
+    guest,
+    // bedCount,
     dateRange,
     onNext,
     params,
@@ -185,27 +191,18 @@ function SearchModal({}) {
       <div className="flex flex-col gap-8">
         <Heading title="More information" subtitle="Find your perfect place!" />
         <Counter
-          onChange={(value) => setGuestCount(value)}
-          value={guestCount}
+          onChange={(value) => setGuest(value)}
+          value={guest}
           title="Guests"
           subtitle="How many guests are coming?"
         />
-        <hr />
+        {/* <hr />
         <Counter
-          onChange={(value) => setRoomCount(value)}
-          value={roomCount}
+          onChange={(value) => setBedCount(value)}
+          value={bedCount}
           title="Rooms"
           subtitle="How many rooms do you need?"
-        />
-        <hr />
-        <Counter
-          onChange={(value) => {
-            setBathroomCount(value);
-          }}
-          value={bathroomCount}
-          title="Bathrooms"
-          subtitle="How many bahtrooms do you need?"
-        />
+        /> */}
       </div>
     );
   }
@@ -218,12 +215,13 @@ function SearchModal({}) {
           subtitle="Find an expense that's right for you!"
         />
         <RangeSlider
-          initialMin={2500}
-          initialMax={7500}
+          initialMin={params.get("price_from") || 0}
+          initialMax={params.get("price_to") || maxPrice}
           min={0}
-          max={10000}
-          step={100}
+          max={maxPrice}
+          step={100000}
           priceCap={1000}
+          onSubmitCallback={onSubmitCallback}
         />
       </div>
     );

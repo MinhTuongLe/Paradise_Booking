@@ -117,3 +117,5 @@ export const offers = [
     icon: FaFireExtinguisher,
   },
 ];
+
+export const maxPrice = 10000000

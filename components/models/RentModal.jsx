@@ -88,28 +88,28 @@ function RentModal({}) {
     setStep((value) => value + 1);
   };
 
-  function processSearchResult() {
-    const numberRegex = /^[0-9]+$/;
-    let country = "";
-    let city = "";
-    let address = "";
-    if (searchResult) {
-      const array = searchResult?.label.split(", ");
+  // function processSearchResult() {
+  //   const numberRegex = /^[0-9]+$/;
+  //   let country = "";
+  //   let city = "";
+  //   let address = "";
+  //   if (searchResult) {
+  //     const array = searchResult?.label.split(", ");
 
-      if (array) {
-        const length = array.length;
-        country = array[length - 1];
-        city = numberRegex.test(array[length - 2])
-          ? array[length - 3]
-          : array[length - 2];
-        const temp = numberRegex.test(array[length - 2])
-          ? array.slice(0, length - 3)
-          : array.slice(0, length - 2);
-        address = temp && temp.length > 1 ? temp.join(", ") : temp.join("");
-      }
-    }
-    return { country, city, address };
-  }
+  //     if (array) {
+  //       const length = array.length;
+  //       country = array[length - 1];
+  //       city = numberRegex.test(array[length - 2])
+  //         ? array[length - 3]
+  //         : array[length - 2];
+  //       const temp = numberRegex.test(array[length - 2])
+  //         ? array.slice(0, length - 3)
+  //         : array.slice(0, length - 2);
+  //       address = temp && temp.length > 1 ? temp.join(", ") : temp.join("");
+  //     }
+  //   }
+  //   return { country, city, address };
+  // }
 
   const onSubmit = async (data) => {
     if (step !== STEPS.DESCRIPTION) {
@@ -127,9 +127,10 @@ function RentModal({}) {
         imageUrl = await handleFileUpload(file);
       }
 
-      const { country, city, address } = processSearchResult();
+      // const { country, city, address } = processSearchResult();
 
-      if (!country || !city || !address) {
+      // if (!country || !city || !address) {
+      if (!data.address) {
         toast.error("Please Enter Your Address");
         setStep(STEPS.LOCATION);
         return;
@@ -139,11 +140,11 @@ function RentModal({}) {
         name: data.name,
         description: data.description,
         price_per_night: Number(data.price_per_night),
-        // address: data.address,
-        address: address || "",
-        city: city || "",
-        country: country || "",
-        state: city || "",
+        address: data.address,
+        // address: address || "",
+        // city: city || "",
+        // country: country || "",
+        // state: city || "",
         max_guest: Number(data.max_guest),
         lat: lat,
         lng: lng,
@@ -323,14 +324,14 @@ function RentModal({}) {
           title="Where is your place located?"
           subtitle="Help guests find you!"
         />
-        {/* <Input
+        <Input
           id="address"
           label="Address"
           disabled={isLoading}
           register={register}
           errors={errors}
           required
-        /> */}
+        />
         <hr />
         <div className="w-full relative">
           <input
@@ -343,7 +344,7 @@ function RentModal({}) {
           <label
             className={`absolute text-md duration-150 transform -translate-y-3 top-5 z-10 origin-[0] left-4 text-zinc-400`}
           >
-            Location
+            District, State and Country
           </label>
         </div>
         <Map center={[lat, lng]} onSearchResult={handleSearchResult} />
