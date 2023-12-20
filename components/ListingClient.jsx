@@ -7,11 +7,13 @@ import useReportModal from "@/hook/useReportModal";
 import axios from "axios";
 import { differenceInCalendarDays, eachDayOfInterval } from "date-fns";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { Range } from "react-date-range";
 import { toast } from "react-toastify";
 import dynamic from "next/dynamic";
 import Cookie from "js-cookie";
+import { Listbox, Transition } from "@headlessui/react";
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
 
 import Container from "./Container";
 import ListingHead from "./listing/ListingHead";
@@ -24,7 +26,7 @@ import { FaBusinessTime, FaFlag, FaStar } from "react-icons/fa";
 import Button from "./Button";
 import { useForm } from "react-hook-form";
 import Input from "./inputs/Input";
-import { API_URL } from "@/const";
+import { API_URL, classNames, payment_methods, paypalOptions } from "@/const";
 import { useSelector } from "react-redux";
 import EmptyState from "./EmptyState";
 
@@ -105,6 +107,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
   const [checkoutTime, setCheckoutTime] = useState();
   const [safePolicy, setSafePolicy] = useState("");
   const [cancelPolicy, setCancelPolicy] = useState("");
+  const [selected, setSelected] = useState(payment_methods[0]);
 
   const [searchResult, setSearchResult] = useState(null);
   const handleSearchResult = (result) => {
@@ -159,23 +162,55 @@ function ListingClient({ reservations = [], place, currentUser }) {
         },
       };
 
-      console.log(submitValues);
+      // console.log(submitValues);
 
-      await axios
-        .post(`${API_URL}/bookings`, submitValues, config)
-        .then((response) => {
-          setIsLoading(false);
-          toast.success(
-            "Booking Successfully! Please check your email in 1 day to confirm."
-          );
-          router.refresh();
-          reset();
-          router.push(`/reservations/${response.data.data.id}`);
-        })
-        .catch((err) => {
-          toast.error("Booking Failed");
-          setIsLoading(false);
-        });
+      // await axios
+      //   .post(`${API_URL}/bookings`, submitValues, config)
+      //   .then((response) => {
+      //     setIsLoading(false);
+      //     toast.success(
+      //       "Booking Successfully! Please check your email in 1 day to confirm."
+      //     );
+      //     router.refresh();
+      //     reset();
+      //     router.push(`/reservations/${response.data.data.id}`);
+      //   })
+      //   .catch((err) => {
+      //     toast.error("Booking Failed");
+      //     setIsLoading(false);
+      //   });
+      const responseBooking = await axios.post(
+        `${API_URL}/bookings`,
+        submitValues,
+        config
+      );
+
+      // if (responseBooking?.data?.data?.id && selected.id === 2) {
+      //   await axios.post(
+      //     `${API_URL}/payments`,
+      //     {
+      //       method_type: selected.id,
+      //       amount: totalPrice,
+      //       booking_id: responseBooking?.data?.data?.id
+      //     },
+      //     config
+      //   );
+      // }
+
+      if (responseBooking?.data?.data?.id) {
+        setIsLoading(false);
+        console.log(responseBooking?.data?.data?.id, selected.id);
+        router.push(`/reservations/${responseBooking.data.data.id}`);
+        toast.success(
+          "Booking Successfully! Please check your email in 1 day to confirm."
+        );
+        router.refresh();
+        reset();
+      } else {
+        toast.error("Booking Failed");
+        setIsLoading(false);
+        return;
+      }
     } catch (error) {
       toast.error("Something went wrong");
     } finally {
@@ -231,6 +266,10 @@ function ListingClient({ reservations = [], place, currentUser }) {
   const get = async () => {
     await getAmenities();
     await getPolicies();
+  };
+
+  const onSuccess = (details, data) => {
+    console.log(details, data);
   };
 
   useEffect(() => {
@@ -472,53 +511,95 @@ function ListingClient({ reservations = [], place, currentUser }) {
                   />
                 )}
               </div>
-              {/* <hr />
-          <div className="mb-6">
-            <span className="text-lg font-bold mb-6 block">
-              Payment info
-            </span>
-            <Input
-              id="full_name"
-              label="Full Name"
-              disabled={isLoading}
-              register={register}
-              errors={errors}
-              required
-            />
-            <div className="flex gap-6 my-6">
-              <div className="flex-1">
-                <Input
-                  id="phone"
-                  label="Phone"
-                  disabled={isLoading}
-                  register={register}
-                  errors={errors}
-                  required
-                  type="tel"
-                />
+              <hr />
+              <div className="my-6 flex justify-between items-start">
+                <span className="text-lg font-bold mb-6 block w-[50%]">
+                  Payment information
+                </span>
+                <div className="w-[50%] flex justify-end items-start">
+                  <div className="flex justify-between items-center border-b-[#cdcdcd]">
+                    <Listbox value={selected} onChange={setSelected}>
+                      {({ open }) => (
+                        <>
+                          <div className="relative">
+                            <Listbox.Button className="relative w-[180px] cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-500 sm:text-sm sm:leading-6">
+                              <span className="flex items-center">
+                                <span className="block truncate">
+                                  {selected.name}
+                                </span>
+                              </span>
+                              <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
+                                <ChevronUpDownIcon
+                                  className="h-5 w-5 text-gray-400"
+                                  aria-hidden="true"
+                                />
+                              </span>
+                            </Listbox.Button>
+
+                            <Transition
+                              show={open}
+                              as={Fragment}
+                              leave="transition ease-in duration-100"
+                              leaveFrom="opacity-100"
+                              leaveTo="opacity-0"
+                            >
+                              <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                {payment_methods.map((person) => (
+                                  <Listbox.Option
+                                    key={person.id}
+                                    className={({ active }) =>
+                                      classNames(
+                                        active
+                                          ? "bg-rose-100"
+                                          : "text-gray-900",
+                                        "relative cursor-default select-none py-2 pl-3 pr-9"
+                                      )
+                                    }
+                                    value={person}
+                                  >
+                                    {({ selected, active }) => (
+                                      <>
+                                        <div className="flex items-center">
+                                          <span
+                                            className={classNames(
+                                              selected
+                                                ? "font-semibold"
+                                                : "font-normal",
+                                              "ml-3 block truncate"
+                                            )}
+                                          >
+                                            {person.name}
+                                          </span>
+                                        </div>
+
+                                        {selected ? (
+                                          <span
+                                            className={classNames(
+                                              active
+                                                ? "text-gray-900"
+                                                : "text-rose-500",
+                                              "absolute inset-y-0 right-0 flex items-center pr-4"
+                                            )}
+                                          >
+                                            <CheckIcon
+                                              className="h-5 w-5"
+                                              aria-hidden="true"
+                                            />
+                                          </span>
+                                        ) : null}
+                                      </>
+                                    )}
+                                  </Listbox.Option>
+                                ))}
+                              </Listbox.Options>
+                            </Transition>
+                          </div>
+                        </>
+                      )}
+                    </Listbox>
+                  </div>
+                </div>
               </div>
-              <div className="flex-1">
-                <Input
-                  id="email"
-                  label="Email"
-                  disabled={isLoading}
-                  register={register}
-                  errors={errors}
-                  required
-                  type="email"
-                />
-              </div>
-            </div>
-            <Input
-              id="number_of_guest"
-              label="No Guest"
-              disabled={isLoading}
-              register={register}
-              errors={errors}
-              required
-              type="number"
-            />
-          </div> */}
               <hr />
               <div className="my-6">
                 <div className="flex flex-col justify-between items-start mt-4">

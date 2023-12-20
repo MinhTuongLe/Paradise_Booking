@@ -81,8 +81,8 @@ function SearchModal({}) {
     const updatedQuery = {
       ...currentQuery,
       // locationValue: location?.value,
-      // lat,
-      // lng,
+      lat,
+      lng,
       guest,
       price_from,
       price_to,

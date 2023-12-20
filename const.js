@@ -55,6 +55,17 @@ export const booking_status = [
   },
 ];
 
+export const payment_methods = [
+  {
+    id: 1,
+    name: "COD",
+  },
+  {
+    id: 2,
+    name: "Momo",
+  },
+];
+
 export const place_status = [
   {
     id: 3,
@@ -118,4 +129,10 @@ export const offers = [
   },
 ];
 
-export const maxPrice = 10000000
+export const maxPrice = 10000000;
+
+export const paypalOptions = {
+  clientId:
+    "ASh2FOVS_UFVapwtn43O7sCItFoURj7lrG5jSqYe3EzNLeASCCeNsqiiT493cE9-11PRZJbrccx6ZOeN",
+  currency: "USD",
+};
