@@ -101,6 +101,9 @@ function ReservationClient({ reservation, rating }) {
 
   return (
     <div className="max-w-[768px] mx-auto px-4">
+      <h1 className="text-xl font-extrabold mt-10 mb-1 text-center text-rose-500">
+        Booking Successfully! Please check your email in 1 day to confirm.
+      </h1>
       <h1 className="text-2xl font-bold mt-10 mb-3">Reservation Details</h1>
       <div className="mt-6">
         <div>
@@ -163,7 +166,9 @@ function ReservationClient({ reservation, rating }) {
                 <div className="text-[#828080] font-bold text-[14px]">
                   PAYMENT METHOD
                 </div>
-                <div className="text-[16px] font-semibold">COD</div>
+                <div className="text-[16px] font-semibold">
+                  {reservation.data?.payment_method === 1 ? "Momo" : "COD"}
+                </div>
               </div>
             </div>
           </div>

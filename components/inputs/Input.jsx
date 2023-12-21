@@ -52,6 +52,7 @@ function Input({
         } ${errors[id] ? "border-rose-500" : "border-neutral-300"} ${
           errors[id] ? "focus:border-rose-500" : "focus:outline-none"
         }`}
+        min={type === "number" ? 0 : null}
       />
 
       {label && (

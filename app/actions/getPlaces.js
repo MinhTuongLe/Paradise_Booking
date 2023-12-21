@@ -30,5 +30,6 @@ export default async function getPlaces({
     return { places, paging };
   } catch (error) {
     console.log("Something went wrong");
+    return { places: [], paging: { page: 1, limit: 5, total: 5 } };
   }
 }

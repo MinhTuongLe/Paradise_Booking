@@ -52,10 +52,10 @@ function RentModal({}) {
     reset,
   } = useForm({
     defaultValues: {
-      max_guest: 0,
-      num_bed: 0,
+      max_guest: 1,
+      num_bed: 1,
       cover: "",
-      price_per_night: 0,
+      price_per_night: 1,
       description: "",
       address: "",
     },

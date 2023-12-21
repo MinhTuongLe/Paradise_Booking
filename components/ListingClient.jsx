@@ -132,6 +132,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
         place_id: place.id,
         checkin_date,
         checkout_date,
+        payment_method: selected.id,
         booking_info: {
           ...data,
           type: bookingMode,
@@ -164,53 +165,20 @@ function ListingClient({ reservations = [], place, currentUser }) {
 
       // console.log(submitValues);
 
-      // await axios
-      //   .post(`${API_URL}/bookings`, submitValues, config)
-      //   .then((response) => {
-      //     setIsLoading(false);
-      //     toast.success(
-      //       "Booking Successfully! Please check your email in 1 day to confirm."
-      //     );
-      //     router.refresh();
-      //     reset();
-      //     router.push(`/reservations/${response.data.data.id}`);
-      //   })
-      //   .catch((err) => {
-      //     toast.error("Booking Failed");
-      //     setIsLoading(false);
-      //   });
-      const responseBooking = await axios.post(
-        `${API_URL}/bookings`,
-        submitValues,
-        config
-      );
-
-      // if (responseBooking?.data?.data?.id && selected.id === 2) {
-      //   await axios.post(
-      //     `${API_URL}/payments`,
-      //     {
-      //       method_type: selected.id,
-      //       amount: totalPrice,
-      //       booking_id: responseBooking?.data?.data?.id
-      //     },
-      //     config
-      //   );
-      // }
-
-      if (responseBooking?.data?.data?.id) {
-        setIsLoading(false);
-        console.log(responseBooking?.data?.data?.id, selected.id);
-        router.push(`/reservations/${responseBooking.data.data.id}`);
-        toast.success(
-          "Booking Successfully! Please check your email in 1 day to confirm."
-        );
-        router.refresh();
-        reset();
-      } else {
-        toast.error("Booking Failed");
-        setIsLoading(false);
-        return;
-      }
+      await axios
+        .post(`${API_URL}/bookings`, submitValues, config)
+        .then((response) => {
+          setIsLoading(false);
+          router.push("/");
+          if (response.data.data?.payment_url)
+            window.open(response.data.data.payment_url);
+          router.refresh();
+          reset();
+        })
+        .catch((err) => {
+          toast.error("Booking Failed");
+          setIsLoading(false);
+        });
     } catch (error) {
       toast.error("Something went wrong");
     } finally {
