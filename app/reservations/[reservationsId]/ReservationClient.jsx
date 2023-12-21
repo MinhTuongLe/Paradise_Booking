@@ -167,7 +167,7 @@ function ReservationClient({ reservation, rating }) {
                   PAYMENT METHOD
                 </div>
                 <div className="text-[16px] font-semibold">
-                  {reservation.data?.payment_method === 1 ? "Momo" : "COD"}
+                  {reservation.data?.payment_method === 2 ? "Momo" : "COD"}
                 </div>
               </div>
             </div>

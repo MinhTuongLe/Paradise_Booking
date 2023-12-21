@@ -66,6 +66,21 @@ export const payment_methods = [
   },
 ];
 
+export const payment_statuses = [
+  {
+    id: 1,
+    name: "Unpaid",
+    color: "#ffa700",
+    background: "#fff4ea",
+  },
+  {
+    id: 2,
+    name: "Paid",
+    color: "#1975d3",
+    background: "#e1ebf2",
+  },
+];
+
 export const place_status = [
   {
     id: 3,

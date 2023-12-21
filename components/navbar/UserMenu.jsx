@@ -163,6 +163,10 @@ function UserMenu({ authState, loggedUser }) {
                       label="My properties"
                     />
                     <MenuItem
+                      onClick={() => menuItemSelect("/payments")}
+                      label="Payments"
+                    />
+                    <MenuItem
                       onClick={() => menuItemSelect("/statistics")}
                       label="Statistics"
                     />
