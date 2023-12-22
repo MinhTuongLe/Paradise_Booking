@@ -6,6 +6,9 @@
 import { useCallback, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
+import qs from "query-string";
+import { useSearchParams, useRouter } from "next/navigation";
+
 import { toast } from "react-toastify";
 import "../../styles/globals.css";
 import { API_URL, payment_statuses } from "@/const";
@@ -31,11 +34,14 @@ const columns = [
   { name: "Status", uid: "status" },
 ];
 
-function PaymentClient({ accounts }) {
+function PaymentClient({ payments }) {
+  console.log(payments);
   const [isLoading, setIsLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const emptyImageSrc = "/assets/avatar.png";
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
+  const params = useSearchParams();
+  const router = useRouter();
 
   const handleStatusChange = (event, accountId) => {
     const newStatus = event.target.value;
@@ -74,6 +80,26 @@ function PaymentClient({ accounts }) {
     e.preventDefault();
     // Đoạn logic xử lý khi form được submit, có thể sử dụng giá trị của searchValue ở đây
     console.log("Giá trị tìm kiếm:", searchValue);
+    let currentQuery = {};
+
+    if (params) {
+      currentQuery = qs.parse(params.toString());
+    }
+    const updatedQuery = {
+      ...currentQuery,
+      limit: 0,
+      page: 0,
+      booking_id: searchValue,
+    };
+
+    const url = qs.stringifyUrl(
+      {
+        url: "/",
+        query: updatedQuery,
+      },
+      { skipNull: true }
+    );
+    router.push(url);
   };
 
   const renderCell = useCallback((user, columnKey) => {
@@ -192,7 +218,7 @@ function PaymentClient({ accounts }) {
               )}
             </TableHeader>
             <TableBody>
-              {accounts?.map((account) => (
+              {payments?.map((account) => (
                 <TableRow key={account.id}>
                   {(columnKey) => (
                     <TableCell>{renderCell(account, columnKey)}</TableCell>

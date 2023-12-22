@@ -3,7 +3,7 @@ import EmptyState from "@/components/EmptyState";
 import PaymentClient from "./PaymentClient";
 import { cookies } from "next/headers";
 import getUserById from "@/app/actions/getUserById";
-import getAccounts from "@/app/actions/getAccounts";
+import getPaymentByVendorId from "@/app/actions/getPaymentByVendorId";
 import PaginationComponent from "@/components/PaginationComponent";
 import { LIMIT } from "@/const";
 
@@ -13,12 +13,13 @@ const PaymentPage = async ({ searchParams }) => {
   let unauthorized = false;
   const accessToken = cookies().get("accessToken")?.value;
 
-  const userId = cookies().get("userId")?.value;
-  const user = await getUserById(userId);
-  if (!accessToken || !userId || !user || user?.role !== 3) unauthorized = true;
+  const vendor_id = cookies().get("userId")?.value;
+  const user = await getUserById(vendor_id);
+  if (!accessToken || !vendor_id || !user || user?.role !== 2)
+    unauthorized = true;
 
   let obj = {
-    accounts: [],
+    payments: [],
     paging: {
       total: 0,
       limit: LIMIT,
@@ -28,12 +29,18 @@ const PaymentPage = async ({ searchParams }) => {
   if (unauthorized) {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;
   } else {
-    obj = await getAccounts(searchParams || { page: 1, limit: LIMIT });
+    obj = await getPaymentByVendorId(
+      { vendor_id, ...searchParams } || {
+        vendor_id,
+        page: 1,
+        limit: LIMIT,
+      }
+    );
   }
 
   return (
     <ClientOnly>
-      <PaymentClient accounts={obj.accounts} />
+      <PaymentClient payments={obj.payments} />
       {obj.paging?.total > (obj.paging?.limit || LIMIT) && (
         <PaginationComponent
           page={Number(searchParams?.page) || 1}
