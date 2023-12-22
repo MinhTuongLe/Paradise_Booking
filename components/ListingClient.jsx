@@ -168,10 +168,12 @@ function ListingClient({ reservations = [], place, currentUser }) {
       await axios
         .post(`${API_URL}/bookings`, submitValues, config)
         .then((response) => {
-          setIsLoading(false);
-          router.push("/");
-          if (response.data.data?.payment_url)
+          if (response.data.data?.payment_url) {
             window.open(response.data.data.payment_url);
+            router.push("/");
+          } else
+            router.push(`/reservations/${response.data.data?.BookingData?.id}`);
+          setIsLoading(false);
           router.refresh();
           reset();
         })

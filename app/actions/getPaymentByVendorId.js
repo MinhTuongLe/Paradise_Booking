@@ -26,8 +26,9 @@ export default async function getPaymentByVendorId({
         limit: limit ? limit : LIMIT,
       },
     };
-    const response = await axios.get(
+    const response = await axios.post(
       `${API_URL}/payments/list_by_vendor`,
+      null,
       config
     );
 
@@ -36,6 +37,7 @@ export default async function getPaymentByVendorId({
 
     return { payments, paging };
   } catch (error) {
+    console.log(error);
     console.log("Something went wrong");
   }
 }

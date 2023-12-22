@@ -11,7 +11,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 
 import { toast } from "react-toastify";
 import "../../styles/globals.css";
-import { API_URL, payment_statuses } from "@/const";
+import { API_URL, payment_methods, payment_statuses } from "@/const";
 import {
   Table,
   TableHeader,
@@ -25,13 +25,12 @@ import { useSelector } from "react-redux";
 import EmptyState from "@/components/EmptyState";
 
 const columns = [
-  { name: "Booking ID", uid: "id" },
-  { name: "Created", uid: "username" },
-  { name: "User", uid: "full_name" },
-  { name: "Place", uid: "role" },
-  { name: "Amount", uid: "phone" },
-  { name: "Method", uid: "address" },
-  { name: "Status", uid: "status" },
+  { name: "ID", uid: "id" },
+  { name: "Booking ID", uid: "booking_id" },
+  { name: "Created", uid: "created_at" },
+  { name: "Amount", uid: "amount" },
+  { name: "Method", uid: "method_id" },
+  { name: "Status", uid: "status_id" },
 ];
 
 function PaymentClient({ payments }) {
@@ -78,8 +77,6 @@ function PaymentClient({ payments }) {
   // Step 4: Sử dụng onSubmit để xử lý logic khi form được submit
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    // Đoạn logic xử lý khi form được submit, có thể sử dụng giá trị của searchValue ở đây
-    console.log("Giá trị tìm kiếm:", searchValue);
     let currentQuery = {};
 
     if (params) {
@@ -94,7 +91,7 @@ function PaymentClient({ payments }) {
 
     const url = qs.stringifyUrl(
       {
-        url: "/",
+        url: "/payments",
         query: updatedQuery,
       },
       { skipNull: true }
@@ -106,26 +103,27 @@ function PaymentClient({ payments }) {
     const cellValue = user[columnKey];
 
     switch (columnKey) {
-      case "full_name":
+      case "booking_id":
         return (
-          <div className="flex justify-start items-center space-x-4">
-            <Image
-              width={40}
-              height={40}
-              src={user?.avatar || emptyImageSrc}
-              alt="Avatar"
-              className="rounded-full h-[40px] w-[40px]"
-              priority
-            />
-            <div>
-              <h1 className="text-md font-bold space-y-3">
-                {cellValue || "-"}
-              </h1>
-              <p>{user.email}</p>
-            </div>
+          <span
+            onClick={() => router.push(`/reservations/${cellValue}`)}
+            className="underline cursor-pointer hover:text-rose-500"
+          >
+            {cellValue || "-"}
+          </span>
+        );
+      case "created_at":
+        return (
+          <div className="space-y-1 flex flex-col">
+            <span>
+              {cellValue.split("T")[0].split("-").reverse().join("-") || "-"}
+            </span>
+            <span className="text-sm text-gray-600">
+              {cellValue.split("T")[1].slice(0, -1) || "-"}
+            </span>
           </div>
         );
-      case "status":
+      case "status_id":
         const statusValue = cellValue === "Active" ? 2 : 1;
         const matchedPaymentStatus = payment_statuses.find(
           (item) => item.id === statusValue
@@ -143,22 +141,32 @@ function PaymentClient({ payments }) {
           >
             {name}
           </span>
-          // <select
-          //   onChange={(event) => handleStatusChange(event, user.id)}
-          //   defaultValue={cellValue === "Active" ? 2 : 1}
-          //   id="status"
-          //   className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[full] p-2.5 "
-          // >
-          //   <option value={2}>Active</option>
-          //   <option value={1}>Inactive</option>
-          // </select>
+        );
+      case "method_id":
+        const methodValue = cellValue === "Active" ? 2 : 1;
+        const matchedPaymentMethod = payment_methods.find(
+          (item) => item.id === methodValue
+        );
+
+        const Name = matchedPaymentMethod ? matchedPaymentMethod.name : null;
+        return (
+          <span
+            className={`py-1 rounded-2xl block w-[72px] text-center text-sm`}
+            style={{
+              backgroundColor: matchedPaymentMethod?.background,
+              color: matchedPaymentMethod?.color,
+              border: `1px solid ${matchedPaymentMethod?.color}`,
+            }}
+          >
+            {Name}
+          </span>
         );
       default:
         return cellValue || "-";
     }
   }, []);
 
-  if (loggedUser.role !== 3) {
+  if (loggedUser.role !== 2) {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;
   }
 
@@ -177,7 +185,6 @@ function PaymentClient({ payments }) {
             id="default-search"
             class="block w-full p-2 ps-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 "
             placeholder="Search Booking ID..."
-            required
             value={searchValue}
             onChange={handleInputChange}
           />

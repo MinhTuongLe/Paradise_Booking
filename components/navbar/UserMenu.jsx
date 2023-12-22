@@ -152,10 +152,6 @@ function UserMenu({ authState, loggedUser }) {
                     label="My reservations"
                   />
                 )}
-                <MenuItem
-                  onClick={() => menuItemSelect(`/users/${loggedUser.id}`)}
-                  label="My profile"
-                />
                 {loggedUser.role === 2 && (
                   <>
                     <MenuItem
