@@ -83,7 +83,7 @@ function ListingCard({
           />
           {shrink === false && loggedUser.role !== 3 && (
             <div className="absolute top-3 right-3">
-              <HeartButton listingId={data.id} />
+              <HeartButton listingId={data.id} isFree={data.is_free} />
             </div>
           )}
         </div>

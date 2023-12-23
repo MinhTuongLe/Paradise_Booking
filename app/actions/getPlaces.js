@@ -1,5 +1,11 @@
 import axios from "axios";
 import { API_URL, LIMIT } from "@/const";
+import { cookies } from "next/headers";
+
+const getUserEmail = async () => {
+  const user_email = cookies().get("user_email")?.value;
+  return user_email;
+};
 
 export default async function getPlaces({
   page,
@@ -9,9 +15,9 @@ export default async function getPlaces({
   price_to,
   lat,
   lng,
-  user_email,
 }) {
   try {
+    const userEmail = await getUserEmail();
     const config = {
       params: {
         page: page ? page : 1,
@@ -21,10 +27,15 @@ export default async function getPlaces({
         price_to: price_to || null,
         lat: lat || null,
         lng: lng || null,
-        user_email: user_email || "",
       },
     };
-    const response = await axios.get(`${API_URL}/places/list`, config);
+    const response = await axios.post(
+      `${API_URL}/places/list`,
+      {
+        user_email: userEmail || "",
+      },
+      config
+    );
 
     const places = response?.data?.data;
     const paging = response?.data?.paging;

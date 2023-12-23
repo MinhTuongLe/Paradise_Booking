@@ -152,6 +152,7 @@ function FavoriteClient({ listings, wishlist }) {
                 onAction={onDelete}
                 actionLabel="Delete place"
                 currentUser={loggedUser}
+                shrink={true}
               />
             ))}
         </div>

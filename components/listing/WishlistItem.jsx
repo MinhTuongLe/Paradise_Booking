@@ -71,9 +71,12 @@ function WishlistItem({ data, listingId, onActions }) {
         setIsLoading(false);
         toast.success(`Add Place To Wishlist ${data.title} Successfully`);
         getPlacesByWishlistId();
+        wishlistModal.onClose();
+        // window.location.reload();
       })
       .catch((err) => {
-        toast.error("Something Went Wrong");
+        toast.error("This place is now in this wishlist");
+        // toast.error("Something Went Wrong");
         setIsLoading(false);
       });
   };

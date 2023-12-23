@@ -8,7 +8,14 @@ import { AiOutlineShareAlt } from "react-icons/ai";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
-function ListingHead({ title, locationValue, imageSrc, id, currentUser }) {
+function ListingHead({
+  title,
+  locationValue,
+  imageSrc,
+  id,
+  currentUser,
+  isFree,
+}) {
   const currentUrl = window.location.href;
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
@@ -38,7 +45,7 @@ function ListingHead({ title, locationValue, imageSrc, id, currentUser }) {
           </div>
           {loggedUser.role !== 3 && (
             <div className="">
-              <HeartButton listingId={id} currentUser={currentUser} />
+              <HeartButton listingId={id} isFree={isFree} />
             </div>
           )}
         </div>

@@ -284,6 +284,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
               locationValue={location}
               id={place.id}
               currentUser={currentUser}
+              isFree = {place.is_free}
             />
             <div className="grid grid-cols-1 md:grid-cols-7 md:gap-10 my-8">
               <ListingInfo
