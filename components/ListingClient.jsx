@@ -306,7 +306,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
                 <div className="w-full flex justify-center items-start">
                   <div
                     className="flex justify-center items-center gap-4 cursor-pointer"
-                    onClick={reportModal.onOpen}
+                    onClick={() => reportModal.onOpen({ place, user:currentUser })}
                   >
                     <FaFlag size={16} />
                     <span className="underline">Report this room</span>

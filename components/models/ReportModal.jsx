@@ -19,34 +19,12 @@ import Image from "next/image";
 import rent_room_1 from "@/public/assets/rent_room_1.png";
 import rent_room_2 from "@/public/assets/rent_room_2.png";
 import rent_room_3 from "@/public/assets/rent_room_3.png";
+import { types } from "@/const";
 
 const STEPS = {
   REASON: 0,
   DETAILS: 1,
 };
-
-const types = [
-  {
-    name: "Content that is dishonest or inaccurate",
-    value: 1,
-  },
-  {
-    name: "This place is not real",
-    value: 2,
-  },
-  {
-    name: "It's a scam",
-    value: 3,
-  },
-  {
-    name: "Offensive content",
-    value: 4,
-  },
-  {
-    name: "Other problems",
-    value: 5,
-  },
-];
 
 function ReportModal({}) {
   const router = useRouter();
@@ -88,6 +66,27 @@ function ReportModal({}) {
     if (step !== STEPS.DETAILS) {
       return onNext();
     }
+
+    const submitValues = {
+      ...data,
+      place: reportModal.place?.name,
+      user: reportModal.user?.full_name || reportModal.user?.username,
+    };
+
+    // console.log(data);
+    let currentReportData = localStorage.getItem("reportData");
+    if (currentReportData) {
+      currentReportData = JSON.parse(currentReportData);
+    } else {
+      currentReportData = [];
+    }
+
+    currentReportData.push(submitValues);
+
+    const updatedReportData = JSON.stringify(currentReportData);
+
+    localStorage.setItem("reportData", updatedReportData);
+    // localStorage.setItem("reportData", JSON.parse(currentReportData).append());
 
     // setIsLoading(true);
 

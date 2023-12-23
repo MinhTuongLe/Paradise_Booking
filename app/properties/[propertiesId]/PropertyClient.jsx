@@ -224,8 +224,6 @@ function PropertyClient({ place, reservations }) {
           num_bed: Number(data?.num_bed) || place?.num_bed || 0,
         };
 
-        console.log(submitValues);
-
         const accessToken = Cookie.get("accessToken");
         const config = {
           params: {
@@ -519,7 +517,16 @@ function PropertyClient({ place, reservations }) {
               </div>
             </div>
             <div className="col-span-6 space-y-6">
-              <div className="grid grid-cols-12 gap-6">
+              <Input
+                id="num_bed"
+                label="Bed(s)"
+                type="number"
+                disabled={isLoading}
+                register={register}
+                errors={errors}
+                required
+              />
+              {/* <div className="grid grid-cols-12 gap-6">
                 <div className="col-span-6">
                   <Input
                     id="max_guest"
@@ -542,7 +549,7 @@ function PropertyClient({ place, reservations }) {
                     required
                   />
                 </div>
-              </div>
+              </div> */}
               <Input
                 id="address"
                 label="Address"

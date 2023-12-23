@@ -155,3 +155,26 @@ export const paypalOptions = {
     "ASh2FOVS_UFVapwtn43O7sCItFoURj7lrG5jSqYe3EzNLeASCCeNsqiiT493cE9-11PRZJbrccx6ZOeN",
   currency: "USD",
 };
+
+export const types = [
+  {
+    name: "Content that is dishonest or inaccurate",
+    value: 1,
+  },
+  {
+    name: "This place is not real",
+    value: 2,
+  },
+  {
+    name: "It's a scam",
+    value: 3,
+  },
+  {
+    name: "Offensive content",
+    value: 4,
+  },
+  {
+    name: "Other problems",
+    value: 5,
+  },
+];

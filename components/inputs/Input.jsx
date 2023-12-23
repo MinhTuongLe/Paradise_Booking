@@ -53,6 +53,13 @@ function Input({
           errors[id] ? "focus:border-rose-500" : "focus:outline-none"
         }`}
         min={type === "number" ? 0 : null}
+        onChange={(e) => {
+          if (type === "number") {
+            if (!new RegExp(pattern).test(e.target.value)) {
+              e.target.value = 0;
+            }
+          }
+        }}
       />
 
       {label && (

@@ -126,7 +126,7 @@ function WishlistModal() {
     await axios
       .get(`${API_URL}/wish_lists/user/${user_id}`, config)
       .then((response) => {
-        setWishlists(response.data);
+        setWishlists(response?.data || []);
       })
       .catch((err) => {
         toast.error("Something Went Wrong");
