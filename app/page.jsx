@@ -12,11 +12,12 @@ export default async function Home({ searchParams }) {
     searchParams || {
       page: 1,
       limit: LIMIT,
-      guest: 0,
-      price_from: 0,
-      price_to: "",
-      lat: "",
-      lng: "",
+      // guest: 0,
+      // price_from: 0,
+      // price_to: "",
+      // lat: "",
+      // lng: "",
+      user_email: "",
     }
   );
 

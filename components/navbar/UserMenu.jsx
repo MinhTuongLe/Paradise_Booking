@@ -63,6 +63,7 @@ function UserMenu({ authState, loggedUser }) {
     Cookie.remove("accessToken");
     Cookie.remove("expiresAt");
     Cookie.remove("userId");
+    Cookie.remove("user_email");
     dispatch(reset());
     router.refresh();
     window.location.reload();

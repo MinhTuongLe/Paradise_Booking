@@ -9,17 +9,19 @@ export default async function getPlaces({
   price_to,
   lat,
   lng,
+  user_email,
 }) {
   try {
     const config = {
       params: {
         page: page ? page : 1,
         limit: limit ? limit : LIMIT,
-        guest: guest || 0,
-        price_from: price_from || 0,
-        price_to: price_to || "",
-        lat: lat || "",
-        lng: lng || "",
+        guest: guest || null,
+        price_from: price_from || null,
+        price_to: price_to || null,
+        lat: lat || null,
+        lng: lng || null,
+        user_email: user_email || "",
       },
     };
     const response = await axios.get(`${API_URL}/places/list`, config);

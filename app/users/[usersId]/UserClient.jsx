@@ -57,6 +57,8 @@ function UserClient({ places, currentUser, role }) {
   const [ratings, setRatings] = useState([]);
   const verified = currentUser.id !== loggedUser.id && role === 2;
 
+  console.log(currentUser);
+
   const {
     register,
     handleSubmit,
@@ -160,6 +162,7 @@ function UserClient({ places, currentUser, role }) {
           dispatch(
             setLoggUser({
               id: currentUser.id,
+              role: currentUser.role,
               ...submitValues,
             })
           );
@@ -346,6 +349,7 @@ function UserClient({ places, currentUser, role }) {
                   register={register}
                   errors={errors}
                   type="date"
+                  dob={true}
                 />
                 <Input
                   id="address"

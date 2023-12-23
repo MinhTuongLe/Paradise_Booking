@@ -76,6 +76,11 @@ function LoginModal({}) {
               secure: true,
               sameSite: "strict",
             });
+            Cookie.set("user_email", data.email, {
+              expires: 1 / 2,
+              secure: true,
+              sameSite: "strict",
+            });
           })
           .catch((err) => {
             toast.error("Get user information failed");
