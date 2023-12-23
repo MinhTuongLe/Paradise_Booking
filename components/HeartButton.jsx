@@ -7,7 +7,7 @@ import React from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { useSelector } from "react-redux";
 
-function HeartButton({ listingId }) {
+function HeartButton({ listingId, isFree }) {
   const authState = useSelector((state) => state.authSlice.authState);
   const wishlistModal = useWishlistModal();
   const loginModal = useLoginModal();
@@ -27,7 +27,7 @@ function HeartButton({ listingId }) {
       />
       <AiFillHeart
         size={24}
-        className={"fill-rose-500" || "fill-neutral-500/70"}
+        className={!isFree ? "fill-rose-500" : "fill-neutral-500/70"}
       />
     </div>
   );

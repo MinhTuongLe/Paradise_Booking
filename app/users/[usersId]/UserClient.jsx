@@ -62,6 +62,7 @@ function UserClient({ places, currentUser, role }) {
     handleSubmit,
     reset,
     setValue,
+    getValues,
     watch,
     formState: { errors },
   } = useForm({
@@ -73,6 +74,7 @@ function UserClient({ places, currentUser, role }) {
           address: currentUser.address || "",
           phone: currentUser.phone || "",
           dob: currentUser.dob || "",
+          bio: currentUser.bio || "",
           email: currentUser.email || "",
         }
       : {
@@ -82,9 +84,12 @@ function UserClient({ places, currentUser, role }) {
           address: loggedUser.address || "",
           phone: loggedUser.phone || "",
           dob: loggedUser.dob || "",
+          bio: loggedUser.bio || "",
           email: loggedUser.email || "",
         },
   });
+
+  const [bio, setBio] = useState(getValues("bio"));
 
   const avatar = watch("avatar");
   const emptyImageSrc = "/assets/avatar.png";
@@ -142,6 +147,7 @@ function UserClient({ places, currentUser, role }) {
       const { avatar, ...omitData } = data;
       const submitValues = {
         ...omitData,
+        bio,
         avatar: imageUrl,
       };
 
@@ -160,6 +166,7 @@ function UserClient({ places, currentUser, role }) {
           dispatch(
             setLoggUser({
               id: currentUser.id,
+              role: currentUser.role,
               ...submitValues,
             })
           );
@@ -246,7 +253,8 @@ function UserClient({ places, currentUser, role }) {
                   className="resize-none border border-solid p-8 rounded-[24px] w-full focus:outline-none"
                   rows={5}
                   placeholder="Add your bio here ..."
-                  value={data.bio}
+                  value={bio}
+                  onChange={(e) => setBio(e.target.value)}
                 ></textarea>
               </>
             ) : (
@@ -346,6 +354,7 @@ function UserClient({ places, currentUser, role }) {
                   register={register}
                   errors={errors}
                   type="date"
+                  dob={true}
                 />
                 <Input
                   id="address"
@@ -436,10 +445,10 @@ function UserClient({ places, currentUser, role }) {
                             : loggedUser.address || "-"}
                         </p>
                       </div>
-                      <div className="flex justify-start items-center space-x-3">
+                      {/* <div className="flex justify-start items-center space-x-3">
                         <IoBriefcaseOutline size={18} />
                         <p className="text-md">Job: Developer</p>
-                      </div>
+                      </div> */}
                     </div>
                     <div
                       className={`space-y-3 pb-4 my-4 w-full ${
@@ -458,7 +467,7 @@ function UserClient({ places, currentUser, role }) {
                           rows={5}
                           placeholder="Add your bio here ..."
                         >
-                          {data.bio}
+                          {verified ? currentUser.bio : loggedUser.bio || "-"}
                         </p>
                       </div>
                     </div>

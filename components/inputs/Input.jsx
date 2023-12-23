@@ -12,11 +12,13 @@ function Input({
   register,
   required,
   errors,
+  dob,
 }) {
   const [showPassword, setShowPassword] = useState(false);
   const emailPattern = /^\S+@\S+\.\S+$/;
   const phonePattern = /^\d{10}$/;
   const numberPattern = /[0-9]+/;
+  const maxDate = dob ? new Date().toISOString().split("T")[0] : null;
 
   const pattern =
     type === "email"
@@ -25,6 +27,8 @@ function Input({
       ? phonePattern
       : type === "number"
       ? numberPattern
+      : type === "date" && dob
+      ? new RegExp(`^\\d{4}-\\d{2}-\\d{2}$|^(?!${maxDate})`)
       : null;
 
   const togglePasswordVisibility = () => {
@@ -57,6 +61,12 @@ function Input({
           if (type === "number") {
             if (!new RegExp(pattern).test(e.target.value)) {
               e.target.value = 0;
+            }
+          }
+          if (type === "date" && dob) {
+            const currentDate = new Date().toISOString().split("T")[0];
+            if (e.target.value > currentDate) {
+              e.target.value = currentDate;
             }
           }
         }}

@@ -73,21 +73,31 @@ function SearchModal({}) {
     //   return onNext();
     // }
 
-    let currentQuery = {};
+    let currentQuery = {},
+      updatedQuery = {};
 
     if (params) {
       currentQuery = qs.parse(params.toString());
     }
-    const updatedQuery = {
-      ...currentQuery,
-      // locationValue: location?.value,
-      lat,
-      lng,
-      guest,
-      price_from,
-      price_to,
-      // bedCount,
-    };
+
+    if (step === STEPS.LOCATION) {
+      updatedQuery = {
+        ...currentQuery,
+        lat: lat,
+        lng: lng,
+      };
+    } else if (step === STEPS.INFO) {
+      updatedQuery = {
+        ...currentQuery,
+        guest: guest,
+      };
+    } else if (step === STEPS.PRICE) {
+      updatedQuery = {
+        ...currentQuery,
+        price_from: price_from,
+        price_to: price_to,
+      };
+    }
 
     // if (dateRange.startDate) {
     //   updatedQuery.startDate = formatISO(dateRange.startDate).split("T")[0];
@@ -105,7 +115,6 @@ function SearchModal({}) {
       { skipNull: true }
     );
 
-    setStep(STEPS.LOCATION);
     searchModel.onClose();
 
     router.push(url);
