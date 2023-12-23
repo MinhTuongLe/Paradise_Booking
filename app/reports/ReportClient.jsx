@@ -24,7 +24,7 @@ import EmptyState from "@/components/EmptyState";
 const columns = [
   // { name: "Id", uid: "id" },
   { name: "User", uid: "user" },
-  { name: "Fullname", uid: "full_name" },
+  // { name: "Fullname", uid: "full_name" },
   { name: "Place", uid: "place" },
   { name: "Report Type", uid: "type" },
   { name: "Description", uid: "description" },
