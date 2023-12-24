@@ -67,7 +67,7 @@ export const payment_methods = [
     id: 2,
     name: "Momo",
     color: "#f43d8a",
-    background: "#f4aecb",
+    background: "#ffb5ca61",
   },
 ];
 

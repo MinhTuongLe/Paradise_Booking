@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_URL, LIMIT } from "@/const";
+import { API_URL, SHRINK_LIMIT } from "@/const";
 import { cookies } from "next/headers";
 
 const getAccessToken = async () => {
@@ -23,7 +23,7 @@ export default async function getPaymentByVendorId({
         booking_id: booking_id || null,
         vendor_id,
         page: page ? page : 1,
-        limit: limit ? limit : LIMIT,
+        limit: limit ? limit : SHRINK_LIMIT,
       },
     };
     const response = await axios.post(
