@@ -1,11 +1,12 @@
 # user image contain Node.js and yarn
 FROM node:18
 
+# create app directory
+WORKDIR /usr/src/app
 
 # Copy all files to the workdir
-COPY . /app/
-# create app directory
-WORKDIR /app/
+COPY . /usr/src/app
+
 
 # install Yarn
 RUN npm install yarn
