@@ -101,9 +101,11 @@ function ReservationClient({ reservation, rating }) {
 
   return (
     <div className="max-w-[768px] mx-auto px-4">
-      <h1 className="text-xl font-extrabold mt-10 mb-1 text-center text-rose-500">
-        Booking Successfully! Please check your email in 1 day to confirm.
-      </h1>
+      {reservation.data.status_id === 1 && (
+        <h1 className="text-xl font-extrabold mt-10 mb-1 text-center text-rose-500">
+          Booking Successfully! Please check your email in 1 day to confirm.
+        </h1>
+      )}
       <h1 className="text-2xl font-bold mt-10 mb-3">Reservation Details</h1>
       <div className="mt-6">
         <div>
