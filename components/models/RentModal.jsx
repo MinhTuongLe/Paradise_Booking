@@ -245,7 +245,7 @@ function RentModal({}) {
       <div className="grid md:grid-cols-2 gap-3 overflow-y-auto scrollbar-thin scrollbar-thumb-[#FF5A5F]">
         <div className="col-span-1 flex items-center justify-center">
           <span className="text-[24px] font-bold">
-            Become a vendor on Paradise
+            Create your new place
           </span>
         </div>
         <div className="col-span-1 space-y-6">
