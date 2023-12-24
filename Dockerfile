@@ -9,10 +9,11 @@ COPY . /usr/src/lamheo3
 
 # 
 #install Yarn
-RUN npm install -g npm@10.2.5
+RUN npm install --legacy-peer-deps
+
+RUN npm cache clean --force
 
 RUN npm install yarn
-
 
 # Copy package.json and yarn.lock to the workdir
 # COPY package*.json yarn.lock ./
