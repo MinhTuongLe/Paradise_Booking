@@ -133,7 +133,9 @@ function ReportClient() {
               </TableColumn>
             )}
           </TableHeader>
-          <TableBody>
+          <TableBody
+            emptyContent={<div className="mt-4">No data to display.</div>}
+          >
             {reportData?.map((account) => (
               <TableRow key={account.id}>
                 {(columnKey) => (

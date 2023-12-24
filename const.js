@@ -15,6 +15,7 @@ export const API_URL_LOCAL = "http://localhost:8081/api/v1";
 // export const API_URL = "http://47.128.64.99:8081/api/v1";
 export const API_URL = "https://paradisebooking.onrender.com/api/v1";
 export const LIMIT = 20;
+export const SHRINK_LIMIT = 10;
 
 export const booking_status = [
   {

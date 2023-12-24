@@ -34,7 +34,6 @@ const columns = [
 ];
 
 function PaymentClient({ payments }) {
-  console.log(payments);
   const [isLoading, setIsLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
   const emptyImageSrc = "/assets/avatar.png";
@@ -42,41 +41,13 @@ function PaymentClient({ payments }) {
   const params = useSearchParams();
   const router = useRouter();
 
-  const handleStatusChange = (event, accountId) => {
-    const newStatus = event.target.value;
-
-    const accessToken = Cookie.get("accessToken");
-    const config = {
-      params: {
-        id: accountId,
-        status: Number(newStatus),
-      },
-      headers: {
-        "content-type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    };
-
-    axios
-      .post(`${API_URL}/change/status`, null, config)
-      .then(() => {
-        setIsLoading(false);
-        toast.success("Update Account Status Successfully");
-      })
-      .catch((err) => {
-        toast.error("Something Went Wrong");
-        setIsLoading(false);
-      });
-  };
-
   // Step 3: Sử dụng onChange để cập nhật giá trị state khi người dùng nhập vào input
   const handleInputChange = (e) => {
     setSearchValue(e.target.value);
   };
 
   // Step 4: Sử dụng onSubmit để xử lý logic khi form được submit
-  const handleFormSubmit = (e) => {
-    e.preventDefault();
+  const handleFormSubmit = (isClear) => {
     let currentQuery = {};
 
     if (params) {
@@ -86,8 +57,10 @@ function PaymentClient({ payments }) {
       ...currentQuery,
       limit: 0,
       page: 0,
-      booking_id: searchValue,
+      booking_id: isClear ? null : searchValue,
     };
+
+    if (isClear) setSearchValue("");
 
     const url = qs.stringifyUrl(
       {
@@ -124,9 +97,8 @@ function PaymentClient({ payments }) {
           </div>
         );
       case "status_id":
-        const statusValue = cellValue === "Active" ? 2 : 1;
         const matchedPaymentStatus = payment_statuses.find(
-          (item) => item.id === statusValue
+          (item) => item.id === cellValue
         );
 
         const name = matchedPaymentStatus ? matchedPaymentStatus.name : null;
@@ -143,9 +115,8 @@ function PaymentClient({ payments }) {
           </span>
         );
       case "method_id":
-        const methodValue = cellValue === "Active" ? 2 : 1;
         const matchedPaymentMethod = payment_methods.find(
-          (item) => item.id === methodValue
+          (item) => item.id === cellValue
         );
 
         const Name = matchedPaymentMethod ? matchedPaymentMethod.name : null;
@@ -172,44 +143,52 @@ function PaymentClient({ payments }) {
 
   return (
     <div className="max-w-[1200px] mx-auto px-4">
-      <form className="mt-10 w-[30%] px-4" onSubmit={handleFormSubmit}>
-        <label
-          for="default-search"
-          class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
-        >
-          Search
-        </label>
-        <div class="relative">
-          <input
-            type="search"
-            id="default-search"
-            class="block w-full p-2 ps-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 "
-            placeholder="Search Booking ID..."
-            value={searchValue}
-            onChange={handleInputChange}
-          />
-          <button
-            type="submit"
-            class="text-white absolute end-0 bg-rose-500 hover:bg-rose-600 focus:ring-4 focus:outline-none  font-medium rounded-lg text-sm px-4 py-2 top-0 bottom-0"
+      <div className="w-full flex space-x-6 items-center justify-start">
+        <div className="mt-10 w-[30%] px-4">
+          <label
+            for="default-search"
+            class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
           >
-            <svg
-              class="w-4 h-4 text-white"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 20 20"
+            Search
+          </label>
+          <div class="relative">
+            <input
+              type="search"
+              id="default-search"
+              class="block w-full p-2 ps-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 "
+              placeholder="Search Booking ID..."
+              value={searchValue}
+              onChange={handleInputChange}
+            />
+            <button
+              onClick={() => handleFormSubmit(false)}
+              class="text-white absolute end-0 bg-rose-500 hover:bg-rose-600 focus:outline-none  font-medium rounded-lg text-sm px-4 py-2 top-0 bottom-0"
             >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
-              />
-            </svg>
-          </button>
+              <svg
+                class="w-4 h-4 text-white"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
-      </form>
+        <button
+          onClick={() => handleFormSubmit(true)}
+          class="mt-10 text-rose-500 hover:brightness-75 focus:outline-none font-medium rounded-lg text-sm px-6 py-2 border-[1px] border-rose-500"
+        >
+          Clear
+        </button>
+      </div>
 
       <>
         {!isLoading && (
@@ -224,7 +203,9 @@ function PaymentClient({ payments }) {
                 </TableColumn>
               )}
             </TableHeader>
-            <TableBody>
+            <TableBody
+              emptyContent={<div className="mt-4">No data to display.</div>}
+            >
               {payments?.map((account) => (
                 <TableRow key={account.id}>
                   {(columnKey) => (
@@ -232,6 +213,7 @@ function PaymentClient({ payments }) {
                   )}
                 </TableRow>
               ))}
+              Empty Data
             </TableBody>
           </Table>
         )}

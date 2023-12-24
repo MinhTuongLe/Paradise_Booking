@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import getUserById from "@/app/actions/getUserById";
 import getAccounts from "@/app/actions/getAccounts";
 import PaginationComponent from "@/components/PaginationComponent";
-import { LIMIT } from "@/const";
+import { SHRINK_LIMIT } from "@/const";
 
 export const dynamic = "force-dynamic";
 
@@ -21,24 +21,24 @@ const AccountPage = async ({ searchParams }) => {
     accounts: [],
     paging: {
       total: 0,
-      limit: LIMIT,
+      limit: SHRINK_LIMIT,
       page: 1,
     },
   };
   if (unauthorized) {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;
   } else {
-    obj = await getAccounts(searchParams || { page: 1, limit: LIMIT });
+    obj = await getAccounts(searchParams || { page: 1, limit: SHRINK_LIMIT });
   }
 
   return (
     <ClientOnly>
       <AccountClient accounts={obj.accounts} />
-      {obj.paging?.total > (obj.paging?.limit || LIMIT) && (
+      {obj.paging?.total > (obj.paging?.limit || SHRINK_LIMIT) && (
         <PaginationComponent
           page={Number(searchParams?.page) || 1}
-          total={obj.paging?.total || LIMIT}
-          limit={obj.paging?.limit || LIMIT}
+          total={obj.paging?.total || SHRINK_LIMIT}
+          limit={obj.paging?.limit || SHRINK_LIMIT}
         />
       )}
     </ClientOnly>
