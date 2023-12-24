@@ -66,7 +66,8 @@ function UserMenu({ authState, loggedUser }) {
     Cookie.remove("user_email");
     dispatch(reset());
     router.refresh();
-    window.location.reload();
+    // window.location.reload();
+    router.push("/");
   };
 
   useEffect(() => {

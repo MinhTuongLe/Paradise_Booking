@@ -51,6 +51,7 @@ function Navbar() {
     Cookie.remove("userId");
     Cookie.remove("user_email");
     dispatch(reset());
+    router.push("/");
   };
 
   return (
