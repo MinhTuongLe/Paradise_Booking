@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_URL, LIMIT } from "@/const";
+import { API_URL, SHRINK_LIMIT } from "@/const";
 import { cookies } from "next/headers";
 
 const getAccessToken = async () => {
@@ -14,7 +14,7 @@ export default async function getAccounts({ page, limit }) {
     const config = {
       params: {
         page: page ? page : 1,
-        limit: limit ? limit : LIMIT,
+        limit: limit ? limit : SHRINK_LIMIT,
       },
       headers: {
         Authorization: `Bearer ${accessToken}`,
