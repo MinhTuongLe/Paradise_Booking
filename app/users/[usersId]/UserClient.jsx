@@ -262,7 +262,9 @@ function UserClient({ places, currentUser, role }) {
                 <div className="mt-12 p-8 rounded-[24px] border-[1px] border-[#cdcdcd]">
                   <h1 className="text-xl font-bold mb-3">
                     {currentUser.id !== loggedUser.id
-                      ? currentUser.full_name
+                      ? currentUser?.full_name
+                        ? currentUser.full_name
+                        : currentUser?.username
                       : "Your"}{" "}
                     verified Information
                   </h1>

@@ -2,23 +2,23 @@
 FROM node:18
 
 # create app directory
-WORKDIR /usr/src/app
+WORKDIR /usr/src/lamheo2
 
 # Copy all files to the workdir
-COPY . /usr/src/app
+COPY . /usr/src/lamheo2
 
 # 
-# install Yarn
-# RUN npm install yarn
+#install Yarn
+RUN npm install yarn
 
+
+# Copy package.json and yarn.lock to the workdir
+# COPY package*.json yarn.lock ./
 # run yarn build
 RUN yarn
 
-# Copy package.json and yarn.lock to the workdir
-COPY package*.json yarn.lock ./
-
 # Install dependencies by Yarn
-RUN yarn install --ignore-engines
+# RUN yarn install --ignore-engines
 
 # Expose default port of Next.js
 EXPOSE 3000
