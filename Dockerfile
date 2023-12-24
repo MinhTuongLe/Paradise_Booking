@@ -1,8 +1,11 @@
 # user image contain Node.js and yarn
 FROM node:18
 
+
+# Copy all files to the workdir
+COPY . /app/
 # create app directory
-WORKDIR /usr/src/app/fe
+WORKDIR /app/
 
 # install Yarn
 RUN npm install yarn
@@ -15,9 +18,6 @@ RUN yarn
 
 # Install dependencies by Yarn
 RUN yarn install --ignore-engines
-
-# Copy all files to the workdir
-COPY . /usr/src/app/fe
 
 # Expose default port of Next.js
 EXPOSE 3000
