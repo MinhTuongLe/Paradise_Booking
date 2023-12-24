@@ -7,15 +7,15 @@ WORKDIR /usr/src/app
 # Copy all files to the workdir
 COPY . /usr/src/app
 
-
+# 
 # install Yarn
-RUN npm install yarn
-
-# Copy package.json and yarn.lock to the workdir
-COPY package*.json yarn.lock ./
+# RUN npm install yarn
 
 # run yarn build
 RUN yarn
+
+# Copy package.json and yarn.lock to the workdir
+COPY package*.json yarn.lock ./
 
 # Install dependencies by Yarn
 RUN yarn install --ignore-engines
