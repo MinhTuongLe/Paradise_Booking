@@ -2,13 +2,15 @@
 FROM node:18
 
 # create app directory
-WORKDIR /usr/src/lamheo2
+WORKDIR /usr/src/lamheo3
 
 # Copy all files to the workdir
-COPY . /usr/src/lamheo2
+COPY . /usr/src/lamheo3
 
 # 
 #install Yarn
+RUN npm install -g npm@10.2.5
+
 RUN npm install yarn
 
 
