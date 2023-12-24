@@ -5,7 +5,7 @@ import { cookies } from "next/headers";
 import getUserById from "@/app/actions/getUserById";
 import getPaymentByVendorId from "@/app/actions/getPaymentByVendorId";
 import PaginationComponent from "@/components/PaginationComponent";
-import { LIMIT } from "@/const";
+import { SHRINK_LIMIT } from "@/const";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +22,7 @@ const PaymentPage = async ({ searchParams }) => {
     payments: [],
     paging: {
       total: 0,
-      limit: LIMIT,
+      limit: SHRINK_LIMIT,
       page: 1,
     },
   };
@@ -33,7 +33,7 @@ const PaymentPage = async ({ searchParams }) => {
       { vendor_id, ...searchParams } || {
         vendor_id,
         page: 1,
-        limit: LIMIT,
+        limit: SHRINK_LIMIT,
       }
     );
   }
@@ -41,11 +41,11 @@ const PaymentPage = async ({ searchParams }) => {
   return (
     <ClientOnly>
       <PaymentClient payments={obj.payments} />
-      {obj.paging?.total > (obj.paging?.limit || LIMIT) && (
+      {obj.paging?.total > (obj.paging?.limit || SHRINK_LIMIT) && (
         <PaginationComponent
           page={Number(searchParams?.page) || 1}
-          total={obj.paging?.total || LIMIT}
-          limit={obj.paging?.limit || LIMIT}
+          total={obj.paging?.total || SHRINK_LIMIT}
+          limit={obj.paging?.limit || SHRINK_LIMIT}
         />
       )}
     </ClientOnly>
