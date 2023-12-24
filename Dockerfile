@@ -11,6 +11,8 @@ COPY . /usr/src/lamheo3
 #install Yarn
 RUN npm install -g npm@10.2.5
 
+RUN npm cache clean --force
+
 RUN npm install yarn
 
 
