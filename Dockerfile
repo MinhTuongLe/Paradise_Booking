@@ -2,29 +2,15 @@
 FROM node:18
 
 # create app directory
-WORKDIR /usr/src/lamheo3
+WORKDIR /usr/src/lamheo4
 
 # Copy all files to the workdir
-COPY . /usr/src/lamheo3
+COPY . /usr/src/lamheo4
 
 # 
-#install Yarn
 RUN npm install --legacy-peer-deps
 
-RUN npm cache clean --force
-
-RUN npm install yarn
-
-# Copy package.json and yarn.lock to the workdir
-# COPY package*.json yarn.lock ./
-# run yarn build
-RUN yarn
-
-# Install dependencies by Yarn
-# RUN yarn install --ignore-engines
-
-# Expose default port of Next.js
-EXPOSE 3000
+RUN npm run build
 
 # Command to run when starting the container
-CMD ["yarn", "dev"]
+CMD ["npm", "start"]
