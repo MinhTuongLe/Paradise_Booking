@@ -49,13 +49,13 @@ function LoginModal({}) {
         toast.success("Login Successfully");
         Cookie.set("accessToken", callback.data.accessToken, {
           expires: 1 / 2,
-          secure: true,
-          sameSite: "strict",
+          secure: false,
+          sameSite: "lax",
         });
         Cookie.set("expiresAt", callback.data.expiresAt, {
           expires: 1 / 2,
-          secure: true,
-          sameSite: "strict",
+          secure: false,
+          sameSite: "lax",
         });
         dispatch(setAuthState(true));
         setIsLoading(false);
@@ -73,13 +73,13 @@ function LoginModal({}) {
             dispatch(setLoggUser(callback.data.data));
             Cookie.set("userId", callback.data.data.id, {
               expires: 1 / 2,
-              secure: true,
-              sameSite: "strict",
+              secure: false,
+              sameSite: "lax",
             });
             Cookie.set("user_email", data.email, {
               expires: 1 / 2,
-              secure: true,
-              sameSite: "strict",
+              secure: false,
+              sameSite: "lax",
             });
           })
           .catch((err) => {
