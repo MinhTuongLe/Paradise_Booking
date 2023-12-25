@@ -23,36 +23,35 @@ function Navbar() {
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
   const dispatch = useDispatch();
   const router = useRouter();
-  const [isShowed, setIsShowed] = useState(true);
   const pathname = usePathname();
 
-  useEffect(() => {
-    // remove cookie if expired
-    const expiredAt = Number(Cookie.get("expiresAt"));
-    if (expiredAt) {
-      const currentTimestamp = Math.floor(Date.now() / 1000);
+  // useEffect(() => {
+  //   // remove cookie if expired
+  //   const expiredAt = Number(Cookie.get("expiresAt"));
+  //   if (expiredAt) {
+  //     const currentTimestamp = Math.floor(Date.now() / 1000);
 
-      if (currentTimestamp >= expiredAt) {
-        handleLogout();
-        localStorage.removeItem("persist:root");
-        console.log("ACCESS TOKEN IS EXPIRED!!!");
-      }
-    } else {
-      dispatch(reset());
-      localStorage.removeItem("persist:root");
-      console.log("ACCESS TOKEN IS EXPIRED!!!");
-    }
-  }, []);
+  //     if (currentTimestamp >= expiredAt) {
+  //       handleLogout();
+  //       localStorage.removeItem("persist:root");
+  //       console.log("ACCESS TOKEN IS EXPIRED!!!");
+  //     }
+  //   } else {
+  //     dispatch(reset());
+  //     localStorage.removeItem("persist:root");
+  //     console.log("ACCESS TOKEN IS EXPIRED!!!");
+  //   }
+  // }, []);
 
-  const handleLogout = () => {
-    Cookie.remove("loggedUser");
-    Cookie.remove("accessToken");
-    Cookie.remove("expiresAt");
-    Cookie.remove("userId");
-    Cookie.remove("user_email");
-    dispatch(reset());
-    router.push("/");
-  };
+  // const handleLogout = () => {
+  //   Cookie.remove("loggedUser");
+  //   Cookie.remove("accessToken");
+  //   Cookie.remove("expiresAt");
+  //   Cookie.remove("userId");
+  //   Cookie.remove("user_email");
+  //   dispatch(reset());
+  //   router.push("/");
+  // };
 
   return (
     <>
