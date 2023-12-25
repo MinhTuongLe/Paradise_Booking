@@ -50,14 +50,12 @@ function LoginModal({}) {
         Cookie.set("accessToken", callback.data.accessToken, {
           expires: 1 / 2,
           secure: true,
-          sameSite: "none",
-          httpOnly: true,
+          sameSite: "strict",
         });
         Cookie.set("expiresAt", callback.data.expiresAt, {
           expires: 1 / 2,
           secure: true,
-          sameSite: "none",
-          httpOnly: true,
+          sameSite: "strict",
         });
         dispatch(setAuthState(true));
         setIsLoading(false);
@@ -76,14 +74,12 @@ function LoginModal({}) {
             Cookie.set("userId", callback.data.data.id, {
               expires: 1 / 2,
               secure: true,
-              sameSite: "none",
-              httpOnly: true,
+              sameSite: "strict",
             });
             Cookie.set("user_email", data.email, {
               expires: 1 / 2,
               secure: true,
-              sameSite: "none",
-              httpOnly: true,
+              sameSite: "strict",
             });
           })
           .catch((err) => {
