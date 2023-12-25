@@ -85,7 +85,9 @@ function RoomsModal({ currentUser }) {
   return (
     <Modal
       isOpen={roomsModal.isOpen}
-      title={`All Rooms of ${currentUser.full_name || "Vendor"}`}
+      title={`All Rooms of ${
+        currentUser.full_name || currentUser.username || "Vendor"
+      }`}
       onClose={roomsModal.onClose}
       body={bodyContent}
       footer={footerContent}
