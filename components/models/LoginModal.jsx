@@ -51,11 +51,13 @@ function LoginModal({}) {
           expires: 1 / 2,
           secure: true,
           sameSite: "none",
+          httpOnly: true,
         });
         Cookie.set("expiresAt", callback.data.expiresAt, {
           expires: 1 / 2,
           secure: true,
           sameSite: "none",
+          httpOnly: true,
         });
         dispatch(setAuthState(true));
         setIsLoading(false);
@@ -73,13 +75,15 @@ function LoginModal({}) {
             dispatch(setLoggUser(callback.data.data));
             Cookie.set("userId", callback.data.data.id, {
               expires: 1 / 2,
-              // secure: true,
+              secure: true,
               sameSite: "none",
+              httpOnly: true,
             });
             Cookie.set("user_email", data.email, {
               expires: 1 / 2,
-              // secure: true,
+              secure: true,
               sameSite: "none",
+              httpOnly: true,
             });
           })
           .catch((err) => {
