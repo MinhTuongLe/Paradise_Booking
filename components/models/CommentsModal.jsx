@@ -109,54 +109,6 @@ function CommentsModal({}) {
         <Loader />
       ) : (
         <div className="flex flex-col gap-4">
-          {/* <div className="w-full p-2 space-y-2">
-        <div className="w-full p-2 space-y-1">
-          <div className="w-full flex justify-between items-start">
-            <h1 className="text-xl font-bold space-y-3">Place 1</h1>
-            <Image
-              width={80}
-              height={60}
-              src={emptyImageSrc}
-              alt="Avatar"
-              className="rounded-xl h-[60px] w-[80px]"
-              priority
-            />
-          </div>
-          <div className="flex justify-start items-center space-x-6">
-            <Image
-              width={40}
-              height={40}
-              src={emptyImageSrc}
-              alt="Avatar"
-              className="rounded-full h-[40px] w-[40px]"
-              priority
-            />
-            <div>
-              <h1 className="text-md font-bold space-y-3">Conal</h1>
-              <p>tháng 11 năm 2023</p>
-            </div>
-          </div>
-          <p className="line-clamp-5">{`"...${data.bio}`}</p>
-        </div>
-        <div className="w-full p-2 pl-12 space-y-2">
-          <div className="flex justify-start items-center space-x-6">
-            <Image
-              width={40}
-              height={40}
-              src={emptyImageSrc}
-              alt="Avatar"
-              className="rounded-full h-[40px] w-[40px]"
-              priority
-            />
-            <div>
-              <h1 className="text-md font-bold space-y-3">Conal</h1>
-              <p>tháng 11 năm 2023</p>
-            </div>
-          </div>
-          <p className="line-clamp-5">{`"...${data.bio}`}</p>
-        </div>
-      </div>
-      <hr /> */}
           {ratings &&
             ratings.length > 0 &&
             ratings.map((rating, index) => (

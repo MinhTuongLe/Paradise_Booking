@@ -284,7 +284,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
               locationValue={location}
               id={place.id}
               currentUser={currentUser}
-              isFree = {place.is_free}
+              isFree={place.is_free}
             />
             <div className="grid grid-cols-1 md:grid-cols-7 md:gap-10 my-8">
               <ListingInfo
@@ -307,7 +307,9 @@ function ListingClient({ reservations = [], place, currentUser }) {
                 <div className="w-full flex justify-center items-start">
                   <div
                     className="flex justify-center items-center gap-4 cursor-pointer"
-                    onClick={() => reportModal.onOpen({ place, user:currentUser })}
+                    onClick={() =>
+                      reportModal.onOpen({ place, user: currentUser })
+                    }
                   >
                     <FaFlag size={16} />
                     <span className="underline">Report this room</span>
@@ -316,7 +318,10 @@ function ListingClient({ reservations = [], place, currentUser }) {
               </div>
             </div>
             <hr />
-            <ListingComments place_id={place.id} />
+            <ListingComments
+              place_id={place.id}
+              rating_average={Number(place.rating_average).toFixed(1)}
+            />
             <hr />
             <div className="my-8 w-full">
               <p className="text-xl font-semibold mb-8">{`Where you’ll be`}</p>

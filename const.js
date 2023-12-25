@@ -163,7 +163,7 @@ export const types = [
     value: 1,
   },
   {
-    name: "This place is not real",
+    name: "This place/vendor is not real",
     value: 2,
   },
   {

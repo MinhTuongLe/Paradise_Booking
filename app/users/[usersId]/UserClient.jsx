@@ -305,7 +305,7 @@ function UserClient({ places, currentUser, role }) {
                       onClick={reportModal.onOpen}
                     >
                       <FaFlag size={16} />
-                      <span className="underline">Report this room</span>
+                      <span className="underline">Report this vendor</span>
                     </div>
                   </div>
                 )}
@@ -479,7 +479,10 @@ function UserClient({ places, currentUser, role }) {
                           {ratings && ratings.length > 0 && (
                             <div className="flex justify-between items-center w-full">
                               <h1 className="text-xl font-bold space-y-3">
-                                {currentUser.full_name || "User"}' Comments
+                                {currentUser.full_name ||
+                                  currentUser.username ||
+                                  "Vendor"}
+                                's Comments
                               </h1>
                               {ratings && ratings.length > 2 && (
                                 <button
@@ -556,7 +559,10 @@ function UserClient({ places, currentUser, role }) {
                                 <>
                                   <div className="mt-4 flex justify-between items-center w-full">
                                     <h1 className="text-xl font-bold space-y-3">
-                                      {currentUser.full_name || "-"}'s Rooms
+                                      {currentUser.full_name ||
+                                        currentUser.username ||
+                                        "Vendor"}
+                                      's Rooms
                                     </h1>
                                     {places.length > 3 && (
                                       <button
