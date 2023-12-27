@@ -31,7 +31,7 @@ function SearchModal({}) {
   const [location, setLocation] = useState();
   const [step, setStep] = useState(searchModel.option);
   const [guest, setGuest] = useState(1);
-  // const [bedCount, setBedCount] = useState(1);
+  const [num_bed, setBedCount] = useState(1);
   const [dateRange, setDateRange] = useState({
     startDate: new Date(),
     endDate: new Date(),
@@ -90,6 +90,7 @@ function SearchModal({}) {
       updatedQuery = {
         ...currentQuery,
         guest: guest,
+        num_bed: num_bed,
       };
     } else if (step === STEPS.PRICE) {
       updatedQuery = {
@@ -124,7 +125,7 @@ function SearchModal({}) {
     location,
     router,
     guest,
-    // bedCount,
+    num_bed,
     dateRange,
     onNext,
     params,
@@ -205,13 +206,13 @@ function SearchModal({}) {
           title="Guests"
           subtitle="How many guests are coming?"
         />
-        {/* <hr />
+        <hr />
         <Counter
           onChange={(value) => setBedCount(value)}
-          value={bedCount}
-          title="Rooms"
-          subtitle="How many rooms do you need?"
-        /> */}
+          value={num_bed}
+          title="Beds"
+          subtitle="How many beds per room do you need?"
+        />
       </div>
     );
   }
