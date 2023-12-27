@@ -7,7 +7,14 @@ import Sleep from "../Sleep";
 import Offers from "../Offers";
 import { offers } from "@/const";
 
-function ListingInfo({ user, description, bedCount, guestCount, amenities }) {
+function ListingInfo({
+  user,
+  description,
+  bedCount,
+  bedRoom,
+  guestCount,
+  amenities,
+}) {
   const emptyImageSrc = "/assets/avatar.png";
 
   return (
@@ -28,6 +35,7 @@ function ListingInfo({ user, description, bedCount, guestCount, amenities }) {
         <div className="flex flex-row items-center gap-4 font-light text-neutral-500">
           <p>{guestCount} guests</p>
           <p>{bedCount} beds</p>
+          <p>{bedRoom} bedrooms</p>
         </div>
       </div>
       <hr />
@@ -39,16 +47,15 @@ function ListingInfo({ user, description, bedCount, guestCount, amenities }) {
           Every booking includes free protection from Host cancellations,
           listing inaccuracies, and other issues like trouble checking in.
         </p>
-        {/* <p className="text-black font-bold underline pt-3 cursor-pointer">
+        <p className="text-black font-bold underline pt-3 cursor-pointer">
           Learn more
-        </p> */}
+        </p>
       </div>
       <hr />
-      {/* <p className="text-lg font-light text-neutral-500">{description}</p>
+      <p className="text-lg font-light text-neutral-500">{description}</p>
       <hr />
-      <Sleep />
+      {/* <Sleep />
       <hr /> */}
-      {/* <Offers /> */}
       <div className="grid grid-cols-12 gap-x-12 gap-y-3 mb-8 w-full">
         {amenities &&
           amenities.map((item, index) => {

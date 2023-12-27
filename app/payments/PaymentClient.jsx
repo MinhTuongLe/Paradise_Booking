@@ -41,12 +41,10 @@ function PaymentClient({ payments }) {
   const params = useSearchParams();
   const router = useRouter();
 
-  // Step 3: Sử dụng onChange để cập nhật giá trị state khi người dùng nhập vào input
   const handleInputChange = (e) => {
     setSearchValue(e.target.value);
   };
 
-  // Step 4: Sử dụng onSubmit để xử lý logic khi form được submit
   const handleFormSubmit = (isClear) => {
     let currentQuery = {};
 

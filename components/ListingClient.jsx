@@ -289,9 +289,10 @@ function ListingClient({ reservations = [], place, currentUser }) {
             <div className="grid grid-cols-1 md:grid-cols-7 md:gap-10 my-8">
               <ListingInfo
                 user={currentUser}
-                description={place.description}
-                bedCount={place.num_bed || 0}
-                guestCount={place.max_guest || 0}
+                description={place?.description}
+                bedCount={place?.num_bed || 0}
+                bedRoom={place?.bed_room  || 0}
+                guestCount={place?.max_guest || 0}
                 amenities={selectedAmenities || []}
               />
               <div className="order-first mb-10 md:order-last md:col-span-3 space-y-6">
