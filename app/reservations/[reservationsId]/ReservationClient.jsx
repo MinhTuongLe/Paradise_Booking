@@ -95,9 +95,12 @@ function ReservationClient({ reservation, rating }) {
     }
   };
 
-  // if (!authState || loggedUser.id !== reservation.user_id) {
-  //   return <EmptyState title="Unauthorized" subtitle="Please login" />;
-  // }
+  if (
+    reservation.user_id !== 0 &&
+    (!authState || loggedUser.id !== reservation.user_id)
+  ) {
+    return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  }
 
   return (
     <div className="max-w-[768px] mx-auto px-4">
