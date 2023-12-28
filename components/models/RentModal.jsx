@@ -59,14 +59,14 @@ function RentModal({}) {
       price_per_night: 1,
       description: "",
       address: "",
-      num_place_available: 1,
+      num_place_original: 1,
     },
   });
 
   const guestCount = watch("max_guest");
   const num_bed = watch("num_bed");
   const bed_room = watch("bed_room");
-  const num_place_available = watch("num_place_available");
+  const num_place_original = watch("num_place_original");
   const cover = watch("cover");
 
   const [lat, setLat] = useState(51);
@@ -155,6 +155,7 @@ function RentModal({}) {
         cover: imageUrl,
         num_bed: Number(data.num_bed),
         bed_room: Number(data.bed_room),
+        num_place_original: Number(data.num_place_original),
       };
 
       // create place
@@ -386,8 +387,8 @@ function RentModal({}) {
         <Counter
           title="Available rooms"
           subtitle="How many available rooms in your place?"
-          value={num_place_available}
-          onChange={(value) => setCustomValue("num_place_available", value)}
+          value={num_place_original}
+          onChange={(value) => setCustomValue("num_place_original", value)}
         />
       </div>
     );

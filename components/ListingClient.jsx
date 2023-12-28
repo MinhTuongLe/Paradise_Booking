@@ -26,12 +26,7 @@ import { useForm } from "react-hook-form";
 import Input from "./inputs/Input";
 import { API_URL, classNames, payment_methods } from "@/const";
 import { useSelector } from "react-redux";
-
-const initialDateRange = {
-  startDate: new Date(),
-  endDate: new Date(),
-  key: "selection",
-};
+import { formatISO, addDays } from "date-fns";
 
 function ListingClient({ reservations, place, currentUser }) {
   const authState = useSelector((state) => state.authSlice.authState);
@@ -61,8 +56,6 @@ function ListingClient({ reservations, place, currentUser }) {
 
   const disableDates = useMemo(() => {
     let dates = [];
-
-    console.log(reservations);
 
     reservations &&
       reservations.forEach((reservation) => {
@@ -96,7 +89,13 @@ function ListingClient({ reservations, place, currentUser }) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useState(place.price_per_night);
-  const [dateRange, setDateRange] = useState(initialDateRange);
+  const [dateRange, setDateRange] = useState([
+    {
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "selection",
+    },
+  ]);
   const [paymentMode, setPaymentMode] = useState(false);
   const [dayCount, setDayCount] = useState(1);
   const [bookingMode, setBookingMode] = useState(1);
@@ -123,8 +122,16 @@ function ListingClient({ reservations, place, currentUser }) {
   const onCreateReservation = async (data) => {
     try {
       setIsLoading(true);
-      const checkin_date = `${dateRange.startDate.getDate()}-${dateRange.startDate.getMonth()}-${dateRange.startDate.getFullYear()}`;
-      const checkout_date = `${dateRange.endDate.getDate()}-${dateRange.endDate.getMonth()}-${dateRange.endDate.getFullYear()}`;
+      const checkin_date = formatISO(dateRange[0].startDate)
+        .split("T")[0]
+        .split("-")
+        .reverse()
+        .join("-");
+      const checkout_date = formatISO(dateRange[0].endDate)
+        .split("T")[0]
+        .split("-")
+        .reverse()
+        .join("-");
 
       let submitValues = {
         place_id: place.id,
@@ -237,11 +244,11 @@ function ListingClient({ reservations, place, currentUser }) {
   };
 
   useEffect(() => {
-    if (dateRange.startDate && dateRange.endDate) {
-      const count = differenceInCalendarDays(
-        dateRange.endDate,
-        dateRange.startDate
-      );
+    const startDate = dateRange[0].startDate;
+    const endDate = dateRange[0].endDate;
+
+    if (startDate && endDate) {
+      const count = differenceInCalendarDays(endDate, startDate);
       setDayCount(count);
 
       if (count && place.price_per_night) {
@@ -296,7 +303,7 @@ function ListingClient({ reservations, place, currentUser }) {
                   onChangeDate={(value) => setDateRange(value)}
                   dateRange={dateRange}
                   onSubmit={() => setPaymentMode(true)}
-                  disabled={isLoading || place?.num_place_available === 0}
+                  disabled={isLoading || place?.num_place_original === 0}
                   disabledDates={disableDates}
                 />
                 <div className="w-full flex justify-center items-start">
@@ -577,8 +584,20 @@ function ListingClient({ reservations, place, currentUser }) {
                   <span className="text-md font-bold">Date</span>
                   <span className="text-md font-thin">
                     {dayCount > 1
-                      ? `${dateRange.startDate.getDate()}/${dateRange.startDate.getMonth()}/${dateRange.startDate.getFullYear()} - ${dateRange.endDate.getDate()}/${dateRange.endDate.getMonth()}/${dateRange.endDate.getFullYear()}`
-                      : `${dateRange.startDate.getDate()}/${dateRange.startDate.getMonth()}/${dateRange.startDate.getFullYear()}`}
+                      ? `${formatISO(dateRange[0].startDate)
+                          .split("T")[0]
+                          .split("-")
+                          .reverse()
+                          .join("-")} - ${formatISO(dateRange[0].endDate)
+                          .split("T")[0]
+                          .split("-")
+                          .reverse()
+                          .join("/")}`
+                      : `${formatISO(dateRange[0].startDate)
+                          .split("T")[0]
+                          .split("-")
+                          .reverse()
+                          .join("/")}`}
                   </span>
                 </div>
                 <div className="flex flex-col justify-between items-start">
@@ -667,13 +686,13 @@ function ListingClient({ reservations, place, currentUser }) {
                       height={500}
                       src={place?.cover || emptyImageSrc}
                       alt="room image"
-                      className="rounded-xl"
+                      className="rounded-xl aspect-square"
                       priority
                     />
                   </div>
                   <div className="w-[70%]">
                     <div className="space-y-1">
-                      <p className="text-sm font-thin">Room type</p>
+                      <p className="text-sm font-thin">Room</p>
                       <p className="text-md font-bold">
                         {place?.name || "Room Name"}
                       </p>

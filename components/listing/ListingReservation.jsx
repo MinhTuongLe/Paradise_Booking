@@ -1,9 +1,11 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Calendar from "../inputs/Calendar";
 import Button from "../Button";
 import { useSelector } from "react-redux";
+import { formatISO, addDays } from "date-fns";
+import { DateRangePicker } from "react-date-range";
 
 function ListingReservation({
   price,
@@ -17,17 +19,27 @@ function ListingReservation({
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
   return (
-    <div className="bg-white rounded-xl border-[1px] border-neutral-200 overflow-hidden">
+    <div className="bg-white rounded-xl border-[1px] border-neutral-200 overflow-hidden w-full">
       <div className="flex flex-row items-center gap-1 p-4">
         <div className="flex gap-1 text-2xl font-semibold">
           $ {price} <p className="font-light text-neutral-600">/ night</p>
         </div>
       </div>
       <hr />
-      <Calendar
+      {/* <Calendar
         value={dateRange}
         disabledDates={disabledDates}
         onChange={(value) => onChangeDate(value.selection)}
+      /> */}
+      <DateRangePicker
+        onChange={(item) => onChangeDate([item.selection])}
+        showSelectionPreview={true}
+        moveRangeOnFirstSelection={false}
+        months={2}
+        ranges={dateRange}
+        direction="vertical"
+        disabledDates={disabledDates}
+        rangeColors={["#f43f5e"]}
       />
       {loggedUser.role !== 3 && (
         <>
