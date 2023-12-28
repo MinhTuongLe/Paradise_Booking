@@ -1,14 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import useLoginModel from "@/hook/useLoginModal";
 import useReportModal from "@/hook/useReportModal";
 
 import axios from "axios";
-import { differenceInCalendarDays, eachDayOfInterval } from "date-fns";
+import { differenceInCalendarDays, eachDayOfInterval, parse } from "date-fns";
 import { useRouter } from "next/navigation";
-import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
-import { Range } from "react-date-range";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import dynamic from "next/dynamic";
 import Cookie from "js-cookie";
@@ -26,9 +24,8 @@ import { FaBusinessTime, FaFlag, FaStar } from "react-icons/fa";
 import Button from "./Button";
 import { useForm } from "react-hook-form";
 import Input from "./inputs/Input";
-import { API_URL, classNames, payment_methods, paypalOptions } from "@/const";
+import { API_URL, classNames, payment_methods } from "@/const";
 import { useSelector } from "react-redux";
-import EmptyState from "./EmptyState";
 
 const initialDateRange = {
   startDate: new Date(),
@@ -36,7 +33,7 @@ const initialDateRange = {
   key: "selection",
 };
 
-function ListingClient({ reservations = [], place, currentUser }) {
+function ListingClient({ reservations, place, currentUser }) {
   const authState = useSelector((state) => state.authSlice.authState);
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
@@ -60,18 +57,19 @@ function ListingClient({ reservations = [], place, currentUser }) {
     [lat, lng]
   );
   const router = useRouter();
-  const loginModal = useLoginModel();
   const reportModal = useReportModal();
 
   const disableDates = useMemo(() => {
     let dates = [];
 
+    console.log(reservations);
+
     reservations &&
       reservations.forEach((reservation) => {
-        const range = eachDayOfInterval({
-          start: new Date(reservation.checkin_date),
-          end: new Date(reservation.checkout_date),
-        });
+        const startDate = parse(reservation[0], "dd-MM-yyyy", new Date());
+        const endDate = parse(reservation[1], "dd-MM-yyyy", new Date());
+
+        const range = eachDayOfInterval({ start: startDate, end: endDate });
 
         dates = [...dates, ...range];
       });
@@ -238,10 +236,6 @@ function ListingClient({ reservations = [], place, currentUser }) {
     await getPolicies();
   };
 
-  const onSuccess = (details, data) => {
-    console.log(details, data);
-  };
-
   useEffect(() => {
     if (dateRange.startDate && dateRange.endDate) {
       const count = differenceInCalendarDays(
@@ -291,7 +285,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
                 user={currentUser}
                 description={place?.description}
                 bedCount={place?.num_bed || 0}
-                bedRoom={place?.bed_room  || 0}
+                bedRoom={place?.bed_room || 0}
                 guestCount={place?.max_guest || 0}
                 amenities={selectedAmenities || []}
               />
@@ -302,7 +296,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
                   onChangeDate={(value) => setDateRange(value)}
                   dateRange={dateRange}
                   onSubmit={() => setPaymentMode(true)}
-                  disabled={isLoading}
+                  disabled={isLoading || place?.num_place_available === 0}
                   disabledDates={disableDates}
                 />
                 <div className="w-full flex justify-center items-start">
