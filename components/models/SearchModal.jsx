@@ -35,7 +35,7 @@ function SearchModal({}) {
   const [dateRange, setDateRange] = useState([
     {
       startDate: new Date(),
-      endDate: addDays(new Date(), 7),
+      endDate: new Date(),
       key: "selection",
     },
   ]);
@@ -214,8 +214,8 @@ function SearchModal({}) {
           months={2}
           ranges={dateRange}
           direction="horizontal"
+          rangeColors={["#f43f5e"]}
         />
-        ;
       </div>
     );
   }
