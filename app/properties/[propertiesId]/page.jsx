@@ -40,12 +40,12 @@ const PropertyPage = async ({ params, searchParams }) => {
 
   return (
     <ClientOnly>
-      <PropertyClient place={place} reservations={obj.reservations} />
-      {obj.paging?.total > (obj.paging?.limit || LIMIT) && (
+      <PropertyClient place={place} reservations={obj?.reservations} />
+      {obj?.paging?.total > (obj?.paging?.limit || LIMIT) && (
         <PaginationComponent
           page={Number(searchParams?.page) || 1}
-          total={obj.paging?.total || LIMIT}
-          limit={obj.paging?.limit || LIMIT}
+          total={obj?.paging?.total || LIMIT}
+          limit={obj?.paging?.limit || LIMIT}
         />
       )}
     </ClientOnly>

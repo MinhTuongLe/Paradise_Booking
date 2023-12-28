@@ -33,7 +33,11 @@ function ListingReservation({
         <>
           <hr />
           <div className="p-4">
-            <Button disabled={disabled} label="Reserve" onClick={onSubmit} />
+            <Button
+              disabled={disabled}
+              label={disabled ? "Out of rooms" : "Reserve"}
+              onClick={onSubmit}
+            />
           </div>
         </>
       )}

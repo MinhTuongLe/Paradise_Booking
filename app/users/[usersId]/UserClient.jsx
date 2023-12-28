@@ -494,7 +494,7 @@ function UserClient({ places, currentUser, role }) {
                               )}
                             </div>
                           )}
-                          <div className="vendor-room-places flex w-full space-x-4 mt-3 justify-center items-center">
+                          <div className="vendor-room-places flex w-full space-x-4 mt-3 justify-start items-center">
                             {!isLoading ? (
                               <>
                                 {ratings && ratings.length > 0 ? (
