@@ -303,7 +303,7 @@ function ListingClient({ reservations, place, currentUser }) {
                   onChangeDate={(value) => setDateRange(value)}
                   dateRange={dateRange}
                   onSubmit={() => setPaymentMode(true)}
-                  disabled={isLoading || place?.num_place_original === 0}
+                  disabled={isLoading || place?.num_place_available === 0}
                   disabledDates={disableDates}
                 />
                 <div className="w-full flex justify-center items-start">
