@@ -345,7 +345,7 @@ function PropertiesClient({ currentUser }) {
                 actionLabel="Delete property"
                 currentUser={currentUser}
                 shrink={true}
-                disabled={listing?.num_place_original === 0}
+                disabled={listing?.num_place_available === 0}
               />
             ))}
           </div>

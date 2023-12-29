@@ -75,18 +75,18 @@ function SearchModal({}) {
     //   return onNext();
     // }
 
-    console.log(
-      formatISO(dateRange[0].startDate)
-        .split("T")[0]
-        .split("-")
-        .reverse()
-        .join("-"),
-      formatISO(dateRange[0].endDate)
-        .split("T")[0]
-        .split("-")
-        .reverse()
-        .join("-")
-    );
+    // console.log(
+    //   formatISO(dateRange[0].startDate)
+    //     .split("T")[0]
+    //     .split("-")
+    //     .reverse()
+    //     .join("-"),
+    //   formatISO(dateRange[0].endDate)
+    //     .split("T")[0]
+    //     .split("-")
+    //     .reverse()
+    //     .join("-")
+    // );
 
     let currentQuery = {},
       updatedQuery = {};
@@ -104,6 +104,16 @@ function SearchModal({}) {
     } else if (step === STEPS.DATE) {
       updatedQuery = {
         ...currentQuery,
+        date_from: formatISO(dateRange[0].startDate)
+          .split("T")[0]
+          .split("-")
+          .reverse()
+          .join("-"),
+        date_to: formatISO(dateRange[0].endDate)
+          .split("T")[0]
+          .split("-")
+          .reverse()
+          .join("-"),
       };
     } else if (step === STEPS.INFO) {
       updatedQuery = {
