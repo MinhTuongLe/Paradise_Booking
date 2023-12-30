@@ -15,6 +15,8 @@ export default async function getPlaces({
   price_to,
   lat,
   lng,
+  date_from,
+  date_to,
 }) {
   try {
     const userEmail = await getUserEmail();
@@ -27,8 +29,11 @@ export default async function getPlaces({
         price_to: price_to || null,
         lat: lat || null,
         lng: lng || null,
+        date_from: date_from || null,
+        date_to: date_to || null,
       },
     };
+
     const response = await axios.post(
       `${API_URL}/places/list`,
       {
