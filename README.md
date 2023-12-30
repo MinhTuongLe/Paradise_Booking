@@ -6,5 +6,5 @@
 
 # CÁCH CHẠY BẰNG DOCKER
 - Bước 1: Mở Terminal trong thư mục source code
-- Bước 2: Chạy lệnh: docker build -t paradise-frontend . (để build Docker image từ docker file)
-- Bước 3: Chạy lệnh: docker run --name AppFE -d -p 3000:3000 paradise-frontend  ( để chạy container từ docker image vừa mới build ở trên lên) và app sẽ chạy với port là 3000 trên localhost
+- Bước 2: Chạy lệnh: docker build -t paradise-frontend
+- Bước 3: Chạy lệnh: docker run --name AppFE -d -p 3000:3000 paradise-frontend và app sẽ chạy với port là 3000 trên localhost
