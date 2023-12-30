@@ -1,10 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
-import Calendar from "../inputs/Calendar";
+import React from "react";
 import Button from "../Button";
 import { useSelector } from "react-redux";
-import { formatISO, addDays } from "date-fns";
 import { DateRangePicker } from "react-date-range";
 
 function ListingReservation({
@@ -15,6 +13,8 @@ function ListingReservation({
   onSubmit,
   disabled,
   disabledDates,
+  isAvailable,
+  changeMode,
 }) {
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
@@ -47,8 +47,11 @@ function ListingReservation({
           <div className="p-4">
             <Button
               disabled={disabled}
-              label={disabled ? "Out of rooms" : "Reserve"}
-              onClick={onSubmit}
+              label={!isAvailable ? "Check Availability" : "Reserve"}
+              onClick={() => {
+                if (isAvailable) changeMode();
+                else onSubmit();
+              }}
             />
           </div>
         </>

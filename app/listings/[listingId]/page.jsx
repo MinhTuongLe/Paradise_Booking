@@ -11,7 +11,7 @@ const ListingPage = async ({ params }) => {
   const { place, vendor_id } = await getPlaceById(params.listingId);
 
   const vendor = await getUserById(vendor_id);
-  const bookedDates = await getBookedDatesByPlaceId(params.listingId);
+  // const bookedDates = await getBookedDatesByPlaceId(params.listingId);
 
   if (!place) {
     return (
@@ -24,7 +24,7 @@ const ListingPage = async ({ params }) => {
   return (
     <ClientOnly>
       <ListingClient
-        reservations={bookedDates}
+        // reservations={bookedDates}
         place={place}
         currentUser={vendor}
       />

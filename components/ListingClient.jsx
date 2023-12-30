@@ -28,7 +28,7 @@ import { API_URL, classNames, payment_methods } from "@/const";
 import { useSelector } from "react-redux";
 import { formatISO, addDays } from "date-fns";
 
-function ListingClient({ reservations, place, currentUser }) {
+function ListingClient({ reservations = [], place, currentUser }) {
   const authState = useSelector((state) => state.authSlice.authState);
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
@@ -105,6 +105,7 @@ function ListingClient({ reservations, place, currentUser }) {
   const [safePolicy, setSafePolicy] = useState("");
   const [cancelPolicy, setCancelPolicy] = useState("");
   const [selected, setSelected] = useState(payment_methods[0]);
+  const [isAvailable, setIsAvailable] = useState(false);
 
   const [searchResult, setSearchResult] = useState(null);
   const handleSearchResult = (result) => {
@@ -238,6 +239,40 @@ function ListingClient({ reservations, place, currentUser }) {
       });
   };
 
+  const onCheckAvailability = async () => {
+    // setIsLoading(true);
+    setIsAvailable(true);
+    // console.log("hihiii");
+    // setPaymentMode(true);
+
+    // await axios
+    //   .get(`${API_URL}/policies/${place.id}`)
+    //   .then((response) => {
+    //     if (response.data.data && response.data.data.length > 0) {
+    //       if (response.data.data[0]?.name) {
+    //         const houseRules = response.data.data[0]?.name;
+    //         const regex = /(\d{1,2}:\d{2})/g;
+    //         const matches = houseRules.match(regex);
+
+    //         const checkinTime = matches[0];
+    //         const checkoutTime = matches[1];
+
+    //         setCheckinTime(checkinTime);
+    //         setCheckoutTime(checkoutTime);
+    //       }
+    //       if (response.data.data[1]?.name)
+    //         setSafePolicy(response.data.data[1]?.name);
+    //       if (response.data.data[2]?.name)
+    //         setCancelPolicy(response.data.data[2]?.name);
+    //     }
+    //     setIsLoading(false);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //     setIsLoading(false);
+    //   });
+  };
+
   const get = async () => {
     await getAmenities();
     await getPolicies();
@@ -302,9 +337,11 @@ function ListingClient({ reservations, place, currentUser }) {
                   totalPrice={totalPrice}
                   onChangeDate={(value) => setDateRange(value)}
                   dateRange={dateRange}
-                  onSubmit={() => setPaymentMode(true)}
+                  onSubmit={onCheckAvailability}
                   disabled={isLoading}
                   disabledDates={disableDates}
+                  isAvailable={isAvailable}
+                  changeMode={() => setPaymentMode(true)}
                 />
                 <div className="w-full flex justify-center items-start">
                   <div
