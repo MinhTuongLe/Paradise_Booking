@@ -62,31 +62,18 @@ function SearchModal({}) {
     [lat, lng]
   );
 
-  const onBack = () => {
-    setStep((value) => value - 1);
-  };
+  // const onBack = () => {
+  //   setStep((value) => value - 1);
+  // };
 
-  const onNext = () => {
-    setStep((value) => value + 1);
-  };
+  // const onNext = () => {
+  //   setStep((value) => value + 1);
+  // };
 
   const onSubmit = useCallback(async () => {
     // if (step !== STEPS.PRICE) {
     //   return onNext();
     // }
-
-    // console.log(
-    //   formatISO(dateRange[0].startDate)
-    //     .split("T")[0]
-    //     .split("-")
-    //     .reverse()
-    //     .join("-"),
-    //   formatISO(dateRange[0].endDate)
-    //     .split("T")[0]
-    //     .split("-")
-    //     .reverse()
-    //     .join("-")
-    // );
 
     let currentQuery = {},
       updatedQuery = {};
@@ -156,8 +143,12 @@ function SearchModal({}) {
     guest,
     num_bed,
     dateRange,
-    onNext,
+    price_from,
+    price_to,
+    // onNext,
     params,
+    lat,
+    lng,
   ]);
 
   const actionLabel = useMemo(() => {
@@ -168,13 +159,13 @@ function SearchModal({}) {
     return "Search";
   }, [step]);
 
-  const secondActionLabel = useMemo(() => {
-    if (step === STEPS.LOCATION) {
-      return undefined;
-    }
+  // const secondActionLabel = useMemo(() => {
+  //   if (step === STEPS.LOCATION) {
+  //     return undefined;
+  //   }
 
-    return "Back";
-  }, [step]);
+  //   return "Back";
+  // }, [step]);
 
   useEffect(() => {
     if (searchResult) {
@@ -276,13 +267,13 @@ function SearchModal({}) {
       isOpen={searchModel.isOpen}
       onClose={searchModel.onClose}
       onSubmit={onSubmit}
-      secondaryAction={step === STEPS.LOCATION ? undefined : onBack}
-      secondaryActionLabel={secondActionLabel}
+      // secondaryAction={step === STEPS.LOCATION ? undefined : onBack}
+      // secondaryActionLabel={secondActionLabel}
       title="Filters"
       actionLabel={actionLabel}
       body={bodyContent}
       reset={undefined}
-      classname={`md:w-2/3 lg:${step === STEPS.DATE ? "w-3/4" : "w-1/3"}`}
+      classname={`md:w-2/3 lg:${step === STEPS.DATE ? "w-2/3" : "w-1/3"}`}
     />
   );
 }

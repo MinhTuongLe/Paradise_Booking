@@ -28,7 +28,7 @@ import { API_URL, classNames, payment_methods } from "@/const";
 import { useSelector } from "react-redux";
 import { formatISO, addDays } from "date-fns";
 
-function ListingClient({ reservations, place, currentUser }) {
+function ListingClient({ reservations = [], place, currentUser }) {
   const authState = useSelector((state) => state.authSlice.authState);
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
@@ -105,6 +105,7 @@ function ListingClient({ reservations, place, currentUser }) {
   const [safePolicy, setSafePolicy] = useState("");
   const [cancelPolicy, setCancelPolicy] = useState("");
   const [selected, setSelected] = useState(payment_methods[0]);
+  const [isAvailable, setIsAvailable] = useState(false);
 
   const [searchResult, setSearchResult] = useState(null);
   const handleSearchResult = (result) => {
@@ -238,6 +239,41 @@ function ListingClient({ reservations, place, currentUser }) {
       });
   };
 
+  const onCheckAvailability = () => {
+    setIsLoading(true);
+    const checkin_date = formatISO(dateRange[0].startDate)
+      .split("T")[0]
+      .split("-")
+      .reverse()
+      .join("-");
+    const checkout_date = formatISO(dateRange[0].endDate)
+      .split("T")[0]
+      .split("-")
+      .reverse()
+      .join("-");
+
+    const config = {
+      params: {
+        place_id: place.id,
+        date_from: checkin_date,
+        date_to: checkout_date,
+      },
+    };
+
+    axios
+      .get(`${API_URL}/places/check_date_available`, config)
+      .then((response) => {
+        setIsAvailable(response?.data?.data);
+        if (!response?.data?.data)
+          toast.error("This place is not available on the dates you selected");
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLoading(false);
+      });
+  };
+
   const get = async () => {
     await getAmenities();
     await getPolicies();
@@ -302,9 +338,11 @@ function ListingClient({ reservations, place, currentUser }) {
                   totalPrice={totalPrice}
                   onChangeDate={(value) => setDateRange(value)}
                   dateRange={dateRange}
-                  onSubmit={() => setPaymentMode(true)}
-                  disabled={isLoading || place?.num_place_available === 0}
+                  onSubmit={onCheckAvailability}
+                  disabled={isLoading}
                   disabledDates={disableDates}
+                  isAvailable={isAvailable}
+                  changeMode={() => setPaymentMode(true)}
                 />
                 <div className="w-full flex justify-center items-start">
                   <div

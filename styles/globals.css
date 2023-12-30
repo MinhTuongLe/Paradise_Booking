@@ -53,3 +53,10 @@ input[type="range"]::-webkit-slider-thumb {
 .rdrDayToday .rdrDayNumber span::after {
   background: #f43f5e !important;
 }
+
+.rdrDefinedRangesWrapper {
+  display: none !important;
+}
+.rdrDateRangePickerWrapper {
+  width: 100% !important;
+}
