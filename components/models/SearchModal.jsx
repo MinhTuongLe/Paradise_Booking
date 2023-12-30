@@ -273,7 +273,7 @@ function SearchModal({}) {
       actionLabel={actionLabel}
       body={bodyContent}
       reset={undefined}
-      classname={`md:w-2/3 lg:${step === STEPS.DATE ? "w-3/4" : "w-1/3"}`}
+      classname={`md:w-2/3 lg:${step === STEPS.DATE ? "w-2/3" : "w-1/3"}`}
     />
   );
 }

@@ -239,38 +239,39 @@ function ListingClient({ reservations = [], place, currentUser }) {
       });
   };
 
-  const onCheckAvailability = async () => {
-    // setIsLoading(true);
-    setIsAvailable(true);
-    // console.log("hihiii");
-    // setPaymentMode(true);
+  const onCheckAvailability = () => {
+    setIsLoading(true);
+    const checkin_date = formatISO(dateRange[0].startDate)
+      .split("T")[0]
+      .split("-")
+      .reverse()
+      .join("-");
+    const checkout_date = formatISO(dateRange[0].endDate)
+      .split("T")[0]
+      .split("-")
+      .reverse()
+      .join("-");
 
-    // await axios
-    //   .get(`${API_URL}/policies/${place.id}`)
-    //   .then((response) => {
-    //     if (response.data.data && response.data.data.length > 0) {
-    //       if (response.data.data[0]?.name) {
-    //         const houseRules = response.data.data[0]?.name;
-    //         const regex = /(\d{1,2}:\d{2})/g;
-    //         const matches = houseRules.match(regex);
+    const config = {
+      params: {
+        place_id: place.id,
+        date_from: checkin_date,
+        date_to: checkout_date,
+      },
+    };
 
-    //         const checkinTime = matches[0];
-    //         const checkoutTime = matches[1];
-
-    //         setCheckinTime(checkinTime);
-    //         setCheckoutTime(checkoutTime);
-    //       }
-    //       if (response.data.data[1]?.name)
-    //         setSafePolicy(response.data.data[1]?.name);
-    //       if (response.data.data[2]?.name)
-    //         setCancelPolicy(response.data.data[2]?.name);
-    //     }
-    //     setIsLoading(false);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //     setIsLoading(false);
-    //   });
+    axios
+      .get(`${API_URL}/places/check_date_available`, config)
+      .then((response) => {
+        setIsAvailable(response?.data?.data);
+        if (!response?.data?.data)
+          toast.error("This place is not available on the dates you selected");
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLoading(false);
+      });
   };
 
   const get = async () => {
