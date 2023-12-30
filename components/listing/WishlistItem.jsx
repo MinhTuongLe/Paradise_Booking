@@ -73,6 +73,7 @@ function WishlistItem({ data, listingId, onActions }) {
         getPlacesByWishlistId();
         wishlistModal.onClose();
         // window.location.reload();
+        router.refresh();
       })
       .catch((err) => {
         toast.error("This place is now in this wishlist");
