@@ -15,9 +15,11 @@ import axios from "axios";
 import Loader from "@/components/Loader";
 import EmptyState from "@/components/EmptyState";
 import { useRouter } from "next/navigation";
+import Button from "@/components/Button";
+import useWishlistModal from "@/hook/useWishlistModal";
 
 function FavoritesClient({ wishlists }) {
-  console.log(wishlists);
+  const wishlistModal = useWishlistModal();
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
   const authState = useSelector((state) => state.authSlice.authState);
   const [isLoading, setIsLoading] = useState(false);
@@ -137,10 +139,7 @@ function FavoritesClient({ wishlists }) {
         </Dialog>
       </Transition.Root>
       <div className="mt-10">
-        <Heading
-          title="Your Wishlist"
-          subtitle="List of your wishlist!"
-        />
+        <Heading title="Your Wishlist" subtitle="List of your wishlist!" />
       </div>
       {!isLoading ? (
         <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 2xl:grid-cols-5 gap-8">
@@ -157,7 +156,17 @@ function FavoritesClient({ wishlists }) {
               </div>
             ))
           ) : (
-            <>No Wishlist to display</>
+            <div className="space-y-4">
+              <span className="text-[24px] font-bold whitespace-nowrap">
+                You don't have any wishlist to display
+              </span>
+              <div className="max-w-[160px]">
+                <Button
+                  label="Create a new one"
+                  onClick={() => wishlistModal.onOpen(undefined)}
+                />
+              </div>
+            </div>
           )}
         </div>
       ) : (

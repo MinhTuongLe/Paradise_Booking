@@ -4,7 +4,7 @@
 
 import useWishlistModal from "@/hook/useWishlistModal";
 import axios from "axios";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -25,6 +25,7 @@ const STEPS = {
 function WishlistModal() {
   const router = useRouter();
   const params = useSearchParams();
+  const pathName = usePathname();
 
   const wishlistModal = useWishlistModal();
   const [step, setStep] = useState(STEPS.ADD_TO_WISHLIST);
@@ -78,8 +79,12 @@ function WishlistModal() {
         .post(`${API_URL}/wish_lists`, submitValues, config)
         .then(() => {
           toast.success("Create New Wishlist Successfully");
+          if (pathName === "/favorites") {
+            setIsLoading(false);
+            wishlistModal.onClose();
+            router.refresh();
+          }
           getWishListByUserId();
-          setIsLoading(false);
           onBack();
         })
         .catch((err) => {
@@ -135,7 +140,13 @@ function WishlistModal() {
   };
 
   useEffect(() => {
-    if (wishlistModal.isOpen) getWishListByUserId();
+    if (wishlistModal.isOpen) {
+      if (!listingId) {
+        setStep(STEPS.CREATE_WISHLIST);
+        return;
+      }
+      getWishListByUserId();
+    }
   }, [wishlistModal.isOpen, params]);
 
   let bodyContent = (

@@ -446,7 +446,7 @@ function PropertyClient({ place, reservations }) {
         {currentStep === steps.GENERAL ? (
           <>
             General Information{" "}
-            {place?.num_place_available === 0 && (
+            {place?.is_booked === 0 && (
               <span className="text-rose-500 font-extrabold">
                 (Full of rooms)
               </span>

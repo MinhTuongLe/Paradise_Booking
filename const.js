@@ -107,20 +107,20 @@ export const place_status = [
   },
 ];
 
-export const place_is_available = [
-  {
-    id: 3,
-    name: "All",
-  },
-  {
-    id: 1,
-    name: "Available",
-  },
-  {
-    id: 2,
-    name: "Not Available",
-  },
-];
+// export const place_is_available = [
+//   {
+//     id: 3,
+//     name: "All",
+//   },
+//   {
+//     id: 1,
+//     name: "Available",
+//   },
+//   {
+//     id: 2,
+//     name: "Not Available",
+//   },
+// ];
 
 export function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
