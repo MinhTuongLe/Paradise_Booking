@@ -16,7 +16,10 @@ import { toast } from "react-toastify";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
-function WishlistItem({ data, listingId, onActions }) {
+function WishlistCard({
+  data,
+  // onActions
+}) {
   const router = useRouter();
   const wishlistModal = useWishlistModal();
   const [isLoading, setIsLoading] = useState(true);
@@ -26,126 +29,126 @@ function WishlistItem({ data, listingId, onActions }) {
   const [open, setOpen] = useState(false);
   const cancelButtonRef = useRef(null);
 
-  const getPlacesByWishlistId = async () => {
-    const accessToken = Cookie.get("accessToken");
-    const config = {
-      params: {
-        wish_list_id: data.id,
-      },
-      headers: {
-        "content-type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    };
+  // const getPlacesByWishlistId = async () => {
+  //   const accessToken = Cookie.get("accessToken");
+  //   const config = {
+  //     params: {
+  //       wish_list_id: data.id,
+  //     },
+  //     headers: {
+  //       "content-type": "application/json",
+  //       Authorization: `Bearer ${accessToken}`,
+  //     },
+  //   };
 
-    await axios
-      .get(`${API_URL}/place_wish_lists/place`, config)
-      .then((response) => {
-        setWishlistLength(response.data.data.length);
-      })
-      .catch((err) => {
-        toast.error("Something Went Wrong");
-      });
-    setIsLoading(false);
-  };
+  //   await axios
+  //     .get(`${API_URL}/place_wish_lists/place`, config)
+  //     .then((response) => {
+  //       setWishlistLength(response.data.data.length);
+  //     })
+  //     .catch((err) => {
+  //       toast.error("Something Went Wrong");
+  //     });
+  //   setIsLoading(false);
+  // };
 
-  const handleAdd = (e) => {
-    e.stopPropagation();
+  // const handleAdd = (e) => {
+  //   e.stopPropagation();
 
-    const accessToken = Cookie.get("accessToken");
-    const config = {
-      headers: {
-        "content-type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    };
+  //   const accessToken = Cookie.get("accessToken");
+  //   const config = {
+  //     headers: {
+  //       "content-type": "application/json",
+  //       Authorization: `Bearer ${accessToken}`,
+  //     },
+  //   };
 
-    const submitValues = {
-      place_id: listingId,
-      wishlist_id: data.id,
-    };
+  //   const submitValues = {
+  //     place_id: listingId,
+  //     wishlist_id: data.id,
+  //   };
 
-    axios
-      .post(`${API_URL}/place_wish_lists`, submitValues, config)
-      .then(() => {
-        setIsLoading(false);
-        toast.success(`Add Place To Wishlist ${data.title} Successfully`);
-        getPlacesByWishlistId();
-        wishlistModal.onClose();
-        // window.location.reload();
-        router.refresh();
-      })
-      .catch((err) => {
-        toast.error("This place is now in this wishlist");
-        // toast.error("Something Went Wrong");
-        setIsLoading(false);
-      });
-  };
+  //   axios
+  //     .post(`${API_URL}/place_wish_lists`, submitValues, config)
+  //     .then(() => {
+  //       setIsLoading(false);
+  //       toast.success(`Add Place To Wishlist ${data.title} Successfully`);
+  //       getPlacesByWishlistId();
+  //       wishlistModal.onClose();
+  //       // window.location.reload();
+  //       router.refresh();
+  //     })
+  //     .catch((err) => {
+  //       toast.error("This place is now in this wishlist");
+  //       // toast.error("Something Went Wrong");
+  //       setIsLoading(false);
+  //     });
+  // };
 
-  const handleEdit = (e) => {
-    e.stopPropagation();
-    const accessToken = Cookie.get("accessToken");
+  // const handleEdit = (e) => {
+  //   e.stopPropagation();
+  //   const accessToken = Cookie.get("accessToken");
 
-    const config = {
-      headers: {
-        "content-type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      params: {
-        title: title,
-      },
-    };
+  //   const config = {
+  //     headers: {
+  //       "content-type": "application/json",
+  //       Authorization: `Bearer ${accessToken}`,
+  //     },
+  //     params: {
+  //       title: title,
+  //     },
+  //   };
 
-    axios
-      .put(`${API_URL}/wish_lists/${data.id}`, null, config)
-      .then(() => {
-        setIsLoading(false);
-        toast.success(`Update Wishlist Title Successfully`);
-        setEditMode(false);
-        onActions();
-      })
-      .then(() => {
-        getPlacesByWishlistId();
-      })
-      .catch((err) => {
-        toast.error("Something Went Wrong");
-        setIsLoading(false);
-      });
-  };
+  //   axios
+  //     .put(`${API_URL}/wish_lists/${data.id}`, null, config)
+  //     .then(() => {
+  //       setIsLoading(false);
+  //       toast.success(`Update Wishlist Title Successfully`);
+  //       setEditMode(false);
+  //       onActions();
+  //     })
+  //     .then(() => {
+  //       getPlacesByWishlistId();
+  //     })
+  //     .catch((err) => {
+  //       toast.error("Something Went Wrong");
+  //       setIsLoading(false);
+  //     });
+  // };
 
-  const onDelete = (e) => {
-    e.stopPropagation();
-    setOpen(true);
-  };
+  // const onDelete = (e) => {
+  //   e.stopPropagation();
+  //   setOpen(true);
+  // };
 
-  const handleDelete = () => {
-    const accessToken = Cookie.get("accessToken");
+  // const handleDelete = () => {
+  //   const accessToken = Cookie.get("accessToken");
 
-    const config = {
-      headers: {
-        "content-type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    };
+  //   const config = {
+  //     headers: {
+  //       "content-type": "application/json",
+  //       Authorization: `Bearer ${accessToken}`,
+  //     },
+  //   };
 
-    axios
-      .delete(`${API_URL}/wish_lists/${data.id}`, config)
-      .then(() => {
-        setIsLoading(false);
-        toast.success(`Delete Wishlist Successfully`);
-        setEditMode(false);
-        onActions();
-      })
-      .catch((err) => {
-        toast.error("Something Went Wrong");
-        setIsLoading(false);
-      });
-    setOpen(false);
-  };
+  //   axios
+  //     .delete(`${API_URL}/wish_lists/${data.id}`, config)
+  //     .then(() => {
+  //       setIsLoading(false);
+  //       toast.success(`Delete Wishlist Successfully`);
+  //       setEditMode(false);
+  //       onActions();
+  //     })
+  //     .catch((err) => {
+  //       toast.error("Something Went Wrong");
+  //       setIsLoading(false);
+  //     });
+  //   setOpen(false);
+  // };
 
-  useEffect(() => {
-    getPlacesByWishlistId();
-  }, []);
+  // useEffect(() => {
+  //   getPlacesByWishlistId();
+  // }, []);
 
   return (
     <>
@@ -207,7 +210,7 @@ function WishlistItem({ data, listingId, onActions }) {
                     <button
                       type="button"
                       className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-                      onClick={handleDelete}
+                      // onClick={handleDelete}
                     >
                       Delete
                     </button>
@@ -287,12 +290,12 @@ function WishlistItem({ data, listingId, onActions }) {
               {!editMode ? (
                 <>
                   <FaPlusCircle
-                    onClick={handleAdd}
+                    // onClick={handleAdd}
                     size={36}
                     className="bg-[#05a569] rounded-full text-white hover:brightness-75 cursor-pointer"
                   />
                   <IoIosCloseCircle
-                    onClick={onDelete}
+                    // onClick={onDelete}
                     size={36}
                     className="bg-rose-500 text-white rounded-full hover:brightness-75 cursor-pointer"
                   />
@@ -302,7 +305,7 @@ function WishlistItem({ data, listingId, onActions }) {
                   <IoIosSave
                     color="#1975d3"
                     size={24}
-                    onClick={handleEdit}
+                    // onClick={handleEdit}
                     className="cursor-pointer"
                   />
                 </div>
@@ -319,4 +322,4 @@ function WishlistItem({ data, listingId, onActions }) {
   );
 }
 
-export default WishlistItem;
+export default WishlistCard;

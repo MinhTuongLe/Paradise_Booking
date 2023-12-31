@@ -193,15 +193,15 @@ function PropertiesClient({ currentUser }) {
           <div className="w-[30%]">
             <label
               for="default-search"
-              class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+              className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
             >
               Search
             </label>
-            <div class="relative">
+            <div className="relative">
               <input
                 type="search"
                 id="default-search"
-                class="block w-full p-2 ps-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 "
+                className="block w-full p-2 ps-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 "
                 placeholder="Search Place ID..."
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
@@ -214,10 +214,10 @@ function PropertiesClient({ currentUser }) {
                     place_id: searchValue,
                   });
                 }}
-                class="text-white absolute end-0 bg-rose-500 hover:bg-rose-600 focus:outline-none  font-medium rounded-lg text-sm px-4 py-2 top-0 bottom-0"
+                className="text-white absolute end-0 bg-rose-500 hover:bg-rose-600 focus:outline-none  font-medium rounded-lg text-sm px-4 py-2 top-0 bottom-0"
               >
                 <svg
-                  class="w-4 h-4 text-white"
+                  className="w-4 h-4 text-white"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
