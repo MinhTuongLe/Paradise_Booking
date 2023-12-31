@@ -5,18 +5,19 @@
 import Container from "@/components/Container";
 import Heading from "@/components/Heading";
 import ListingCard from "@/components/listing/ListingCard";
-import { API_URL, classNames, place_is_available } from "@/const";
+import { API_URL } from "@/const";
 import axios from "axios";
 import { Fragment, useRef, useState, useEffect } from "react";
 import { Dialog, Transition, Listbox } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { toast } from "react-toastify";
 import Cookie from "js-cookie";
 import EmptyState from "@/components/EmptyState";
 import Loader from "@/components/Loader";
 import { useSelector } from "react-redux";
 import Button from "@/components/Button";
+import useCheckAvailableModal from "../../hook/useCheckAvailableModal";
 
 function PropertiesClient({ currentUser }) {
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
@@ -24,9 +25,9 @@ function PropertiesClient({ currentUser }) {
   const [isLoading, setIsLoading] = useState(true);
   const [id, setId] = useState();
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState(place_is_available[0]);
   const [places, setPlaces] = useState([]);
   const [searchValue, setSearchValue] = useState("");
+  const checkAvailableModal = useCheckAvailableModal();
 
   const cancelButtonRef = useRef(null);
 
@@ -51,7 +52,7 @@ function PropertiesClient({ currentUser }) {
       const res = await axios.delete(`${API_URL}/places`, config);
 
       if (res.data.data) {
-        await getPlaces(selected.id);
+        await getPlaces();
         toast.success(`Delete room successfully`);
       } else toast.error("Delete room failed");
     } catch (error) {
@@ -60,7 +61,7 @@ function PropertiesClient({ currentUser }) {
     setIsLoading(false);
   };
 
-  const getPlaces = async ({ type_manage, place_id }) => {
+  const getPlaces = async () => {
     setIsLoading(true);
     const accessToken = Cookie.get("accessToken");
     const config = {
@@ -70,8 +71,7 @@ function PropertiesClient({ currentUser }) {
       },
       params: {
         vendor_id: currentUser.id,
-        place_id: place_id ? place_id : 0,
-        type_manage: type_manage,
+        place_id: searchValue ? searchValue : 0,
       },
     };
 
@@ -86,20 +86,13 @@ function PropertiesClient({ currentUser }) {
       });
   };
 
-  const handleClearAllFilters = () => {
+  const handleClear = () => {
     setSearchValue("");
-    // setSelected(place_is_available[0]);
-    getPlaces({
-      type_manage: selected.id,
-      place_id: searchValue,
-    });
+    getPlaces();
   };
 
   useEffect(() => {
-    getPlaces({
-      type_manage: selected.id,
-      place_id: searchValue,
-    });
+    getPlaces();
   }, []);
 
   if (loggedUser.id !== currentUser.id) {
@@ -188,8 +181,8 @@ function PropertiesClient({ currentUser }) {
       <div className="mt-10 mb-6">
         <Heading title="Properties" subtitle="List of your properties" />
       </div>
-      <div className="flex items-center justify-between">
-        <div className="flex items-end space-x-6 w-[75%]">
+      <div className="flex items-start justify-between space-x-8">
+        <div className="w-[70%] flex justify-start space-x-8">
           <div className="w-[30%]">
             <label
               for="default-search"
@@ -207,13 +200,7 @@ function PropertiesClient({ currentUser }) {
                 onChange={(e) => setSearchValue(e.target.value)}
               />
               <button
-                onClick={() => {
-                  // setSelected(place_is_available[0]);
-                  getPlaces({
-                    type_manage: 0,
-                    place_id: searchValue,
-                  });
-                }}
+                onClick={getPlaces}
                 className="text-white absolute end-0 bg-rose-500 hover:bg-rose-600 focus:outline-none  font-medium rounded-lg text-sm px-4 py-2 top-0 bottom-0"
               >
                 <svg
@@ -234,53 +221,22 @@ function PropertiesClient({ currentUser }) {
               </button>
             </div>
           </div>
-          <div className="flex space-y-1 items-start flex-col justify-between">
-            <span className="font-bold text-[16px]">Place status</span>
-            <Listbox
-              value={selected}
-              onChange={(e) => {
-                setSelected(e);
-                setSearchValue("");
-                getPlaces({
-                  type_manage: e.id,
-                  place_id: "",
-                });
-              }}
-            >
-              {({ open }) => (
-                <>
-                  <div className="relative">
-                    <Listbox.Button className="relative w-[180px] cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-500 sm:text-sm sm:leading-6">
-                      <span className="flex items-center">
-                        <span className="ml-3 block truncate">
-                          {selected.name}
-                        </span>
-                      </span>
-                      <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
-                        <ChevronUpDownIcon
-                          className="h-5 w-5 text-gray-400"
-                          aria-hidden="true"
-                        />
-                      </span>
-                    </Listbox.Button>
-                    <Button
-                      outline={true}
-                      disabled={isLoading}
-                      label="Check Available"
-                      onClick={handleClearAllFilters}
-                    />
-                  </div>
-                </>
-              )}
-            </Listbox>
+          <div className="w-[10%] flex justify-between items-center">
+            <Button
+              outline={true}
+              disabled={isLoading}
+              label="Clear"
+              onClick={handleClear}
+              medium
+            />
           </div>
         </div>
         <div className="w-[10%] flex justify-between items-center space-x-8">
           <Button
-            outline={true}
             disabled={isLoading}
-            label="Clear All"
-            onClick={handleClearAllFilters}
+            label="Check Available"
+            onClick={() => checkAvailableModal.onOpen()}
+            medium
           />
         </div>
       </div>
@@ -296,7 +252,7 @@ function PropertiesClient({ currentUser }) {
                 actionLabel="Delete property"
                 currentUser={currentUser}
                 shrink={true}
-                disabled={listing?.num_place_available === 0}
+                disabled={listing?.is_booked === 0}
               />
             ))}
           </div>
