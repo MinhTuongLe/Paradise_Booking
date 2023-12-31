@@ -19,6 +19,12 @@ export const SHRINK_LIMIT = 10;
 
 export const booking_status = [
   {
+    id: 0,
+    name: "All",
+    icon: <></>,
+    color: "#222",
+  },
+  {
     id: 1,
     name: "Pending",
     icon: <MdPending className="text-[24px]" color="#ffa700" />,

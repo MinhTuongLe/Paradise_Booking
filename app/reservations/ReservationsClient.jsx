@@ -27,6 +27,7 @@ import Loader from "@/components/Loader";
 import PaginationComponent from "@/components/PaginationComponent";
 import { useSelector } from "react-redux";
 import EmptyState from "@/components/EmptyState";
+import { IoMdClose } from "react-icons/io";
 
 function ReservationsClient() {
   const router = useRouter();
@@ -35,7 +36,8 @@ function ReservationsClient() {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [reservations, setReservations] = useState({});
-  const [selected, setSelected] = useState(place_status[0]);
+  const [selected, setSelected] = useState(booking_status[0]);
+  const [selectedStatuses, setSelectedStatuses] = useState([]);
   const authState = useSelector((state) => state.authSlice.authState);
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
@@ -56,9 +58,11 @@ function ReservationsClient() {
   });
 
   const handleFilter = async (data) => {
-    let statuses = selected.id === 0 ? null : [selected.id];
+    const statuses = selectedStatuses.map((item) => item.id);
     const submitValues = {
       ...data,
+      date_from: data.date_from.split("-").reverse().join("-"),
+      date_to: data.date_to.split("-").reverse().join("-"),
       statuses,
     };
     getReservations(submitValues);
@@ -67,6 +71,7 @@ function ReservationsClient() {
   const handleClearAllFilters = () => {
     reset();
     setSelected(place_status[0]);
+    setSelectedStatuses([]);
     getReservations();
   };
 
@@ -258,7 +263,18 @@ function ReservationsClient() {
         <div className="flex items-center w-[75%] space-x-16">
           <div className="w-[20%] space-y-2">
             <div className="font-bold text-[16px]">Reservation status</div>
-            <Listbox value={selected} onChange={setSelected}>
+            <Listbox
+              value={selected}
+              onChange={(e) => {
+                setSelected(e);
+                setSelectedStatuses((prevState) => {
+                  if (prevState.includes(e)) {
+                    return prevState;
+                  }
+                  return [...prevState, e];
+                });
+              }}
+            >
               {({ open }) => (
                 <>
                   <div className="relative">
@@ -380,6 +396,47 @@ function ReservationsClient() {
             onClick={handleSubmit(handleFilter)}
           />
         </div>
+      </div>
+      <div className="mt-4">
+        {selectedStatuses?.length > 0 && (
+          <div className="flex space-x-4">
+            {selectedStatuses.map((item) => (
+              <div
+                key={item.id}
+                className="relative cursor-default select-none py-2 pl-3 pr-9 rounded-xl border-[1px]"
+                value={item}
+                style={{
+                  borderColor: item.color,
+                }}
+              >
+                <>
+                  <div className="flex items-center">
+                    <div className={`text-[${item.color}]`}>{item.icon}</div>
+                    <span
+                      className={classNames(
+                        selected ? "font-semibold" : "font-normal",
+                        "ml-3 block truncate"
+                      )}
+                    >
+                      {item.name}
+                    </span>
+                  </div>
+                  <div
+                    className="absolute top-1 right-1 cursor-pointer hover:text-rose-500"
+                    onClick={() => {
+                      setSelected(place_status[0]);
+                      setSelectedStatuses((prevState) =>
+                        prevState.filter((state) => state !== item)
+                      );
+                    }}
+                  >
+                    <IoMdClose size={16} />
+                  </div>
+                </>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       {!isLoading ? (
         reservations && reservations.data?.data?.length > 0 ? (
