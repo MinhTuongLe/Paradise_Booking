@@ -62,6 +62,7 @@ function LoginModal({}) {
         reset();
         router.refresh();
         loginModel.onClose();
+
         const config = {
           params: {
             email: data.email,
@@ -88,7 +89,9 @@ function LoginModal({}) {
           });
       })
       .catch((err) => {
-        toast.error(err.response.data.error.message);
+        toast.error(
+          err?.response?.data?.error?.message || err?.response?.data?.message
+        );
         setIsLoading(false);
       });
   };

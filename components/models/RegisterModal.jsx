@@ -58,7 +58,11 @@ function RegisterModal({}) {
         loginModel.onOpen();
       })
       .catch((err) => {
-        toast.error("Something Went Wrong");
+        toast.error(
+          err?.response?.data?.error?.message ||
+            err?.response?.data?.message ||
+            "Something went wrong"
+        );
         setIsLoading(false);
       });
   };
