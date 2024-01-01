@@ -86,6 +86,8 @@ function ReportModal({}) {
     const updatedReportData = JSON.stringify(currentReportData);
 
     localStorage.setItem("reportData", updatedReportData);
+    toast.success("Report Successfully");
+
     // localStorage.setItem("reportData", JSON.parse(currentReportData).append());
 
     // setIsLoading(true);

@@ -1,23 +1,16 @@
 # user image contain Node.js and yarn
-FROM node:14
-
-# install Yarn
-RUN npm install yarn
+FROM node:18
 
 # create app directory
-WORKDIR /app
-
-# Copy package.json and yarn.lock to the workdir
-COPY package*.json yarn.lock ./
-
-# Install dependencies by Yarn
-RUN yarn install --ignore-engines
+WORKDIR /usr/src/lamheo4
 
 # Copy all files to the workdir
-COPY . .
+COPY . /usr/src/lamheo4
 
-# Expose default port of Next.js
-EXPOSE 3000
+# 
+RUN npm install --legacy-peer-deps
+
+RUN npm run build
 
 # Command to run when starting the container
-CMD ["yarn", "dev"]
+CMD ["npm", "start"]
