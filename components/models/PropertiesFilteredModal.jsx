@@ -9,13 +9,27 @@ import { useParams, useSearchParams } from "next/navigation";
 import { API_URL, LIMIT } from "@/const";
 import axios from "axios";
 import Cookie from "js-cookie";
-import { useEffect, useState } from "react";
+import { useState, useCallback } from "react";
 import Loader from "../Loader";
 import PaginationComponent from "../PaginationComponent";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import Input from "../inputs/Input";
 import Button from "../Button";
+import {
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+} from "@nextui-org/react";
+
+const columns = [
+  { name: "Booking", uid: "booking_id" },
+  { name: "From", uid: "date_from" },
+  { name: "To", uid: "date_to" },
+];
 
 function PropertiesFilteredModal() {
   const checkAvailableModal = useCheckAvailableModal();
@@ -91,6 +105,41 @@ function PropertiesFilteredModal() {
     setProperties([]);
   };
 
+  const renderCell = useCallback((user, columnKey) => {
+    const cellValue = user[columnKey];
+
+    switch (columnKey) {
+      // case "full_name":
+      //   return (
+      //     <div className="flex justify-start items-center space-x-4">
+      //       <Image
+      //         width={40}
+      //         height={40}
+      //         src={user?.avatar || emptyImageSrc}
+      //         alt="Avatar"
+      //         className="rounded-full h-[40px] w-[40px]"
+      //         priority
+      //       />
+      //       <div>
+      //         <h1 className="text-md font-bold space-y-3">
+      //           {cellValue || "-"}
+      //         </h1>
+      //         <p>{user.email}</p>
+      //       </div>
+      //     </div>
+      //   );
+      case "type":
+        const matchedPaymentStatus = types.find(
+          (item) => item.value === cellValue
+        );
+
+        const name = matchedPaymentStatus ? matchedPaymentStatus.name : "-";
+        return <span className="">{name}</span>;
+      default:
+        return cellValue || "-";
+    }
+  }, []);
+
   const bodyContent = (
     <>
       <div className="flex items-center space-x-8 justify-between">
@@ -157,9 +206,93 @@ function PropertiesFilteredModal() {
           </div>
         </div>
       </div>
+      <div className="flex space-x-8 mt-8">
+        <div className="space-x-4">
+          <span className="font-bold text-xl">Original:</span>
+          <span>2 (rooms)</span>
+        </div>
+        <div className="space-x-4">
+          <span className="font-bold text-xl">Booked:</span>
+          <span>1 (rooms)</span>
+        </div>
+        <div className="space-x-4">
+          <span className="font-bold text-xl">Remain:</span>
+          <span>1 (rooms)</span>
+        </div>
+      </div>
+      <div className="mt-4">
+        {/* <div>Booking History</div> */}
+        {/* <div>
+              </div> */}
+        <Table aria-label="Booking History">
+          <TableHeader columns={columns}>
+            {(column) => (
+              <TableColumn
+                className="text-left bg-slate-200 px-3 py-3"
+                key={column.uid}
+              >
+                {column.name}
+              </TableColumn>
+            )}
+          </TableHeader>
+          <TableBody
+            emptyContent={<div className="mt-4">No data to display.</div>}
+          >
+            {/* {reportData?.map((account) => (
+                    <TableRow key={account.id}>
+                      {(columnKey) => (
+                        <TableCell>{renderCell(account, columnKey)}</TableCell>
+                      )}
+                    </TableRow>
+                  ))} */}
+          </TableBody>
+        </Table>
+      </div>
       {!isLoading ? (
         properties && properties?.length > 0 ? (
-          <div className="grid gap-12 sm:grid-cols-2 xl:grid-cols-4 overflow-x-hidden p-8 pb-0">
+          <div className="p-8 pb-0">
+            <div className="flex space-x-8">
+              <div className="space-x-4">
+                <span>Original:</span>
+                <span>2</span>
+              </div>
+              <div className="space-x-4">
+                <span>Booked:</span>
+                <span>1</span>
+              </div>
+              <div className="space-x-4">
+                <span>Remain:</span>
+                <span>1</span>
+              </div>
+            </div>
+            <div>
+              {/* <div>Booking History</div> */}
+              {/* <div>
+              </div> */}
+              <Table aria-label="Booking History">
+                <TableHeader columns={columns}>
+                  {(column) => (
+                    <TableColumn
+                      className="text-left bg-slate-200 px-3 py-3"
+                      key={column.uid}
+                    >
+                      {column.name}
+                    </TableColumn>
+                  )}
+                </TableHeader>
+                <TableBody
+                  emptyContent={<div className="mt-4">No data to display.</div>}
+                >
+                  {/* {reportData?.map((account) => (
+                    <TableRow key={account.id}>
+                      {(columnKey) => (
+                        <TableCell>{renderCell(account, columnKey)}</TableCell>
+                      )}
+                    </TableRow>
+                  ))} */}
+                </TableBody>
+              </Table>
+            </div>
             {/* {places.data &&
             places.data.length > 0 &&
             places.data.map((list) => {
