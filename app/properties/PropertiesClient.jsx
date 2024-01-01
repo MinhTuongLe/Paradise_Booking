@@ -52,7 +52,7 @@ function PropertiesClient({ currentUser }) {
       const res = await axios.delete(`${API_URL}/places`, config);
 
       if (res.data.data) {
-        await getPlaces();
+        await getPlaces("");
         toast.success(`Delete room successfully`);
       } else toast.error("Delete room failed");
     } catch (error) {
@@ -61,7 +61,7 @@ function PropertiesClient({ currentUser }) {
     setIsLoading(false);
   };
 
-  const getPlaces = async () => {
+  const getPlaces = async (searchValue) => {
     setIsLoading(true);
     const accessToken = Cookie.get("accessToken");
     const config = {
@@ -78,21 +78,22 @@ function PropertiesClient({ currentUser }) {
     await axios
       .get(`${API_URL}/bookings_list/manage_reservation`, config)
       .then((response) => {
-        setPlaces(response.data.data);
+        setPlaces(response?.data?.data?.data || []);
         setIsLoading(false);
       })
       .catch((err) => {
+        setPlaces([]);
         setIsLoading(false);
       });
   };
 
   const handleClear = () => {
     setSearchValue("");
-    getPlaces();
+    getPlaces("");
   };
 
   useEffect(() => {
-    getPlaces();
+    getPlaces(searchValue);
   }, []);
 
   if (loggedUser.id !== currentUser.id) {
@@ -185,7 +186,7 @@ function PropertiesClient({ currentUser }) {
         <div className="w-[70%] flex justify-start space-x-8">
           <div className="w-[30%]">
             <label
-              for="default-search"
+              htmlFor="default-search"
               className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
             >
               Search
@@ -200,7 +201,7 @@ function PropertiesClient({ currentUser }) {
                 onChange={(e) => setSearchValue(e.target.value)}
               />
               <button
-                onClick={getPlaces}
+                onClick={() => getPlaces(searchValue)}
                 className="text-white absolute end-0 bg-rose-500 hover:bg-rose-600 focus:outline-none  font-medium rounded-lg text-sm px-4 py-2 top-0 bottom-0"
               >
                 <svg
@@ -252,7 +253,7 @@ function PropertiesClient({ currentUser }) {
                 actionLabel="Delete property"
                 currentUser={currentUser}
                 shrink={true}
-                disabled={listing?.is_booked === 0}
+                disabled={listing?.is_booked}
               />
             ))}
           </div>

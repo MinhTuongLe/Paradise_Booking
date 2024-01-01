@@ -9,21 +9,36 @@ import { useParams, useSearchParams } from "next/navigation";
 import { API_URL, LIMIT } from "@/const";
 import axios from "axios";
 import Cookie from "js-cookie";
-import { useEffect, useState } from "react";
+import { useState, useCallback } from "react";
 import Loader from "../Loader";
 import PaginationComponent from "../PaginationComponent";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import Input from "../inputs/Input";
 import Button from "../Button";
+import {
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+} from "@nextui-org/react";
+
+const columns = [
+  { name: "Booking", uid: "booking_id" },
+  { name: "From", uid: "date_from" },
+  { name: "To", uid: "date_to" },
+];
 
 function PropertiesFilteredModal() {
   const checkAvailableModal = useCheckAvailableModal();
   const params = useParams();
   const searchParams = useSearchParams();
 
-  const [properties, setProperties] = useState([]);
+  const [property, setProperty] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
 
   const {
     register,
@@ -34,39 +49,40 @@ function PropertiesFilteredModal() {
     formState: { errors },
   } = useForm({
     defaultValues: {
+      place_id: "",
       date_from: "",
       date_to: "",
     },
   });
 
-  // const getPlacesByVendorId = async () => {
-  //   setIsLoading(true);
-  //   const config = {
-  //     params: {
-  //       page: searchParams.get("page") || 1,
-  //       limit: searchParams.get("limit") || LIMIT,
-  //     },
-  //   };
+  const getPlacesFiltered = async (dataFilter) => {
+    setIsLoading(true);
+    const { place_id, date_from, date_to } = dataFilter;
+    const config = {
+      params: {
+        place_id,
+        date_from,
+        date_to,
+      },
+    };
 
-  //   await axios
-  //     .get(`${API_URL}/places/owner/${params.usersId}`, config)
-  //     .then((response) => {
-  //       setPlaces(response.data);
-  //       setIsLoading(false);
-  //     })
-  //     .catch((err) => {
-  //       toast.error("Something Went Wrong");
-  //       setIsLoading(false);
-  //     });
-  // };
-
-  // useEffect(() => {
-  //   if (checkAvailableModal.isOpen) getPlacesByVendorId();
-  // }, [params, checkAvailableModal]);
+    await axios
+      .get(`${API_URL}/places/status_booking`, config)
+      .then((response) => {
+        setProperty(response?.data?.data);
+      })
+      .catch((err) => {
+        toast.error("Something Went Wrong");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
 
   const handleFilter = async (data) => {
     const submitValues = {
       ...data,
+      place_id: searchValue ? searchValue : 0,
       date_from: data.date_from.split("-").reverse().join("-"),
       date_to: data.date_to.split("-").reverse().join("-"),
     };
@@ -78,17 +94,46 @@ function PropertiesFilteredModal() {
       return;
     }
 
-    console.log(submitValues);
+    getPlacesFiltered(submitValues);
   };
 
-  const handleClearFilter = () => {
+  const handleClearAllFilters = () => {
     reset();
-    setProperties([]);
+    setSearchValue("");
+    setProperty(null);
   };
+
+  const renderCell = useCallback((user, columnKey) => {
+    const cellValue = user[columnKey];
+
+    switch (columnKey) {
+      default:
+        return cellValue || "-";
+    }
+  }, []);
 
   const bodyContent = (
     <>
       <div className="flex items-center space-x-8 justify-between">
+        <div className="w-[30%]">
+          <label
+            htmlFor="default-search"
+            className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+          >
+            Search
+          </label>
+          <div className="">
+            <input
+              type="search"
+              id="default-search"
+              className="block w-full p-2 ps-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 "
+              placeholder="Search Place ID..."
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              required
+            />
+          </div>
+        </div>
         <div className="flex items-center space-x-12 justify-center">
           <div className="flex space-x-4 items-center">
             <div className="font-bold text-[16px]">From</div>
@@ -98,6 +143,7 @@ function PropertiesFilteredModal() {
               register={register}
               errors={errors}
               type="date"
+              required
             />
           </div>
           <div className="flex space-x-4 items-center">
@@ -108,6 +154,7 @@ function PropertiesFilteredModal() {
               register={register}
               errors={errors}
               type="date"
+              required
             />
           </div>
         </div>
@@ -115,7 +162,7 @@ function PropertiesFilteredModal() {
           <div className="w-24">
             <Button
               disabled={isLoading}
-              label="Filter"
+              label="Search"
               onClick={handleSubmit(handleFilter)}
               medium
             />
@@ -124,32 +171,60 @@ function PropertiesFilteredModal() {
             <Button
               outline={true}
               disabled={isLoading}
-              label="Clear"
-              onClick={handleSubmit(handleClearFilter)}
+              label="Clear All"
+              onClick={handleSubmit(handleClearAllFilters)}
               medium
             />
           </div>
         </div>
       </div>
       {!isLoading ? (
-        properties && properties?.length > 0 ? (
-          <div className="grid gap-12 sm:grid-cols-2 xl:grid-cols-4 overflow-x-hidden p-8 pb-0">
-            {/* {places.data &&
-            places.data.length > 0 &&
-            places.data.map((list) => {
-              return (
-                <ListingCard
-                  key={list.id}
-                  data={list}
-                  currentUser={currentUser}
-                  shrink={true}
-                />
-              );
-            })} */}
+        property ? (
+          <div className="mt-8">
+            <div className="flex space-x-12">
+              <div className="space-x-2">
+                <span className="text-xl font-bold">Original:</span>
+                <span>{property?.num_place_original || 0} (rooms)</span>
+              </div>
+              <div className="space-x-2">
+                <span className="text-xl font-bold">Booked:</span>
+                <span>{property?.num_place_booked || 0} (rooms)</span>
+              </div>
+              <div className="space-x-2">
+                <span className="text-xl font-bold">Remain:</span>
+                <span>{property?.num_place_remain || 0} (rooms)</span>
+              </div>
+            </div>
+            <div className="mt-6">
+              <div className="text-xl font-bold">Booking History</div>
+              <Table aria-label="Booking History">
+                <TableHeader columns={columns}>
+                  {(column) => (
+                    <TableColumn
+                      className="text-left bg-slate-200 px-3 py-3"
+                      key={column.uid}
+                    >
+                      {column.name}
+                    </TableColumn>
+                  )}
+                </TableHeader>
+                <TableBody
+                  emptyContent={<div className="mt-4">No data to display.</div>}
+                >
+                  {property?.booking_place_history?.map((item, index) => (
+                    <TableRow key={index}>
+                      {(columnKey) => (
+                        <TableCell>{renderCell(item, columnKey)}</TableCell>
+                      )}
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
           </div>
         ) : (
           <div className="text-[32px] font-bold mt-12 text-center pb-48">
-            Enter date range to filter
+            Enter data to filter
           </div>
         )
       ) : (
