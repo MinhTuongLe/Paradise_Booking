@@ -9,6 +9,7 @@ function Button({
   disabled,
   outline,
   small,
+  medium,
   icon: Icon,
   isColor,
 }) {
@@ -20,9 +21,12 @@ function Button({
         outline ? "bg-white" : "bg-rose-500"
       } ${outline ? "border-black" : "border-rose-500"} ${
         outline ? "text-black" : "text-white"
-      } ${small ? "text-sm" : "text-md"} ${small ? "py-1" : "py-3"} ${
-        small ? "font-light" : "font-semibold"
-      } ${small ? "border-[1px]" : "border-2"}`}
+      } ${small ? "text-sm" : "text-md"} ${
+        small ? "py-1" : medium ? "py-[5px]" : "py-3"
+      } ${small ? "font-light" : "font-semibold"} ${
+        small ? "border-[1px]" : "border-2"
+      }
+      `}
     >
       {Icon && (
         <Icon

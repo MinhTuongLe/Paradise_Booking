@@ -50,7 +50,7 @@ const FavoritePage = async ({ params, searchParams }) => {
     return (
       <ClientOnly>
         <EmptyState
-          title="Create your first Wishlist"
+          title="Start create your Wishlist"
           subtitle="During your search, click the heart icon to save the properties and Experiences you like to your Wishlist."
         />
       </ClientOnly>

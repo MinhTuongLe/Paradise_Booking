@@ -19,6 +19,12 @@ export const SHRINK_LIMIT = 10;
 
 export const booking_status = [
   {
+    id: 0,
+    name: "All",
+    icon: <></>,
+    color: "#222",
+  },
+  {
     id: 1,
     name: "Pending",
     icon: <MdPending className="text-[24px]" color="#ffa700" />,
@@ -98,21 +104,6 @@ export const place_status = [
   {
     id: 2,
     name: "Reserved",
-  },
-];
-
-export const place_is_available = [
-  {
-    id: 3,
-    name: "All",
-  },
-  {
-    id: 1,
-    name: "Available",
-  },
-  {
-    id: 2,
-    name: "Not Available",
   },
 ];
 
