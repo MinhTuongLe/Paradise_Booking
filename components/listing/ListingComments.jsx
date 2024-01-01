@@ -86,14 +86,17 @@ function ListingComments({ place_id, rating_average }) {
                       <Image
                         width={40}
                         height={40}
-                        src={emptyImageSrc}
+                        src={comment?.user?.avatar || emptyImageSrc}
                         alt="Avatar"
                         className="rounded-full h-[40px] w-[40px]"
                         priority
                       />
                       <div>
                         <h1 className="text-lg font-bold space-y-3">
-                          {comment?.user?.full_name || "-"}
+                          {comment?.user?.full_name ||
+                            comment?.user?.username ||
+                            comment?.user?.email ||
+                            "-"}
                         </h1>
                         <p className="text-lg">
                           {comment?.user?.address || "-"}

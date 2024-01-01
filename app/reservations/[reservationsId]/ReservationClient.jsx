@@ -172,7 +172,7 @@ function ReservationClient({ reservation, rating }) {
                   PAYMENT METHOD
                 </div>
                 <div className="text-[16px] font-semibold">
-                  {reservation.data?.payment_method === 2 ? "Momo" : "COD"}
+                  {reservation.data?.payment_method === 2 ? "MOMO" : "COD"}
                 </div>
               </div>
             </div>
@@ -229,7 +229,7 @@ function ReservationClient({ reservation, rating }) {
               src={reservation.user.avatar || emptyAvatar}
               width={64}
               height={64}
-              className="rounded-full"
+              className="rounded-full aspect-square"
               alt="Avatar"
             />
             <div className="flex justify-between items-start w-[60%]">

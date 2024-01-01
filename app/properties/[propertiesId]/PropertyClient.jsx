@@ -757,7 +757,7 @@ function PropertyClient({ place, reservations }) {
                               src={item.user.avatar || emptyImageSrc}
                               width={64}
                               height={64}
-                              className="rounded-full"
+                              className="rounded-full aspect-square"
                               alt="Avatar"
                             />
                             <div className="w-[60%]">
