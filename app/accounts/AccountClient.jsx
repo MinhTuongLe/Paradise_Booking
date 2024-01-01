@@ -8,7 +8,7 @@ import axios from "axios";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import "../../styles/globals.css";
-import { API_URL } from "@/const";
+import { API_URL, roles } from "@/const";
 import {
   Table,
   TableHeader,
@@ -65,7 +65,36 @@ function AccountClient({ accounts }) {
         toast.success("Update Account Status Successfully");
       })
       .catch((err) => {
-        toast.error("Something Went Wrong");
+        toast.error("Update Account Status Failed");
+        setIsLoading(false);
+      });
+  };
+
+  const handleRoleChange = (event, accountId) => {
+    const newRole = event.target.value;
+
+    const accessToken = Cookie.get("accessToken");
+    const config = {
+      headers: {
+        "content-type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+
+    axios
+      .patch(
+        `${API_URL}/account/role/${accountId}`,
+        {
+          role: Number(newRole),
+        },
+        config
+      )
+      .then(() => {
+        setIsLoading(false);
+        toast.success("Update Account Role Successfully");
+      })
+      .catch((err) => {
+        toast.error("Update Account Role Failed");
         setIsLoading(false);
       });
   };
@@ -92,6 +121,22 @@ function AccountClient({ accounts }) {
               <p>{user.email}</p>
             </div>
           </div>
+        );
+      case "role":
+        const defaultValue = roles.find((item) => item.name === cellValue);
+        return (
+          <select
+            onChange={(event) => handleRoleChange(event, user.id)}
+            defaultValue={defaultValue.id}
+            id="status"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[full] p-2.5 "
+          >
+            {roles.map((role) => (
+              <option value={role.id} key={role.id}>
+                {role.name}
+              </option>
+            ))}
+          </select>
         );
       case "status":
         return (

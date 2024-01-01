@@ -62,6 +62,21 @@ export const booking_status = [
   },
 ];
 
+export const roles = [
+  {
+    id: 1,
+    name: "User",
+  },
+  {
+    id: 2,
+    name: "Vendor",
+  },
+  {
+    id: 3,
+    name: "Admin",
+  },
+];
+
 export const payment_methods = [
   {
     id: 1,
