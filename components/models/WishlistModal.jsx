@@ -145,6 +145,7 @@ function WishlistModal() {
         setStep(STEPS.CREATE_WISHLIST);
         return;
       }
+      setStep(STEPS.ADD_TO_WISHLIST);
       getWishListByUserId();
     }
   }, [wishlistModal.isOpen, params]);
