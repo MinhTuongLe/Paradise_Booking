@@ -185,7 +185,7 @@ function PropertiesClient({ currentUser }) {
         <div className="w-[70%] flex justify-start space-x-8">
           <div className="w-[30%]">
             <label
-              for="default-search"
+              htmlFor="default-search"
               className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
             >
               Search

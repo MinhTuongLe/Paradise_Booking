@@ -24,6 +24,7 @@ function PropertiesFilteredModal() {
 
   const [properties, setProperties] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
 
   const {
     register,
@@ -34,6 +35,7 @@ function PropertiesFilteredModal() {
     formState: { errors },
   } = useForm({
     defaultValues: {
+      place_id: "",
       date_from: "",
       date_to: "",
     },
@@ -67,6 +69,7 @@ function PropertiesFilteredModal() {
   const handleFilter = async (data) => {
     const submitValues = {
       ...data,
+      place_id: searchValue ? searchValue : 0,
       date_from: data.date_from.split("-").reverse().join("-"),
       date_to: data.date_to.split("-").reverse().join("-"),
     };
@@ -81,14 +84,34 @@ function PropertiesFilteredModal() {
     console.log(submitValues);
   };
 
-  const handleClearFilter = () => {
+  const handleClearAllFilters = () => {
     reset();
+    setSearchValue("");
     setProperties([]);
   };
 
   const bodyContent = (
     <>
       <div className="flex items-center space-x-8 justify-between">
+        <div className="w-[30%]">
+          <label
+            htmlFor="default-search"
+            className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+          >
+            Search
+          </label>
+          <div className="">
+            <input
+              type="search"
+              id="default-search"
+              className="block w-full p-2 ps-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 "
+              placeholder="Search Place ID..."
+              value={searchValue}
+              onChange={(e) => setSearchValue(e.target.value)}
+              required
+            />
+          </div>
+        </div>
         <div className="flex items-center space-x-12 justify-center">
           <div className="flex space-x-4 items-center">
             <div className="font-bold text-[16px]">From</div>
@@ -98,6 +121,7 @@ function PropertiesFilteredModal() {
               register={register}
               errors={errors}
               type="date"
+              required
             />
           </div>
           <div className="flex space-x-4 items-center">
@@ -108,6 +132,7 @@ function PropertiesFilteredModal() {
               register={register}
               errors={errors}
               type="date"
+              required
             />
           </div>
         </div>
@@ -124,8 +149,8 @@ function PropertiesFilteredModal() {
             <Button
               outline={true}
               disabled={isLoading}
-              label="Clear"
-              onClick={handleSubmit(handleClearFilter)}
+              label="Clear All"
+              onClick={handleSubmit(handleClearAllFilters)}
               medium
             />
           </div>

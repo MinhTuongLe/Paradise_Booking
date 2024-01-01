@@ -144,7 +144,7 @@ function PaymentClient({ payments }) {
       <div className="w-full flex space-x-6 items-center justify-start">
         <div className="mt-10 w-[30%] px-4">
           <label
-            for="default-search"
+            htmlFor="default-search"
             className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
           >
             Search
