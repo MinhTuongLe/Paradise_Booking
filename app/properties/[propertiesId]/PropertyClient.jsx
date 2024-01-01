@@ -445,12 +445,13 @@ function PropertyClient({ place, reservations }) {
       <h1 className="text-2xl font-bold mt-10 mb-4">
         {currentStep === steps.GENERAL ? (
           <>
-            General Information{" "}
-            {place?.is_booked === 0 && (
+            General Information
+            {/* {" "}
+            {place?.is_booked && (
               <span className="text-rose-500 font-extrabold">
                 (Full of rooms)
               </span>
-            )}
+            )} */}
           </>
         ) : currentStep === steps.AMENITIES ? (
           "Amenities Information"

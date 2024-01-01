@@ -36,7 +36,7 @@ function PropertiesFilteredModal() {
   const params = useParams();
   const searchParams = useSearchParams();
 
-  const [properties, setProperties] = useState([]);
+  const [property, setProperty] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
@@ -69,8 +69,7 @@ function PropertiesFilteredModal() {
     await axios
       .get(`${API_URL}/places/status_booking`, config)
       .then((response) => {
-        console.log(response.data);
-        setPlaces(response.data);
+        setProperty(response?.data?.data);
       })
       .catch((err) => {
         toast.error("Something Went Wrong");
@@ -95,46 +94,19 @@ function PropertiesFilteredModal() {
       return;
     }
 
-    // console.log(submitValues);
     getPlacesFiltered(submitValues);
   };
 
   const handleClearAllFilters = () => {
     reset();
     setSearchValue("");
-    setProperties([]);
+    setProperty(null);
   };
 
   const renderCell = useCallback((user, columnKey) => {
     const cellValue = user[columnKey];
 
     switch (columnKey) {
-      // case "full_name":
-      //   return (
-      //     <div className="flex justify-start items-center space-x-4">
-      //       <Image
-      //         width={40}
-      //         height={40}
-      //         src={user?.avatar || emptyImageSrc}
-      //         alt="Avatar"
-      //         className="rounded-full h-[40px] w-[40px]"
-      //         priority
-      //       />
-      //       <div>
-      //         <h1 className="text-md font-bold space-y-3">
-      //           {cellValue || "-"}
-      //         </h1>
-      //         <p>{user.email}</p>
-      //       </div>
-      //     </div>
-      //   );
-      case "type":
-        const matchedPaymentStatus = types.find(
-          (item) => item.value === cellValue
-        );
-
-        const name = matchedPaymentStatus ? matchedPaymentStatus.name : "-";
-        return <span className="">{name}</span>;
       default:
         return cellValue || "-";
     }
@@ -190,7 +162,7 @@ function PropertiesFilteredModal() {
           <div className="w-24">
             <Button
               disabled={isLoading}
-              label="Filter"
+              label="Search"
               onClick={handleSubmit(handleFilter)}
               medium
             />
@@ -206,69 +178,25 @@ function PropertiesFilteredModal() {
           </div>
         </div>
       </div>
-      <div className="flex space-x-8 mt-8">
-        <div className="space-x-4">
-          <span className="font-bold text-xl">Original:</span>
-          <span>2 (rooms)</span>
-        </div>
-        <div className="space-x-4">
-          <span className="font-bold text-xl">Booked:</span>
-          <span>1 (rooms)</span>
-        </div>
-        <div className="space-x-4">
-          <span className="font-bold text-xl">Remain:</span>
-          <span>1 (rooms)</span>
-        </div>
-      </div>
-      <div className="mt-4">
-        {/* <div>Booking History</div> */}
-        {/* <div>
-              </div> */}
-        <Table aria-label="Booking History">
-          <TableHeader columns={columns}>
-            {(column) => (
-              <TableColumn
-                className="text-left bg-slate-200 px-3 py-3"
-                key={column.uid}
-              >
-                {column.name}
-              </TableColumn>
-            )}
-          </TableHeader>
-          <TableBody
-            emptyContent={<div className="mt-4">No data to display.</div>}
-          >
-            {/* {reportData?.map((account) => (
-                    <TableRow key={account.id}>
-                      {(columnKey) => (
-                        <TableCell>{renderCell(account, columnKey)}</TableCell>
-                      )}
-                    </TableRow>
-                  ))} */}
-          </TableBody>
-        </Table>
-      </div>
       {!isLoading ? (
-        properties && properties?.length > 0 ? (
-          <div className="p-8 pb-0">
-            <div className="flex space-x-8">
-              <div className="space-x-4">
-                <span>Original:</span>
-                <span>2</span>
+        property ? (
+          <div className="mt-8">
+            <div className="flex space-x-12">
+              <div className="space-x-2">
+                <span className="text-xl font-bold">Original:</span>
+                <span>{property?.num_place_original || 0} (rooms)</span>
               </div>
-              <div className="space-x-4">
-                <span>Booked:</span>
-                <span>1</span>
+              <div className="space-x-2">
+                <span className="text-xl font-bold">Booked:</span>
+                <span>{property?.num_place_booked || 0} (rooms)</span>
               </div>
-              <div className="space-x-4">
-                <span>Remain:</span>
-                <span>1</span>
+              <div className="space-x-2">
+                <span className="text-xl font-bold">Remain:</span>
+                <span>{property?.num_place_remain || 0} (rooms)</span>
               </div>
             </div>
-            <div>
-              {/* <div>Booking History</div> */}
-              {/* <div>
-              </div> */}
+            <div className="mt-6">
+              <div className="text-xl font-bold">Booking History</div>
               <Table aria-label="Booking History">
                 <TableHeader columns={columns}>
                   {(column) => (
@@ -283,32 +211,20 @@ function PropertiesFilteredModal() {
                 <TableBody
                   emptyContent={<div className="mt-4">No data to display.</div>}
                 >
-                  {/* {reportData?.map((account) => (
-                    <TableRow key={account.id}>
+                  {property?.booking_place_history?.map((item, index) => (
+                    <TableRow key={index}>
                       {(columnKey) => (
-                        <TableCell>{renderCell(account, columnKey)}</TableCell>
+                        <TableCell>{renderCell(item, columnKey)}</TableCell>
                       )}
                     </TableRow>
-                  ))} */}
+                  ))}
                 </TableBody>
               </Table>
             </div>
-            {/* {places.data &&
-            places.data.length > 0 &&
-            places.data.map((list) => {
-              return (
-                <ListingCard
-                  key={list.id}
-                  data={list}
-                  currentUser={currentUser}
-                  shrink={true}
-                />
-              );
-            })} */}
           </div>
         ) : (
           <div className="text-[32px] font-bold mt-12 text-center pb-48">
-            Enter date range to filter
+            Enter data to filter
           </div>
         )
       ) : (
