@@ -94,6 +94,7 @@ function ListingComments({ place_id, rating_average }) {
                       <div>
                         <h1 className="text-lg font-bold space-y-3">
                           {comment?.user?.full_name ||
+                            comment?.user?.username ||
                             comment?.user?.email ||
                             "-"}
                         </h1>
