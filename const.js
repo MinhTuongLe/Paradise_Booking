@@ -12,8 +12,8 @@ import { RiSafeLine } from "react-icons/ri";
 export const BASE_URL = "http://localhost:3000";
 export const API_URL_LOCAL = "http://localhost:8081/api/v1";
 // export const API_URL = "https://paradisebookingapp.up.railway.app/api/v1";
-// export const API_URL = "http://54.254.113.228:8081/api/v1";
-export const API_URL = "https://paradisebooking.onrender.com/api/v1";
+export const API_URL = "http://54.254.113.228:8081/api/v1";
+// export const API_URL = "https://paradisebooking.onrender.com/api/v1";
 export const LIMIT = 20;
 export const SHRINK_LIMIT = 10;
 
@@ -59,6 +59,21 @@ export const booking_status = [
     name: "Cancel",
     icon: <MdCancel className="text-[24px]" color="#f44668" />,
     color: "#f44668",
+  },
+];
+
+export const roles = [
+  {
+    id: 1,
+    name: "User",
+  },
+  {
+    id: 2,
+    name: "Vendor",
+  },
+  {
+    id: 3,
+    name: "Admin",
   },
 ];
 
