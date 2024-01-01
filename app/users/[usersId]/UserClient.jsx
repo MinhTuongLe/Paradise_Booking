@@ -210,6 +210,8 @@ function UserClient({ places, currentUser, role }) {
     return <EmptyState title="Unauthorized" subtitle="Please login" />;
   }
 
+  console.log(ratings);
+
   return (
     <div className="max-w-[1200px] mx-auto px-4">
       <div className="mt-10 grid grid-cols-12 gap-8">
@@ -476,7 +478,7 @@ function UserClient({ places, currentUser, role }) {
                     {loggedUser && role === 2 && (
                       <>
                         <div className="w-full">
-                          {ratings && ratings.length > 0 && (
+                          {ratings && ratings.length > 2 && (
                             <div className="flex justify-between items-center w-full">
                               <h1 className="text-xl font-bold space-y-3">
                                 {currentUser.full_name ||
@@ -484,7 +486,7 @@ function UserClient({ places, currentUser, role }) {
                                   "Vendor"}
                                 's Comments
                               </h1>
-                              {ratings && ratings.length > 2 && (
+                              {ratings && ratings.length > 0 && (
                                 <button
                                   className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-sm border-[1px]"
                                   onClick={commentsModal.onOpen}
@@ -528,7 +530,10 @@ function UserClient({ places, currentUser, role }) {
                                         </div>
                                         <div>
                                           <h1 className="text-md font-bold space-y-3">
-                                            {rating.user?.full_name || "-"}
+                                            {rating.user?.full_name ||
+                                              rating.user?.username ||
+                                              rating.user?.email ||
+                                              "-"}
                                           </h1>
                                           <p>
                                             {rating.DataRating.created_at

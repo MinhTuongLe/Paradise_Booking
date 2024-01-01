@@ -115,7 +115,7 @@ function CommentsModal({}) {
               <div key={index}>
                 <div className="w-full p-2 space-y-1">
                   <div className="w-full flex justify-between items-start">
-                    <div className="flex w-[70%] flex-col justify-start items-start space-y-1">
+                    <div className="flex w-[60%] flex-col justify-start items-start space-y-1">
                       <h1 className="text-xl font-bold space-y-3 text-ellipsis line-clamp-1">
                         {rating?.place.name || "-"}
                       </h1>
@@ -164,7 +164,10 @@ function CommentsModal({}) {
                     </div>
                     <div>
                       <h1 className="text-md font-bold space-y-3">
-                        {rating?.user.full_name}
+                        {rating.user?.full_name ||
+                          rating.user?.username ||
+                          rating.user?.email ||
+                          "-"}
                       </h1>
                       <p>
                         {rating.DataRating.created_at

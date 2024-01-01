@@ -183,7 +183,7 @@ function RoomCommentsModal({}) {
                         />
                         <div>
                           <h1 className="text-lg font-bold space-y-3">
-                            {comment?.user?.full_name || "-"}
+                            {comment?.user?.full_name ||comment?.user?.email || "-"}
                           </h1>
                           <p className="text-lg">
                             {comment?.user?.address || "-"}
