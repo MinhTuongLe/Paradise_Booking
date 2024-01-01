@@ -41,30 +41,30 @@ function PropertiesFilteredModal() {
     },
   });
 
-  // const getPlacesByVendorId = async () => {
-  //   setIsLoading(true);
-  //   const config = {
-  //     params: {
-  //       page: searchParams.get("page") || 1,
-  //       limit: searchParams.get("limit") || LIMIT,
-  //     },
-  //   };
+  const getPlacesFiltered = async (dataFilter) => {
+    setIsLoading(true);
+    const { place_id, date_from, date_to } = dataFilter;
+    const config = {
+      params: {
+        place_id,
+        date_from,
+        date_to,
+      },
+    };
 
-  //   await axios
-  //     .get(`${API_URL}/places/owner/${params.usersId}`, config)
-  //     .then((response) => {
-  //       setPlaces(response.data);
-  //       setIsLoading(false);
-  //     })
-  //     .catch((err) => {
-  //       toast.error("Something Went Wrong");
-  //       setIsLoading(false);
-  //     });
-  // };
-
-  // useEffect(() => {
-  //   if (checkAvailableModal.isOpen) getPlacesByVendorId();
-  // }, [params, checkAvailableModal]);
+    await axios
+      .get(`${API_URL}/places/status_booking`, config)
+      .then((response) => {
+        console.log(response.data);
+        setPlaces(response.data);
+      })
+      .catch((err) => {
+        toast.error("Something Went Wrong");
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
 
   const handleFilter = async (data) => {
     const submitValues = {
@@ -81,7 +81,8 @@ function PropertiesFilteredModal() {
       return;
     }
 
-    console.log(submitValues);
+    // console.log(submitValues);
+    getPlacesFiltered(submitValues);
   };
 
   const handleClearAllFilters = () => {
