@@ -6,7 +6,6 @@ import useRoomCommentsModal from "../../hook/useRoomCommentsModal";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { API_URL } from "@/const";
-import Cookie from "js-cookie";
 import { toast } from "react-toastify";
 import Modal from "./Modal";
 import Image from "next/image";
@@ -18,8 +17,8 @@ function RoomCommentsModal({}) {
   const commentsModal = useRoomCommentsModal();
   const [isLoading, setIsLoading] = useState(false);
   const [ratings, setRatings] = useState([]);
-  const [averageRating, setAverageRating] = useState(0);
-  const [ratingDistribution, setRatingDistribution] = useState({});
+  const [sumRatings, setSumRatings] = useState(0);
+  const [ratingDistribution, setRatingDistribution] = useState([]);
 
   const params = useParams();
 
@@ -27,11 +26,9 @@ function RoomCommentsModal({}) {
 
   const getRatings = async () => {
     setIsLoading(true);
-    const accessToken = Cookie.get("accessToken");
     const config = {
       headers: {
         "content-type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
       },
     };
 
@@ -47,48 +44,34 @@ function RoomCommentsModal({}) {
       });
   };
 
+  const getRatingStatistic = async () => {
+    setIsLoading(true);
+
+    await axios
+      .get(`${API_URL}/booking_ratings/statistics/${params.listingId}`)
+      .then((response) => {
+        setRatingDistribution(response.data.data);
+        setSumRatings(
+          response.data.data.reduce((sum, item) => sum + item.count, 0)
+        );
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        toast.error("Something Went Wrong");
+        setIsLoading(false);
+      });
+  };
+
+  const get = async () => {
+    await getRatings();
+    await getRatingStatistic();
+  };
+
   useEffect(() => {
     if (commentsModal.isOpen) {
-      getRatings();
+      get();
     }
   }, [commentsModal.isOpen]);
-
-  useEffect(() => {
-    if (commentsModal.isOpen && ratings) {
-      // Tính trung bình rating
-      const totalRatings = ratings.length;
-      const totalRatingSum = ratings.reduce(
-        (sum, rating) => sum + rating.DataRating.rating,
-        0
-      );
-      const average = totalRatingSum / totalRatings;
-      setAverageRating(average.toFixed(1));
-
-      // Tính phần trăm xuất hiện của các giá trị rating từ 1 đến 5
-      const ratingCounts = {
-        1: 0,
-        2: 0,
-        3: 0,
-        4: 0,
-        5: 0,
-      };
-
-      ratings.forEach((rating) => {
-        const ratingValue = rating.DataRating.rating;
-        if (ratingValue >= 1 && ratingValue <= 5) {
-          ratingCounts[ratingValue]++;
-        }
-      });
-
-      const distributionPercentages = {};
-      Object.keys(ratingCounts).forEach((key) => {
-        const percentage = (ratingCounts[key] / totalRatings) * 100;
-        distributionPercentages[key] = percentage.toFixed(0);
-      });
-
-      setRatingDistribution(distributionPercentages);
-    }
-  }, [commentsModal.isOpen, ratings]);
 
   const bodyContent = (
     <>
@@ -105,7 +88,7 @@ function RoomCommentsModal({}) {
                 <div className="flex space-x-2 justify-start items-center">
                   <FaStar size={16} />
                   <span className="text-lg font-bold">
-                    {averageRating || 0}
+                    {commentsModal.rating_average || 0}
                   </span>
                 </div>
               </div>
@@ -113,47 +96,67 @@ function RoomCommentsModal({}) {
                 <span className="text-md font-bold">Summary</span>
                 <div className="flex flex-col space-y-1">
                   <div className="flex space-x-2 items-center justify-start">
-                    <span className="text-xs">5</span>
+                    <span className="text-xs">{5}</span>
                     <div className="w-full bg-gray-200 rounded-full h-1.5">
                       <div
                         className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
-                        style={{ width: `${ratingDistribution[5]}%` }}
+                        style={{
+                          width: `${
+                            (ratingDistribution[4]?.count * 100) / sumRatings
+                          }%`,
+                        }}
                       ></div>
                     </div>
                   </div>
                   <div className="flex space-x-2 items-center justify-start">
-                    <span className="text-xs">4</span>
+                    <span className="text-xs">{4}</span>
                     <div className="w-full bg-gray-200 rounded-full h-1.5">
                       <div
                         className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
-                        style={{ width: `${ratingDistribution[4]}%` }}
+                        style={{
+                          width: `${
+                            (ratingDistribution[3]?.count * 100) / sumRatings
+                          }%`,
+                        }}
                       ></div>
                     </div>
                   </div>
                   <div className="flex space-x-2 items-center justify-start">
-                    <span className="text-xs">3</span>
+                    <span className="text-xs">{3}</span>
                     <div className="w-full bg-gray-200 rounded-full h-1.5">
                       <div
                         className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
-                        style={{ width: `${ratingDistribution[3]}%` }}
+                        style={{
+                          width: `${
+                            (ratingDistribution[2]?.count * 100) / sumRatings
+                          }%`,
+                        }}
                       ></div>
                     </div>
                   </div>
                   <div className="flex space-x-2 items-center justify-start">
-                    <span className="text-xs">2</span>
+                    <span className="text-xs">{2}</span>
                     <div className="w-full bg-gray-200 rounded-full h-1.5">
                       <div
                         className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
-                        style={{ width: `${ratingDistribution[2]}%` }}
+                        style={{
+                          width: `${
+                            (ratingDistribution[1]?.count * 100) / sumRatings
+                          }%`,
+                        }}
                       ></div>
                     </div>
                   </div>
                   <div className="flex space-x-2 items-center justify-start">
-                    <span className="text-xs">1</span>
+                    <span className="text-xs">{1}</span>
                     <div className="w-full bg-gray-200 rounded-full h-1.5">
                       <div
                         className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
-                        style={{ width: `${ratingDistribution[1]}%` }}
+                        style={{
+                          width: `${
+                            (ratingDistribution[0]?.count * 100) / sumRatings
+                          }%`,
+                        }}
                       ></div>
                     </div>
                   </div>

@@ -8,23 +8,19 @@ import { FaStar } from "react-icons/fa";
 import useRoomCommentsModal from "@/hook/useRoomCommentsModal";
 import axios from "axios";
 import { API_URL } from "@/const";
-import Cookie from "js-cookie";
 import { toast } from "react-toastify";
 
-function ListingComments({ place_id }) {
+function ListingComments({ place_id, rating_average }) {
   const emptyImageSrc = "/assets/avatar.png";
   const [isLoading, setIsLoading] = useState(true);
   const [ratings, setRatings] = useState([]);
-  const [averageRating, setAverageRating] = useState(0);
-  const [ratingDistribution, setRatingDistribution] = useState({});
+  const roomCommentsModal = useRoomCommentsModal();
 
   const getRatings = async () => {
     setIsLoading(true);
-    const accessToken = Cookie.get("accessToken");
     const config = {
       headers: {
         "content-type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
       },
     };
 
@@ -44,49 +40,10 @@ function ListingComments({ place_id }) {
     getRatings();
   }, []);
 
-  useEffect(() => {
-    if (ratings) {
-      // Tính trung bình rating
-      const totalRatings = ratings.length;
-      const totalRatingSum = ratings.reduce(
-        (sum, rating) => sum + rating.DataRating.rating,
-        0
-      );
-      const average = totalRatingSum / totalRatings;
-      setAverageRating(average.toFixed(1));
-
-      // Tính phần trăm xuất hiện của các giá trị rating từ 1 đến 5
-      const ratingCounts = {
-        1: 0,
-        2: 0,
-        3: 0,
-        4: 0,
-        5: 0,
-      };
-
-      ratings.forEach((rating) => {
-        const ratingValue = rating.DataRating.rating;
-        if (ratingValue >= 1 && ratingValue <= 5) {
-          ratingCounts[ratingValue]++;
-        }
-      });
-
-      const distributionPercentages = {};
-      Object.keys(ratingCounts).forEach((key) => {
-        const percentage = (ratingCounts[key] / totalRatings) * 100;
-        distributionPercentages[key] = percentage.toFixed(0);
-      });
-
-      setRatingDistribution(distributionPercentages);
-    }
-  }, [ratings]);
-
-  const roomCommentsModal = useRoomCommentsModal();
   return (
     <div className="bg-white overflow-hidden w-full my-8">
       {!isLoading && ratings && ratings.length > 0 ? (
         <>
-          {/*  */}
           <div className="block mb-8">
             <div className="flex flex-col justify-start items-center">
               <div className="flex flex-col items-center justify-center">
@@ -99,7 +56,7 @@ function ListingComments({ place_id }) {
                     priority
                   />
                   <div className="text-[92px] font-extrabold text-[#222]">
-                    {averageRating || 0}
+                    {rating_average}
                   </div>
                   <Image
                     width={100}
@@ -117,62 +74,9 @@ function ListingComments({ place_id }) {
                   and trust
                 </div>
               </div>
-              {/* <div className="w-1/4">
-                <div className="space-y-1">
-                  <span className="text-md font-bold">Summary Rating</span>
-                  <div className="flex flex-col space-y-1">
-                    <div className="flex space-x-2 items-center justify-start">
-                      <span className="text-xs">5</span>
-                      <div className="w-full bg-gray-200 rounded-full h-1.5">
-                        <div
-                          className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
-                          style={{ width: `${ratingDistribution[5]}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                    <div className="flex space-x-2 items-center justify-start">
-                      <span className="text-xs">4</span>
-                      <div className="w-full bg-gray-200 rounded-full h-1.5">
-                        <div
-                          className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
-                          style={{ width: `${ratingDistribution[4]}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                    <div className="flex space-x-2 items-center justify-start">
-                      <span className="text-xs">3</span>
-                      <div className="w-full bg-gray-200 rounded-full h-1.5">
-                        <div
-                          className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
-                          style={{ width: `${ratingDistribution[3]}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                    <div className="flex space-x-2 items-center justify-start">
-                      <span className="text-xs">2</span>
-                      <div className="w-full bg-gray-200 rounded-full h-1.5">
-                        <div
-                          className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
-                          style={{ width: `${ratingDistribution[2]}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                    <div className="flex space-x-2 items-center justify-start">
-                      <span className="text-xs">1</span>
-                      <div className="w-full bg-gray-200 rounded-full h-1.5">
-                        <div
-                          className={`bg-rose-500 rounded-full dark:bg-rose-300 h-full`}
-                          style={{ width: `${ratingDistribution[1]}%` }}
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div> */}
             </div>
           </div>
           <hr />
-          {/*  */}
           <div className="mt-8">
             <div className="grid grid-cols-2">
               {ratings.slice(0, 6).map((comment, index) => {
@@ -226,11 +130,11 @@ function ListingComments({ place_id }) {
           No comment to display
         </div>
       )}
-      {!isLoading && ratings && ratings.length > 6 && (
+      {!isLoading && ratings && ratings.length > 0 && (
         <div className="flex justify-between items-center w-full">
           <button
             className="px-4 py-2 rounded-lg hover:opacity-80 transition bg-white border-black text-black text-md border-[1px]"
-            onClick={roomCommentsModal.onOpen}
+            onClick={() => roomCommentsModal.onOpen(rating_average)}
           >
             Show all {ratings.length || 0} comments
           </button>

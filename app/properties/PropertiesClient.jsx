@@ -5,28 +5,29 @@
 import Container from "@/components/Container";
 import Heading from "@/components/Heading";
 import ListingCard from "@/components/listing/ListingCard";
-import { API_URL, classNames, place_status } from "@/const";
+import { API_URL } from "@/const";
 import axios from "axios";
 import { Fragment, useRef, useState, useEffect } from "react";
 import { Dialog, Transition, Listbox } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { toast } from "react-toastify";
 import Cookie from "js-cookie";
-import { useRouter } from "next/navigation";
 import EmptyState from "@/components/EmptyState";
 import Loader from "@/components/Loader";
 import { useSelector } from "react-redux";
+import Button from "@/components/Button";
+import useCheckAvailableModal from "../../hook/useCheckAvailableModal";
 
 function PropertiesClient({ currentUser }) {
-  const router = useRouter();
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
   const [isLoading, setIsLoading] = useState(true);
   const [id, setId] = useState();
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState(place_status[0]);
   const [places, setPlaces] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
+  const checkAvailableModal = useCheckAvailableModal();
 
   const cancelButtonRef = useRef(null);
 
@@ -51,7 +52,7 @@ function PropertiesClient({ currentUser }) {
       const res = await axios.delete(`${API_URL}/places`, config);
 
       if (res.data.data) {
-        await getPlaces(selected.id);
+        await getPlaces("");
         toast.success(`Delete room successfully`);
       } else toast.error("Delete room failed");
     } catch (error) {
@@ -60,7 +61,7 @@ function PropertiesClient({ currentUser }) {
     setIsLoading(false);
   };
 
-  const getPlaces = async (type) => {
+  const getPlaces = async (searchValue) => {
     setIsLoading(true);
     const accessToken = Cookie.get("accessToken");
     const config = {
@@ -70,24 +71,29 @@ function PropertiesClient({ currentUser }) {
       },
       params: {
         vendor_id: currentUser.id,
-        type_manage: type,
+        place_id: searchValue ? searchValue : 0,
       },
     };
 
     await axios
       .get(`${API_URL}/bookings_list/manage_reservation`, config)
       .then((response) => {
-        setPlaces(response.data.data);
+        setPlaces(response?.data?.data?.data || []);
         setIsLoading(false);
       })
       .catch((err) => {
-        toast.error("Something Went Wrong");
+        setPlaces([]);
         setIsLoading(false);
       });
   };
 
+  const handleClear = () => {
+    setSearchValue("");
+    getPlaces("");
+  };
+
   useEffect(() => {
-    getPlaces(selected.id);
+    getPlaces(searchValue);
   }, []);
 
   if (loggedUser.id !== currentUser.id) {
@@ -176,85 +182,64 @@ function PropertiesClient({ currentUser }) {
       <div className="mt-10 mb-6">
         <Heading title="Properties" subtitle="List of your properties" />
       </div>
-      <div className="flex items-center space-x-6">
-        <span className="font-bold text-[16px]">Place status</span>
-        <Listbox
-          value={selected}
-          onChange={(e) => {
-            setSelected(e);
-            getPlaces(e.id);
-          }}
-        >
-          {({ open }) => (
-            <>
-              <div className="relative">
-                <Listbox.Button className="relative w-[180px] cursor-default rounded-md bg-white py-1.5 pl-3 pr-10 text-left text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:outline-none focus:ring-2 focus:ring-rose-500 sm:text-sm sm:leading-6">
-                  <span className="flex items-center">
-                    <span className="ml-3 block truncate">{selected.name}</span>
-                  </span>
-                  <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
-                    <ChevronUpDownIcon
-                      className="h-5 w-5 text-gray-400"
-                      aria-hidden="true"
-                    />
-                  </span>
-                </Listbox.Button>
-                <Transition
-                  show={open}
-                  as={Fragment}
-                  leave="transition ease-in duration-100"
-                  leaveFrom="opacity-100"
-                  leaveTo="opacity-0"
+      <div className="flex items-start justify-between space-x-8">
+        <div className="w-[70%] flex justify-start space-x-8">
+          <div className="w-[30%]">
+            <label
+              htmlFor="default-search"
+              className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"
+            >
+              Search
+            </label>
+            <div className="relative">
+              <input
+                type="search"
+                id="default-search"
+                className="block w-full p-2 ps-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 "
+                placeholder="Search Place ID..."
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+              />
+              <button
+                onClick={() => getPlaces(searchValue)}
+                className="text-white absolute end-0 bg-rose-500 hover:bg-rose-600 focus:outline-none  font-medium rounded-lg text-sm px-4 py-2 top-0 bottom-0"
+              >
+                <svg
+                  className="w-4 h-4 text-white"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 20 20"
                 >
-                  <Listbox.Options className="absolute z-10 mt-1 max-h-56 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                    {place_status.map((person) => (
-                      <Listbox.Option
-                        key={person.id}
-                        className={({ active }) =>
-                          classNames(
-                            active ? "bg-rose-100" : "text-gray-900",
-                            "relative cursor-default select-none py-2 pl-3 pr-9"
-                          )
-                        }
-                        value={person}
-                      >
-                        {({ selected, active }) => (
-                          <>
-                            <div className="flex items-center">
-                              {/* {person.icon} */}
-                              <span
-                                className={classNames(
-                                  selected ? "font-semibold" : "font-normal",
-                                  "ml-3 block truncate"
-                                )}
-                              >
-                                {person.name}
-                              </span>
-                            </div>
-
-                            {selected ? (
-                              <span
-                                className={classNames(
-                                  active ? "text-gray-900" : "text-rose-500",
-                                  "absolute inset-y-0 right-0 flex items-center pr-4"
-                                )}
-                              >
-                                <CheckIcon
-                                  className="h-5 w-5"
-                                  aria-hidden="true"
-                                />
-                              </span>
-                            ) : null}
-                          </>
-                        )}
-                      </Listbox.Option>
-                    ))}
-                  </Listbox.Options>
-                </Transition>
-              </div>
-            </>
-          )}
-        </Listbox>
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div className="w-[10%] flex justify-between items-center">
+            <Button
+              outline={true}
+              disabled={isLoading}
+              label="Clear"
+              onClick={handleClear}
+              medium
+            />
+          </div>
+        </div>
+        <div className="w-[10%] flex justify-between items-center space-x-8">
+          <Button
+            disabled={isLoading}
+            label="Check Available"
+            onClick={() => checkAvailableModal.onOpen()}
+            medium
+          />
+        </div>
       </div>
       {!isLoading ? (
         places && places.length > 0 ? (
@@ -267,6 +252,8 @@ function PropertiesClient({ currentUser }) {
                 onAction={onDelete}
                 actionLabel="Delete property"
                 currentUser={currentUser}
+                shrink={true}
+                disabled={listing?.is_booked}
               />
             ))}
           </div>

@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState, Fragment, useRef } from "react";
-import { IoIosCloseCircle, IoIosSave } from "react-icons/io";
+import { IoIosCloseCircle, IoIosSave, IoMdClose } from "react-icons/io";
 import { FaPlusCircle } from "react-icons/fa";
 import { API_URL } from "@/const";
 import Cookie from "js-cookie";
@@ -15,11 +15,11 @@ import useWishlistModal from "@/hook/useWishlistModal";
 import { toast } from "react-toastify";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import Button from "../Button";
 
-function WishlistItem({ data, listingId, onActions }) {
+function WishlistCard({ data }) {
   const router = useRouter();
-  const wishlistModal = useWishlistModal();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [wishlistLength, setWishlistLength] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [title, setTitle] = useState(data.title);
@@ -49,39 +49,6 @@ function WishlistItem({ data, listingId, onActions }) {
     setIsLoading(false);
   };
 
-  const handleAdd = (e) => {
-    e.stopPropagation();
-
-    const accessToken = Cookie.get("accessToken");
-    const config = {
-      headers: {
-        "content-type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    };
-
-    const submitValues = {
-      place_id: listingId,
-      wishlist_id: data.id,
-    };
-
-    axios
-      .post(`${API_URL}/place_wish_lists`, submitValues, config)
-      .then(() => {
-        setIsLoading(false);
-        toast.success(`Add Place To Wishlist ${data.title} Successfully`);
-        getPlacesByWishlistId();
-        wishlistModal.onClose();
-        // window.location.reload();
-        router.refresh();
-      })
-      .catch((err) => {
-        toast.error("This place is now in this wishlist");
-        // toast.error("Something Went Wrong");
-        setIsLoading(false);
-      });
-  };
-
   const handleEdit = (e) => {
     e.stopPropagation();
     const accessToken = Cookie.get("accessToken");
@@ -101,12 +68,12 @@ function WishlistItem({ data, listingId, onActions }) {
       .then(() => {
         setIsLoading(false);
         toast.success(`Update Wishlist Title Successfully`);
+        router.refresh();
         setEditMode(false);
-        onActions();
       })
-      .then(() => {
-        getPlacesByWishlistId();
-      })
+      // .then(() => {
+      //   getPlacesByWishlistId();
+      // })
       .catch((err) => {
         toast.error("Something Went Wrong");
         setIsLoading(false);
@@ -118,7 +85,7 @@ function WishlistItem({ data, listingId, onActions }) {
     setOpen(true);
   };
 
-  const handleDelete = () => {
+  const handleDeleteWishlist = () => {
     const accessToken = Cookie.get("accessToken");
 
     const config = {
@@ -133,8 +100,8 @@ function WishlistItem({ data, listingId, onActions }) {
       .then(() => {
         setIsLoading(false);
         toast.success(`Delete Wishlist Successfully`);
+        router.refresh();
         setEditMode(false);
-        onActions();
       })
       .catch((err) => {
         toast.error("Something Went Wrong");
@@ -207,7 +174,7 @@ function WishlistItem({ data, listingId, onActions }) {
                     <button
                       type="button"
                       className="inline-flex w-full justify-center rounded-md bg-red-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 sm:ml-3 sm:w-auto"
-                      onClick={handleDelete}
+                      onClick={handleDeleteWishlist}
                     >
                       Delete
                     </button>
@@ -236,43 +203,39 @@ function WishlistItem({ data, listingId, onActions }) {
         }}
         className="col-span-1 group"
       >
-        {!isLoading ? (
-          <div className="flex space-x-6 w-full justify-start items-center">
-            <div
-              className="flex gap-4 items-center justify-start w-[70%] cursor-pointer"
-              onClick={(e) => {
-                e.stopPropagation();
-                router.push(`/favorites/${data.id}`);
-                wishlistModal.onClose();
-              }}
-            >
-              <div className="aspect-square w-[64px] relative overflow-hidden rounded-xl">
-                <Image
-                  fill
-                  className="object-cover aspect-square h-full w-full group-hover:scale-110 transition  rounded-xl"
-                  src="/assets/wishlist_cover.png"
-                  alt="listing"
-                  priority
-                />
-              </div>
-              {!editMode ? (
-                <div className="flex flex-col items-start justify-start">
-                  <div
-                    className="flex font-semibold text-lg text-ellipsis line-clamp-1 cursor-pointer justify-start items-center"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setEditMode(true);
-                    }}
-                  >
-                    <CiEdit size={16} className="mr-2" />
-                    {data.title || "-"}
-                  </div>
-                  <div className="font-light text-neutral-500 text-ellipsis line-clamp-1">
-                    Saved {wishlistLength || 0} item(s)
-                  </div>
+        <div className="flex flex-col gap-2 w-full relative">
+          <div
+            className="aspect-square w-full relative oerflow-hidden rounded-xl cursor-pointer "
+            onClick={() => router.push(`/favorites/${data.id}`)}
+          >
+            <Image
+              fill
+              className="object-cover aspect-square h-full w-full rounded-xl"
+              src="/assets/wishlist_cover.png"
+              alt="wishlists"
+              priority
+            />
+          </div>
+          <div className="font-semibold text-lg text-ellipsis line-clamp-1">
+            {!editMode ? (
+              <div className="flex flex-col items-start justify-start">
+                <div
+                  className="flex font-semibold text-lg text-ellipsis line-clamp-1 cursor-pointer justify-start items-center"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setEditMode(true);
+                  }}
+                >
+                  <CiEdit size={16} className="mr-2" />
+                  {data.title || "-"}
                 </div>
-              ) : (
-                <div className="flex items-start justify-start">
+                <div className="font-light text-neutral-500 text-ellipsis line-clamp-1">
+                  Saved {wishlistLength || 0} item(s)
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-start justify-between">
+                <div>
                   <input
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
@@ -280,24 +243,10 @@ function WishlistItem({ data, listingId, onActions }) {
                     onClick={(e) => e.stopPropagation()}
                     onFocus={(e) => e.stopPropagation()}
                   />
+                  <div className="font-light text-neutral-500 text-ellipsis line-clamp-1">
+                    Saved {wishlistLength || 0} item(s)
+                  </div>
                 </div>
-              )}
-            </div>
-            <div className="flex justify-end items-start space-x-3 w-[30%]">
-              {!editMode ? (
-                <>
-                  <FaPlusCircle
-                    onClick={handleAdd}
-                    size={36}
-                    className="bg-[#05a569] rounded-full text-white hover:brightness-75 cursor-pointer"
-                  />
-                  <IoIosCloseCircle
-                    onClick={onDelete}
-                    size={36}
-                    className="bg-rose-500 text-white rounded-full hover:brightness-75 cursor-pointer"
-                  />
-                </>
-              ) : (
                 <div className="bg-white rounded-full p-2 border-[#1975d3] border-[1px] overflow-hidden">
                   <IoIosSave
                     color="#1975d3"
@@ -306,17 +255,22 @@ function WishlistItem({ data, listingId, onActions }) {
                     className="cursor-pointer"
                   />
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
-        ) : (
-          <div role="status" className="w-full animate-pulse">
-            <div className="h-[64px] bg-gray-200 rounded-2xl dark:bg-gray-400 mb-4"></div>
+          <div
+            className="cursor-pointer absolute top-2 right-2 text-rose-500 border-[3px] rounded-full p-2 hover:bg-rose-500 hover:text-white font-bold"
+            onClick={onDelete}
+            style={{
+              borderColor: "#f43f5e",
+            }}
+          >
+            <IoMdClose size={24} />
           </div>
-        )}
+        </div>
       </motion.div>
     </>
   );
 }
 
-export default WishlistItem;
+export default WishlistCard;

@@ -102,7 +102,11 @@ function ListingCard({
           </div>
           <div className="flex space-x-2 justify-between items-center max-w-[20%]">
             <FaStar size={16} />
-            <span className="text-sm">5.0</span>
+            <span className="text-sm">
+              {data?.rating_average
+                ? Number(data?.rating_average).toFixed(1)
+                : 0}
+            </span>
           </div>
         </div>
         <div className="flex flex-row items-center">

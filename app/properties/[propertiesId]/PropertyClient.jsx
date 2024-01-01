@@ -69,6 +69,7 @@ function PropertyClient({ place, reservations }) {
       cover: place?.cover || "",
       max_guest: place?.max_guest || 0,
       num_bed: place?.num_bed || 0,
+      bed_room: place?.bed_room || 0,
     },
   });
 
@@ -222,6 +223,7 @@ function PropertyClient({ place, reservations }) {
           cover: imageUrl || "",
           max_guest: Number(data?.max_guest) || place.max_guest || 1,
           num_bed: Number(data?.num_bed) || place?.num_bed || 0,
+          bed_room: Number(data?.bed_room) || place?.bed_room || 0,
         };
 
         const accessToken = Cookie.get("accessToken");
@@ -441,11 +443,21 @@ function PropertyClient({ place, reservations }) {
   return (
     <div className="max-w-[1200px] mx-auto px-4">
       <h1 className="text-2xl font-bold mt-10 mb-4">
-        {currentStep === steps.GENERAL
-          ? "General Information"
-          : currentStep === steps.AMENITIES
-          ? "Amenities Information"
-          : "Policies Information"}
+        {currentStep === steps.GENERAL ? (
+          <>
+            General Information
+            {/* {" "}
+            {place?.is_booked && (
+              <span className="text-rose-500 font-extrabold">
+                (Full of rooms)
+              </span>
+            )} */}
+          </>
+        ) : currentStep === steps.AMENITIES ? (
+          "Amenities Information"
+        ) : (
+          "Policies Information"
+        )}
       </h1>
       {currentStep === steps.GENERAL && (
         <>
@@ -517,7 +529,7 @@ function PropertyClient({ place, reservations }) {
               </div>
             </div>
             <div className="col-span-6 space-y-6">
-              <Input
+              {/* <Input
                 id="num_bed"
                 label="Bed(s)"
                 type="number"
@@ -525,23 +537,23 @@ function PropertyClient({ place, reservations }) {
                 register={register}
                 errors={errors}
                 required
-              />
-              {/* <div className="grid grid-cols-12 gap-6">
-                <div className="col-span-6">
-                  <Input
-                    id="max_guest"
-                    label="Room(s)"
-                    disabled={isLoading}
-                    register={register}
-                    errors={errors}
-                    type="number"
-                    required
-                  />
-                </div>
+              /> */}
+              <div className="grid grid-cols-12 gap-6">
                 <div className="col-span-6">
                   <Input
                     id="num_bed"
                     label="Bed(s)"
+                    disabled={isLoading}
+                    register={register}
+                    errors={errors}
+                    type="number"
+                    required
+                  />
+                </div>
+                <div className="col-span-6">
+                  <Input
+                    id="bed_room"
+                    label="Bedroom(s)"
                     type="number"
                     disabled={isLoading}
                     register={register}
@@ -549,7 +561,7 @@ function PropertyClient({ place, reservations }) {
                     required
                   />
                 </div>
-              </div> */}
+              </div>
               <Input
                 id="address"
                 label="Address"

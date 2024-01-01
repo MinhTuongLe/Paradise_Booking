@@ -54,15 +54,19 @@ function RentModal({}) {
     defaultValues: {
       max_guest: 1,
       num_bed: 1,
+      bed_room: 1,
       cover: "",
       price_per_night: 1,
       description: "",
       address: "",
+      num_place_original: 1,
     },
   });
 
   const guestCount = watch("max_guest");
   const num_bed = watch("num_bed");
+  const bed_room = watch("bed_room");
+  const num_place_original = watch("num_place_original");
   const cover = watch("cover");
 
   const [lat, setLat] = useState(51);
@@ -150,6 +154,8 @@ function RentModal({}) {
         lng: lng,
         cover: imageUrl,
         num_bed: Number(data.num_bed),
+        bed_room: Number(data.bed_room),
+        num_place_original: Number(data.num_place_original),
       };
 
       // create place
@@ -244,9 +250,7 @@ function RentModal({}) {
     <div className="flex flex-col gap-8">
       <div className="grid md:grid-cols-2 gap-3 overflow-y-auto scrollbar-thin scrollbar-thumb-[#FF5A5F]">
         <div className="col-span-1 flex items-center justify-center">
-          <span className="text-[24px] font-bold">
-            Create your new place
-          </span>
+          <span className="text-[24px] font-bold">Create your new place</span>
         </div>
         <div className="col-span-1 space-y-6">
           <div className="w-full flex justify-between items-start">
@@ -367,10 +371,24 @@ function RentModal({}) {
         />
         <hr />
         <Counter
-          title="Bed"
+          title="Beds"
           subtitle="How many beds do you have?"
           value={num_bed}
           onChange={(value) => setCustomValue("num_bed", value)}
+        />
+        <hr />
+        <Counter
+          title="Bedrooms"
+          subtitle="How many bedrooms in your place?"
+          value={bed_room}
+          onChange={(value) => setCustomValue("bed_room", value)}
+        />
+        <hr />
+        <Counter
+          title="Available rooms"
+          subtitle="How many available rooms in your place?"
+          value={num_place_original}
+          onChange={(value) => setCustomValue("num_place_original", value)}
         />
       </div>
     );

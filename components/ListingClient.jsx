@@ -1,14 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import useLoginModel from "@/hook/useLoginModal";
 import useReportModal from "@/hook/useReportModal";
 
 import axios from "axios";
-import { differenceInCalendarDays, eachDayOfInterval } from "date-fns";
+import { differenceInCalendarDays, eachDayOfInterval, parse } from "date-fns";
 import { useRouter } from "next/navigation";
-import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
-import { Range } from "react-date-range";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import dynamic from "next/dynamic";
 import Cookie from "js-cookie";
@@ -26,15 +24,9 @@ import { FaBusinessTime, FaFlag, FaStar } from "react-icons/fa";
 import Button from "./Button";
 import { useForm } from "react-hook-form";
 import Input from "./inputs/Input";
-import { API_URL, classNames, payment_methods, paypalOptions } from "@/const";
+import { API_URL, classNames, payment_methods } from "@/const";
 import { useSelector } from "react-redux";
-import EmptyState from "./EmptyState";
-
-const initialDateRange = {
-  startDate: new Date(),
-  endDate: new Date(),
-  key: "selection",
-};
+import { formatISO, addDays } from "date-fns";
 
 function ListingClient({ reservations = [], place, currentUser }) {
   const authState = useSelector((state) => state.authSlice.authState);
@@ -60,7 +52,6 @@ function ListingClient({ reservations = [], place, currentUser }) {
     [lat, lng]
   );
   const router = useRouter();
-  const loginModal = useLoginModel();
   const reportModal = useReportModal();
 
   const disableDates = useMemo(() => {
@@ -68,10 +59,10 @@ function ListingClient({ reservations = [], place, currentUser }) {
 
     reservations &&
       reservations.forEach((reservation) => {
-        const range = eachDayOfInterval({
-          start: new Date(reservation.checkin_date),
-          end: new Date(reservation.checkout_date),
-        });
+        const startDate = parse(reservation[0], "dd-MM-yyyy", new Date());
+        const endDate = parse(reservation[1], "dd-MM-yyyy", new Date());
+
+        const range = eachDayOfInterval({ start: startDate, end: endDate });
 
         dates = [...dates, ...range];
       });
@@ -98,7 +89,13 @@ function ListingClient({ reservations = [], place, currentUser }) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [totalPrice, setTotalPrice] = useState(place.price_per_night);
-  const [dateRange, setDateRange] = useState(initialDateRange);
+  const [dateRange, setDateRange] = useState([
+    {
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "selection",
+    },
+  ]);
   const [paymentMode, setPaymentMode] = useState(false);
   const [dayCount, setDayCount] = useState(1);
   const [bookingMode, setBookingMode] = useState(1);
@@ -108,6 +105,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
   const [safePolicy, setSafePolicy] = useState("");
   const [cancelPolicy, setCancelPolicy] = useState("");
   const [selected, setSelected] = useState(payment_methods[0]);
+  const [isAvailable, setIsAvailable] = useState(false);
 
   const [searchResult, setSearchResult] = useState(null);
   const handleSearchResult = (result) => {
@@ -125,8 +123,16 @@ function ListingClient({ reservations = [], place, currentUser }) {
   const onCreateReservation = async (data) => {
     try {
       setIsLoading(true);
-      const checkin_date = `${dateRange.startDate.getDate()}-${dateRange.startDate.getMonth()}-${dateRange.startDate.getFullYear()}`;
-      const checkout_date = `${dateRange.endDate.getDate()}-${dateRange.endDate.getMonth()}-${dateRange.endDate.getFullYear()}`;
+      const checkin_date = formatISO(dateRange[0].startDate)
+        .split("T")[0]
+        .split("-")
+        .reverse()
+        .join("-");
+      const checkout_date = formatISO(dateRange[0].endDate)
+        .split("T")[0]
+        .split("-")
+        .reverse()
+        .join("-");
 
       let submitValues = {
         place_id: place.id,
@@ -233,21 +239,52 @@ function ListingClient({ reservations = [], place, currentUser }) {
       });
   };
 
+  const onCheckAvailability = () => {
+    setIsLoading(true);
+    const checkin_date = formatISO(dateRange[0].startDate)
+      .split("T")[0]
+      .split("-")
+      .reverse()
+      .join("-");
+    const checkout_date = formatISO(dateRange[0].endDate)
+      .split("T")[0]
+      .split("-")
+      .reverse()
+      .join("-");
+
+    const config = {
+      params: {
+        place_id: place.id,
+        date_from: checkin_date,
+        date_to: checkout_date,
+      },
+    };
+
+    axios
+      .get(`${API_URL}/places/check_date_available`, config)
+      .then((response) => {
+        setIsAvailable(response?.data?.data);
+        if (!response?.data?.data)
+          toast.error("This place is not available on the dates you selected");
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setIsLoading(false);
+      });
+  };
+
   const get = async () => {
     await getAmenities();
     await getPolicies();
   };
 
-  const onSuccess = (details, data) => {
-    console.log(details, data);
-  };
-
   useEffect(() => {
-    if (dateRange.startDate && dateRange.endDate) {
-      const count = differenceInCalendarDays(
-        dateRange.endDate,
-        dateRange.startDate
-      );
+    const startDate = dateRange[0].startDate;
+    const endDate = dateRange[0].endDate;
+
+    if (startDate && endDate) {
+      const count = differenceInCalendarDays(endDate, startDate);
       setDayCount(count);
 
       if (count && place.price_per_night) {
@@ -284,14 +321,15 @@ function ListingClient({ reservations = [], place, currentUser }) {
               locationValue={location}
               id={place.id}
               currentUser={currentUser}
-              isFree = {place.is_free}
+              isFree={place.is_free}
             />
             <div className="grid grid-cols-1 md:grid-cols-7 md:gap-10 my-8">
               <ListingInfo
                 user={currentUser}
-                description={place.description}
-                bedCount={place.num_bed || 0}
-                guestCount={place.max_guest || 0}
+                description={place?.description}
+                bedCount={place?.num_bed || 0}
+                bedRoom={place?.bed_room || 0}
+                guestCount={place?.max_guest || 0}
                 amenities={selectedAmenities || []}
               />
               <div className="order-first mb-10 md:order-last md:col-span-3 space-y-6">
@@ -300,14 +338,18 @@ function ListingClient({ reservations = [], place, currentUser }) {
                   totalPrice={totalPrice}
                   onChangeDate={(value) => setDateRange(value)}
                   dateRange={dateRange}
-                  onSubmit={() => setPaymentMode(true)}
+                  onSubmit={onCheckAvailability}
                   disabled={isLoading}
                   disabledDates={disableDates}
+                  isAvailable={isAvailable}
+                  changeMode={() => setPaymentMode(true)}
                 />
                 <div className="w-full flex justify-center items-start">
                   <div
                     className="flex justify-center items-center gap-4 cursor-pointer"
-                    onClick={() => reportModal.onOpen({ place, user:currentUser })}
+                    onClick={() =>
+                      reportModal.onOpen({ place, user: currentUser })
+                    }
                   >
                     <FaFlag size={16} />
                     <span className="underline">Report this room</span>
@@ -316,7 +358,10 @@ function ListingClient({ reservations = [], place, currentUser }) {
               </div>
             </div>
             <hr />
-            <ListingComments place_id={place.id} />
+            <ListingComments
+              place_id={place.id}
+              rating_average={Number(place.rating_average).toFixed(1)}
+            />
             <hr />
             <div className="my-8 w-full">
               <p className="text-xl font-semibold mb-8">{`Where you’ll be`}</p>
@@ -577,8 +622,20 @@ function ListingClient({ reservations = [], place, currentUser }) {
                   <span className="text-md font-bold">Date</span>
                   <span className="text-md font-thin">
                     {dayCount > 1
-                      ? `${dateRange.startDate.getDate()}/${dateRange.startDate.getMonth()}/${dateRange.startDate.getFullYear()} - ${dateRange.endDate.getDate()}/${dateRange.endDate.getMonth()}/${dateRange.endDate.getFullYear()}`
-                      : `${dateRange.startDate.getDate()}/${dateRange.startDate.getMonth()}/${dateRange.startDate.getFullYear()}`}
+                      ? `${formatISO(dateRange[0].startDate)
+                          .split("T")[0]
+                          .split("-")
+                          .reverse()
+                          .join("-")} - ${formatISO(dateRange[0].endDate)
+                          .split("T")[0]
+                          .split("-")
+                          .reverse()
+                          .join("/")}`
+                      : `${formatISO(dateRange[0].startDate)
+                          .split("T")[0]
+                          .split("-")
+                          .reverse()
+                          .join("/")}`}
                   </span>
                 </div>
                 <div className="flex flex-col justify-between items-start">
@@ -667,13 +724,13 @@ function ListingClient({ reservations = [], place, currentUser }) {
                       height={500}
                       src={place?.cover || emptyImageSrc}
                       alt="room image"
-                      className="rounded-xl"
+                      className="rounded-xl aspect-square"
                       priority
                     />
                   </div>
                   <div className="w-[70%]">
                     <div className="space-y-1">
-                      <p className="text-sm font-thin">Room type</p>
+                      <p className="text-sm font-thin">Room</p>
                       <p className="text-md font-bold">
                         {place?.name || "Room Name"}
                       </p>

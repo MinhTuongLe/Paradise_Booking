@@ -1,8 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
-import qs from "query-string";
 
 const RangeSlider = ({
   initialMin,
@@ -14,8 +12,6 @@ const RangeSlider = ({
   onSubmitCallback,
 }) => {
   const progressRef = useRef(null);
-  const params = useSearchParams();
-  const router = useRouter();
 
   const [minValue, setMinValue] = useState(initialMin);
   const [maxValue, setMaxValue] = useState(initialMax);
@@ -52,27 +48,6 @@ const RangeSlider = ({
   }, [minValue, maxValue, max, step]);
 
   useEffect(() => {
-    // let currentQuery = {};
-
-    // if (params) {
-    //   currentQuery = qs.parse(params.toString());
-    // }
-
-    // const updatedQuery = {
-    //   ...currentQuery,
-    //   price_from: minValue,
-    //   price_to: maxValue,
-    // };
-
-    // const url = qs.stringifyUrl(
-    //   {
-    //     url: "/",
-    //     query: updatedQuery,
-    //   },
-    //   { skipNull: true }
-    // );
-
-    // router.push(url);
     onSubmitCallback(minValue, maxValue);
   }, [onSubmitCallback, minValue, maxValue]);
 

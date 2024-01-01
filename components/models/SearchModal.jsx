@@ -2,15 +2,15 @@
 "use client";
 
 import useSearchModal from "@/hook/useSearchModal";
-import { formatISO } from "date-fns";
+import { formatISO, addDays } from "date-fns";
 import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
 import qs from "query-string";
 import { useCallback, useMemo, useState, useEffect } from "react";
-import { Range } from "react-date-range";
-
+import { DateRangePicker } from "react-date-range";
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
 import Heading from "../Heading";
-import Calendar from "../inputs/Calendar";
 import Counter from "../inputs/Counter";
 import Modal from "./Modal";
 import RangeSlider from "../RangeSlider";
@@ -31,12 +31,14 @@ function SearchModal({}) {
   const [location, setLocation] = useState();
   const [step, setStep] = useState(searchModel.option);
   const [guest, setGuest] = useState(1);
-  // const [bedCount, setBedCount] = useState(1);
-  const [dateRange, setDateRange] = useState({
-    startDate: new Date(),
-    endDate: new Date(),
-    key: "selection",
-  });
+  const [num_bed, setBedCount] = useState(1);
+  const [dateRange, setDateRange] = useState([
+    {
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "selection",
+    },
+  ]);
   const [lat, setLat] = useState(51);
   const [lng, setLng] = useState(-0.09);
   const [searchResult, setSearchResult] = useState(null);
@@ -60,13 +62,13 @@ function SearchModal({}) {
     [lat, lng]
   );
 
-  const onBack = () => {
-    setStep((value) => value - 1);
-  };
+  // const onBack = () => {
+  //   setStep((value) => value - 1);
+  // };
 
-  const onNext = () => {
-    setStep((value) => value + 1);
-  };
+  // const onNext = () => {
+  //   setStep((value) => value + 1);
+  // };
 
   const onSubmit = useCallback(async () => {
     // if (step !== STEPS.PRICE) {
@@ -86,10 +88,25 @@ function SearchModal({}) {
         lat: lat,
         lng: lng,
       };
+    } else if (step === STEPS.DATE) {
+      updatedQuery = {
+        ...currentQuery,
+        date_from: formatISO(dateRange[0].startDate)
+          .split("T")[0]
+          .split("-")
+          .reverse()
+          .join("-"),
+        date_to: formatISO(dateRange[0].endDate)
+          .split("T")[0]
+          .split("-")
+          .reverse()
+          .join("-"),
+      };
     } else if (step === STEPS.INFO) {
       updatedQuery = {
         ...currentQuery,
         guest: guest,
+        num_bed: num_bed,
       };
     } else if (step === STEPS.PRICE) {
       updatedQuery = {
@@ -124,10 +141,14 @@ function SearchModal({}) {
     location,
     router,
     guest,
-    // bedCount,
+    num_bed,
     dateRange,
-    onNext,
+    price_from,
+    price_to,
+    // onNext,
     params,
+    lat,
+    lng,
   ]);
 
   const actionLabel = useMemo(() => {
@@ -138,13 +159,13 @@ function SearchModal({}) {
     return "Search";
   }, [step]);
 
-  const secondActionLabel = useMemo(() => {
-    if (step === STEPS.LOCATION) {
-      return undefined;
-    }
+  // const secondActionLabel = useMemo(() => {
+  //   if (step === STEPS.LOCATION) {
+  //     return undefined;
+  //   }
 
-    return "Back";
-  }, [step]);
+  //   return "Back";
+  // }, [step]);
 
   useEffect(() => {
     if (searchResult) {
@@ -187,9 +208,14 @@ function SearchModal({}) {
           title="When do you plan to go?"
           subtitle="Make sure everyone is free!"
         />
-        <Calendar
-          onChange={(value) => setDateRange(value.selection)}
-          value={dateRange}
+        <DateRangePicker
+          onChange={(item) => setDateRange([item.selection])}
+          showSelectionPreview={true}
+          moveRangeOnFirstSelection={false}
+          months={2}
+          ranges={dateRange}
+          direction="horizontal"
+          rangeColors={["#f43f5e"]}
         />
       </div>
     );
@@ -205,13 +231,13 @@ function SearchModal({}) {
           title="Guests"
           subtitle="How many guests are coming?"
         />
-        {/* <hr />
+        <hr />
         <Counter
           onChange={(value) => setBedCount(value)}
-          value={bedCount}
-          title="Rooms"
-          subtitle="How many rooms do you need?"
-        /> */}
+          value={num_bed}
+          title="Beds"
+          subtitle="How many beds per room do you need?"
+        />
       </div>
     );
   }
@@ -241,13 +267,13 @@ function SearchModal({}) {
       isOpen={searchModel.isOpen}
       onClose={searchModel.onClose}
       onSubmit={onSubmit}
-      secondaryAction={step === STEPS.LOCATION ? undefined : onBack}
-      secondaryActionLabel={secondActionLabel}
+      // secondaryAction={step === STEPS.LOCATION ? undefined : onBack}
+      // secondaryActionLabel={secondActionLabel}
       title="Filters"
       actionLabel={actionLabel}
       body={bodyContent}
       reset={undefined}
-      classname="md:w-2/3 lg:w-1/2 xl:w-1/3"
+      classname={`md:w-2/3 lg:${step === STEPS.DATE ? "w-2/3" : "w-1/3"}`}
     />
   );
 }
