@@ -8,9 +8,8 @@ import ListingCard from "@/components/listing/ListingCard";
 import { API_URL } from "@/const";
 import axios from "axios";
 import { Fragment, useRef, useState, useEffect } from "react";
-import { Dialog, Transition, Listbox } from "@headlessui/react";
+import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { toast } from "react-toastify";
 import Cookie from "js-cookie";
 import EmptyState from "@/components/EmptyState";
@@ -18,6 +17,7 @@ import Loader from "@/components/Loader";
 import { useSelector } from "react-redux";
 import Button from "@/components/Button";
 import useCheckAvailableModal from "../../hook/useCheckAvailableModal";
+import ConfirmDeleteModal from "@/components/models/ConfirmDeleteModal";
 
 function PropertiesClient({ currentUser }) {
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
@@ -102,7 +102,7 @@ function PropertiesClient({ currentUser }) {
 
   return (
     <Container>
-      <Transition.Root show={open} as={Fragment}>
+      {/* <Transition.Root show={open} as={Fragment}>
         <Dialog
           as="div"
           className="relative z-10"
@@ -178,7 +178,12 @@ function PropertiesClient({ currentUser }) {
             </div>
           </div>
         </Dialog>
-      </Transition.Root>
+      </Transition.Root> */}
+      <ConfirmDeleteModal
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        onDelete={handleDelete}
+      />
       <div className="mt-10 mb-6">
         <Heading title="Properties" subtitle="List of your properties" />
       </div>
