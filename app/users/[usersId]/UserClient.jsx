@@ -206,11 +206,9 @@ function UserClient({ places, currentUser, role }) {
     getRatings();
   }, []);
 
-  if (!loggedUser && currentUser.role !== 2) {
-    return <EmptyState title="Unauthorized" subtitle="Please login" />;
-  }
-
-  console.log(ratings);
+  // if (!loggedUser && currentUser.role !== 2) {
+  //   return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  // }
 
   return (
     <div className="max-w-[1200px] mx-auto px-4">

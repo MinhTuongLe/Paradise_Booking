@@ -10,7 +10,7 @@ import { LIMIT } from "@/const";
 export const dynamic = "force-dynamic";
 
 const UserPage = async ({ params, searchParams }) => {
-  const accessToken = cookies().get("accessToken")?.value;
+  // const accessToken = cookies().get("accessToken")?.value;
 
   const user = await getUserById(params?.usersId);
 
@@ -26,13 +26,13 @@ const UserPage = async ({ params, searchParams }) => {
   if (user.role === 2)
     obj = await getPlaceByVendorId({
       vendor_id: user?.id,
-      page: searchParams.page || 1,
-      limit: searchParams.limit || LIMIT,
+      page: 1,
+      limit: LIMIT,
     });
 
-  if (!accessToken && user.role !== 2) {
-    return <EmptyState title="Unauthorized" subtitle="Please login" />;
-  }
+  // if (!accessToken && user.role !== 2) {
+  //   return <EmptyState title="Unauthorized" subtitle="Please login" />;
+  // }
 
   return (
     <ClientOnly>

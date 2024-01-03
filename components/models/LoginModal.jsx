@@ -4,7 +4,7 @@ import useLoginModel from "@/hook/useLoginModal";
 import useRegisterModal from "@/hook/useRegisterModal";
 import useForgotPasswordModal from "@/hook/useForgotPasswordModal";
 import { useRouter } from "next/navigation";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { AiFillFacebook } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";

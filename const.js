@@ -77,6 +77,17 @@ export const roles = [
   },
 ];
 
+export const account_status = [
+  {
+    id: 1,
+    name: "Inactive",
+  },
+  {
+    id: 2,
+    name: "Active",
+  },
+];
+
 export const payment_methods = [
   {
     id: 1,
@@ -171,12 +182,6 @@ export const offers = [
 ];
 
 export const maxPrice = 10000000;
-
-export const paypalOptions = {
-  clientId:
-    "ASh2FOVS_UFVapwtn43O7sCItFoURj7lrG5jSqYe3EzNLeASCCeNsqiiT493cE9-11PRZJbrccx6ZOeN",
-  currency: "USD",
-};
 
 export const types = [
   {
