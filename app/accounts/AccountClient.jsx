@@ -8,7 +8,7 @@ import axios from "axios";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import "../../styles/globals.css";
-import { API_URL, roles } from "@/const";
+import { API_URL, account_status, roles } from "@/const";
 import {
   Table,
   TableHeader,
@@ -31,12 +31,6 @@ const columns = [
   { name: "Phone", uid: "phone" },
   { name: "Dob", uid: "dob" },
 ];
-
-const statusColorMap = {
-  active: "success",
-  paused: "danger",
-  vacation: "warning",
-};
 
 function AccountClient({ accounts }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -139,15 +133,21 @@ function AccountClient({ accounts }) {
           </select>
         );
       case "status":
+        const defaultAccountStatus = account_status.find(
+          (item) => item.name === cellValue
+        );
         return (
           <select
             onChange={(event) => handleStatusChange(event, user.id)}
-            defaultValue={cellValue === "Active" ? 2 : 1}
+            defaultValue={defaultAccountStatus.id}
             id="status"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[full] p-2.5 "
           >
-            <option value={2}>Active</option>
-            <option value={1}>Inactive</option>
+            {account_status.map((status) => (
+              <option value={status.id} key={status.id}>
+                {status.name}
+              </option>
+            ))}
           </select>
         );
       default:

@@ -75,22 +75,21 @@ function SearchModal({}) {
     //   return onNext();
     // }
 
-    let currentQuery = {},
-      updatedQuery = {};
+    let updatedQuery = {};
 
-    if (params) {
-      currentQuery = qs.parse(params.toString());
-    }
+    // if (params) {
+    //   currentQuery = qs.parse(params.toString());
+    // }
 
     if (step === STEPS.LOCATION) {
       updatedQuery = {
-        ...currentQuery,
+        // ...currentQuery,
         lat: lat,
         lng: lng,
       };
     } else if (step === STEPS.DATE) {
       updatedQuery = {
-        ...currentQuery,
+        // ...currentQuery,
         date_from: formatISO(dateRange[0].startDate)
           .split("T")[0]
           .split("-")
@@ -104,13 +103,13 @@ function SearchModal({}) {
       };
     } else if (step === STEPS.INFO) {
       updatedQuery = {
-        ...currentQuery,
+        // ...currentQuery,
         guest: guest,
         num_bed: num_bed,
       };
     } else if (step === STEPS.PRICE) {
       updatedQuery = {
-        ...currentQuery,
+        // ...currentQuery,
         price_from: price_from,
         price_to: price_to,
       };
