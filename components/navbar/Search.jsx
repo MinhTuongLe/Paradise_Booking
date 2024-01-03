@@ -64,7 +64,9 @@ function Search({}) {
     <div className="border-[1px] w-full rounded-full shadow-sm hover:shadow-md transition cursor-pointer">
       <div className="flex flex-row items-center justify-between py-3">
         <div
-          className="text-sm font-semibold px-6 whitespace-nowrap"
+          className={`text-sm font-semibold px-6 whitespace-nowrap ${
+            lat && lng ? "text-rose-500" : undefined
+          }`}
           onClick={(e) => {
             e.stopPropagation();
             searchModel.onOpen(1);
@@ -73,7 +75,9 @@ function Search({}) {
           {locationLabel}
         </div>
         <div
-          className="hidden sm:block text-sm font-semibold px-6 border-x-[1px] flex-1 text-center whitespace-nowrap"
+          className={`hidden sm:block text-sm font-semibold px-6 border-x-[1px] flex-1 text-center whitespace-nowrap ${
+            startDate && endDate ? "text-rose-500" : undefined
+          }`}
           onClick={(e) => {
             e.stopPropagation();
             searchModel.onOpen(2);
@@ -82,7 +86,9 @@ function Search({}) {
           {durationLabel}
         </div>
         <div
-          className="hidden sm:inline-block text-sm font-semibold px-6 border-x-[1px] flex-1 text-center whitespace-nowrap"
+          className={`hidden sm:inline-block text-sm font-semibold px-6 border-x-[1px] flex-1 text-center whitespace-nowrap ${
+            guest && num_bed ? "text-rose-500" : undefined
+          }`}
           onClick={(e) => {
             e.stopPropagation();
             searchModel.onOpen(3);
@@ -92,7 +98,9 @@ function Search({}) {
         </div>
         <div className="text-sm pl-6 pr-2 flex flex-row items-center gap-3 whitespace-nowrap">
           <div
-            className="hidden sm:block text-center font-semibold"
+            className={`hidden sm:block text-center font-semibold ${
+              price_from && price_to ? "text-rose-500" : undefined
+            }`}
             onClick={(e) => {
               e.stopPropagation();
               searchModel.onOpen(4);
