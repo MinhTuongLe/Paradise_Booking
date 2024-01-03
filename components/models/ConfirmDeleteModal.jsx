@@ -6,14 +6,14 @@ import { useRef, Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
-function ConfirmDeleteModal({ isOpen, onClose, onDelete }) {
+function ConfirmDeleteModal({ isOpen, onClose, onDelete, content }) {
   const cancelButtonRef = useRef(null);
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog
         as="div"
-        className="relative z-10"
+        className="relative z-50"
         initialFocus={cancelButtonRef}
         onClose={onClose}
       >
@@ -54,11 +54,11 @@ function ConfirmDeleteModal({ isOpen, onClose, onDelete }) {
                         as="h3"
                         className="text-base font-semibold leading-6 text-gray-900"
                       >
-                        Delete property
+                        Delete {content}
                       </Dialog.Title>
                       <div className="mt-2">
                         <p className="text-sm text-gray-500">
-                          Are you sure to delete this place?
+                          Are you sure to delete this {content}?
                         </p>
                       </div>
                     </div>
