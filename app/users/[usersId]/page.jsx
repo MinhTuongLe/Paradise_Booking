@@ -26,8 +26,8 @@ const UserPage = async ({ params, searchParams }) => {
   if (user.role === 2)
     obj = await getPlaceByVendorId({
       vendor_id: user?.id,
-      page: searchParams.page || 1,
-      limit: searchParams.limit || LIMIT,
+      page: 1,
+      limit: LIMIT,
     });
 
   // if (!accessToken && user.role !== 2) {

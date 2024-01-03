@@ -75,7 +75,7 @@ function RoomsModal({ currentUser }) {
       {places.paging?.total > (places.paging?.limit || LIMIT) && (
         <PaginationComponent
           page={Number(searchParams.get("page")) || 1}
-          total={searchParams.paging?.total || LIMIT}
+          total={searchParams.paging?.total || places.paging?.total || LIMIT}
           limit={searchParams.paging?.limit || LIMIT}
         />
       )}
