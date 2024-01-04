@@ -6,6 +6,8 @@ import { differenceInDays, parse } from "date-fns";
 import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
 import { BiSearch } from "react-icons/bi";
+import SearchModal from "../models/SearchModal";
+import { motion } from "framer-motion";
 
 function Search({}) {
   const searchModel = useSearchModal();
@@ -61,12 +63,22 @@ function Search({}) {
   }, [lat, lng, startDate, endDate, guest, num_bed, price_from, price_to]);
 
   return (
-    <div className="border-[1px] w-full rounded-full shadow-sm hover:shadow-md transition cursor-pointer">
-      <div className="flex flex-row items-center justify-between py-3">
+    <div className="border-[1px] w-full rounded-full shadow-sm hover:shadow-md transition cursor-pointer relative">
+      <div
+        className={`rounded-[28px] flex flex-row items-center justify-between ${
+          searchModel.isOpen ? "bg-slate-200" : "bg-white"
+        }`}
+      >
         <div
-          className={`text-sm font-semibold px-6 whitespace-nowrap ${
+          className={`py-4 hover:bg-slate-300 hover:rounded-tl-[28px] hover:rounded-bl-[28px]  text-sm font-semibold px-6 whitespace-nowrap ${
             lat && lng ? "text-rose-500" : undefined
-          }`}
+          } 
+          ${
+            searchModel.option === 1 && searchModel.isOpen
+              ? "bg-white rounded-[28px]"
+              : undefined
+          }
+          `}
           onClick={(e) => {
             e.stopPropagation();
             searchModel.onOpen(1);
@@ -75,9 +87,15 @@ function Search({}) {
           {locationLabel}
         </div>
         <div
-          className={`hidden sm:block text-sm font-semibold px-6 border-x-[1px] flex-1 text-center whitespace-nowrap ${
+          className={`py-4 hidden sm:block text-sm font-semibold px-6 flex-1 text-center whitespace-nowrap hover:bg-slate-300 ${
             startDate && endDate ? "text-rose-500" : undefined
-          }`}
+          }
+          ${
+            searchModel.option === 2 && searchModel.isOpen
+              ? "bg-white rounded-[28px]"
+              : undefined
+          }
+          `}
           onClick={(e) => {
             e.stopPropagation();
             searchModel.onOpen(2);
@@ -86,9 +104,15 @@ function Search({}) {
           {durationLabel}
         </div>
         <div
-          className={`hidden sm:inline-block text-sm font-semibold px-6 border-x-[1px] flex-1 text-center whitespace-nowrap ${
+          className={`py-4 hover:bg-slate-300 hidden sm:inline-block text-sm font-semibold px-6 flex-1 text-center whitespace-nowrap ${
             guest && num_bed ? "text-rose-500" : undefined
-          }`}
+          }
+          ${
+            searchModel.option === 3 && searchModel.isOpen
+              ? "bg-white rounded-[28px]"
+              : undefined
+          }
+          `}
           onClick={(e) => {
             e.stopPropagation();
             searchModel.onOpen(3);
@@ -96,11 +120,17 @@ function Search({}) {
         >
           {guessLabel}
         </div>
-        <div className="text-sm pl-6 pr-2 flex flex-row items-center gap-3 whitespace-nowrap">
+        <div className="text-sm pr-2 flex flex-row items-center gap-3 whitespace-nowrap">
           <div
-            className={`hidden sm:block text-center font-semibold ${
+            className={`py-4 px-6 hover:bg-slate-300 hidden sm:block text-center font-semibold ${
               price_from && price_to ? "text-rose-500" : undefined
-            }`}
+            }
+            ${
+              searchModel.option === 4 && searchModel.isOpen
+                ? "bg-white rounded-[28px]"
+                : undefined
+            }
+            `}
             onClick={(e) => {
               e.stopPropagation();
               searchModel.onOpen(4);
@@ -108,10 +138,32 @@ function Search({}) {
           >
             {priceRangeLabel}
           </div>
-          <div className="ml-2 p-2 bg-rose-500 rounded-full text-white">
+          <div
+            className={`ml-2 p-2 bg-rose-500 rounded-full text-white flex items-center justify-between transition-all duration-300 ease-in-out`}
+          >
             <BiSearch size={16} />
+            {searchModel.isOpen && (
+              <motion.div
+                initial={{
+                  width: 0,
+                  opacity: 0,
+                }}
+                transition={{ duration: 1 }}
+                whileInView={{ opacity: 1, width: "100%" }}
+                className="ml-2"
+              >
+                Search
+              </motion.div>
+            )}
           </div>
         </div>
+      </div>
+      <div
+        className={`mt-2 absolute top-full left-1/2 transform -translate-x-1/2 bg-white ${
+          searchModel.option === 2 ? "w-[50vw]" : "w-[30vw]"
+        }  rounded-xl`}
+      >
+        <SearchModal />
       </div>
     </div>
   );

@@ -13,6 +13,7 @@ import "react-date-range/dist/theme/default.css";
 import Heading from "../Heading";
 import Counter from "../inputs/Counter";
 import Modal from "./Modal";
+import FiltersModal from "./FiltersModal";
 import RangeSlider from "../RangeSlider";
 import { maxPrice } from "@/const";
 
@@ -262,17 +263,15 @@ function SearchModal({}) {
   }
 
   return (
-    <Modal
+    <FiltersModal
       isOpen={searchModel.isOpen}
       onClose={searchModel.onClose}
       onSubmit={onSubmit}
       // secondaryAction={step === STEPS.LOCATION ? undefined : onBack}
       // secondaryActionLabel={secondActionLabel}
-      title="Filters"
       actionLabel={actionLabel}
       body={bodyContent}
       reset={undefined}
-      classname={`md:w-2/3 lg:${step === STEPS.DATE ? "w-2/3" : "w-1/3"}`}
     />
   );
 }
