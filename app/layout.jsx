@@ -36,7 +36,7 @@ export default async function RootLayout({ children }) {
         <StoreProvider>
           <ClientOnly>
             <ToastContainerBar />
-            <SearchModal />
+            {/* <SearchModal /> */}
             <RegisterModal />
             <LoginModal />
             <ForgotPasswordModal />
@@ -47,7 +47,6 @@ export default async function RootLayout({ children }) {
             <WishlistModal />
             <BecomeVendorModal />
             <PropertiesFilteredModal />
-            {/* <ConfirmDeleteModal /> */}
             <Navbar />
           </ClientOnly>
           <div className="pb-20 min-h-[70vh] pt-[10vh]">{children}</div>
