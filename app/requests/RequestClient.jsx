@@ -8,7 +8,7 @@ import axios from "axios";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import "../../styles/globals.css";
-import { API_URL } from "@/const";
+import { API_URL, emptyAvatar } from "@/const";
 import {
   Table,
   TableHeader,
@@ -40,7 +40,6 @@ const statusColorMap = {
 
 function RequestClient({ accounts }) {
   const [isLoading, setIsLoading] = useState(false);
-  const emptyImageSrc = "/assets/avatar.png";
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
   const handleStatusChange = (event, accountId) => {
@@ -80,7 +79,7 @@ function RequestClient({ accounts }) {
             <Image
               width={40}
               height={40}
-              src={user?.avatar || emptyImageSrc}
+              src={user?.avatar || emptyAvatar}
               alt="Avatar"
               className="rounded-full h-[40px] w-[40px]"
               priority

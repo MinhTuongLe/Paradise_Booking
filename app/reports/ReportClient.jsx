@@ -8,7 +8,7 @@ import axios from "axios";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import "../../styles/globals.css";
-import { API_URL, types } from "@/const";
+import { API_URL, types, emptyAvatar } from "@/const";
 import {
   Table,
   TableHeader,
@@ -40,7 +40,6 @@ const statusColorMap = {
 
 function ReportClient() {
   const [isLoading, setIsLoading] = useState(false);
-  const emptyImageSrc = "/assets/avatar.png";
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
   const [reportData, setReportData] = useState([]);
 
@@ -90,7 +89,7 @@ function ReportClient() {
       //       <Image
       //         width={40}
       //         height={40}
-      //         src={user?.avatar || emptyImageSrc}
+      //         src={user?.avatar || emptyAvatar}
       //         alt="Avatar"
       //         className="rounded-full h-[40px] w-[40px]"
       //         priority

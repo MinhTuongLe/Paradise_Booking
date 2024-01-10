@@ -205,3 +205,8 @@ export const types = [
     value: 5,
   },
 ];
+
+export const emptyImage =
+  "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
+
+export const emptyAvatar = "/assets/avatar.png";

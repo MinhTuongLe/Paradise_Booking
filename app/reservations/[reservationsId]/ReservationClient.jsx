@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Button from "@/components/Button";
 import "../../../styles/globals.css";
-import { API_URL, booking_status } from "@/const";
+import { API_URL, booking_status, emptyAvatar, emptyImage} from "@/const";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 import Cookie from "js-cookie";
@@ -44,11 +44,6 @@ function ReservationClient({ reservation, rating }) {
       title: rating?.title || "",
     },
   });
-
-  const emptyImageSrc =
-    "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
-
-  const emptyAvatar = "/assets/avatar.png";
 
   const setCustomValue = (id, value) => {
     setValue(id, value, {
@@ -188,7 +183,7 @@ function ReservationClient({ reservation, rating }) {
               width={100}
               alt="upload"
               className="rounded-2xl w-[100px] h-[100px]"
-              src={reservation.data.place?.cover || emptyImageSrc}
+              src={reservation.data.place?.cover || emptyImage}
             />
             <div className="space-y-1 w-full">
               <div className="flex justify-between items-center">

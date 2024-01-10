@@ -5,12 +5,9 @@ import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import React, { useCallback, useMemo } from "react";
 import { MdDeleteOutline } from "react-icons/md";
-import { booking_status } from "@/const";
+import { booking_status, emptyImage } from "@/const";
 
 function ReservationItem({ onDelete, data }) {
-  const emptyImageSrc =
-    "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
-
   const router = useRouter();
 
   return (
@@ -38,7 +35,7 @@ function ReservationItem({ onDelete, data }) {
           <Image
             fill
             className="object-cover aspect-square h-full w-full rounded-xl"
-            src={data.place.cover || emptyImageSrc}
+            src={data.place.cover || emptyImage}
             alt="listing"
             priority
           />

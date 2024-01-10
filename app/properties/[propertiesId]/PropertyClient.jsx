@@ -16,7 +16,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import "../../../styles/globals.css";
-import { API_URL, booking_status, classNames, offers } from "@/const";
+import { API_URL, booking_status, classNames, offers, emptyAvatar } from "@/const";
 import ImageUpload from "@/components/inputs/ImageUpload";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/24/outline";
@@ -30,7 +30,6 @@ const steps = {
 };
 
 function PropertyClient({ place, reservations }) {
-  const emptyImageSrc = "/assets/avatar.png";
   const dispatch = useDispatch();
   const router = useRouter();
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
@@ -754,7 +753,7 @@ function PropertyClient({ place, reservations }) {
                           </div>
                           <div className="flex justify-start items-start space-x-6 w-full">
                             <Image
-                              src={item.user.avatar || emptyImageSrc}
+                              src={item.user.avatar || emptyAvatar}
                               width={64}
                               height={64}
                               className="rounded-full aspect-square"

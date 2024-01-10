@@ -20,6 +20,7 @@ import {
 import Cookie from "js-cookie";
 import { useSelector } from "react-redux";
 import EmptyState from "@/components/EmptyState";
+import { emptyAvatar } from "../../const";
 
 const columns = [
   { name: "Id", uid: "id" },
@@ -34,7 +35,6 @@ const columns = [
 
 function AccountClient({ accounts }) {
   const [isLoading, setIsLoading] = useState(false);
-  const emptyImageSrc = "/assets/avatar.png";
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
 
   const handleStatusChange = (event, accountId) => {
@@ -103,7 +103,7 @@ function AccountClient({ accounts }) {
             <Image
               width={40}
               height={40}
-              src={user?.avatar || emptyImageSrc}
+              src={user?.avatar || emptyAvatar}
               alt="Avatar"
               className="rounded-full h-[40px] w-[40px]"
               priority
