@@ -5,7 +5,7 @@
 import useRoomCommentsModal from "../../hook/useRoomCommentsModal";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { API_URL } from "@/const";
+import { API_URL, emptyAvatar } from "@/const";
 import { toast } from "react-toastify";
 import Modal from "./Modal";
 import Image from "next/image";
@@ -21,8 +21,6 @@ function RoomCommentsModal({}) {
   const [ratingDistribution, setRatingDistribution] = useState([]);
 
   const params = useParams();
-
-  const emptyImageSrc = "/assets/avatar.png";
 
   const getRatings = async () => {
     setIsLoading(true);
@@ -176,7 +174,7 @@ function RoomCommentsModal({}) {
                         <Image
                           width={40}
                           height={40}
-                          src={comment?.user?.avatar || emptyImageSrc}
+                          src={comment?.user?.avatar || emptyAvatar}
                           alt="Avatar"
                           className="rounded-full h-[40px] w-[40px]"
                           priority

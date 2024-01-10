@@ -5,7 +5,7 @@ import { IconType } from "react-icons";
 import Avatar from "../Avatar";
 import Sleep from "../Sleep";
 import Offers from "../Offers";
-import { offers } from "@/const";
+import { offers, emptyAvatar } from "@/const";
 
 function ListingInfo({
   user,
@@ -15,8 +15,6 @@ function ListingInfo({
   guestCount,
   amenities,
 }) {
-  const emptyImageSrc = "/assets/avatar.png";
-
   return (
     <div className="col-span-4 flex flex-col gap-8">
       <div className="flex flex-col gap-2">
@@ -27,10 +25,7 @@ function ListingInfo({
           >
             Hosted by {user.full_name || user.username || "Vendor"}
           </div>
-          <Avatar
-            src={user.avatar || emptyImageSrc}
-            userName={user.full_name}
-          />
+          <Avatar src={user.avatar || emptyAvatar} userName={user.full_name} />
         </div>
         <div className="flex flex-row items-center gap-4 font-light text-neutral-500">
           <p>{guestCount} guests</p>

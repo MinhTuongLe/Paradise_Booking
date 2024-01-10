@@ -7,11 +7,10 @@ import Image from "next/image";
 import { FaStar } from "react-icons/fa";
 import useRoomCommentsModal from "@/hook/useRoomCommentsModal";
 import axios from "axios";
-import { API_URL } from "@/const";
+import { API_URL, emptyAvatar } from "@/const";
 import { toast } from "react-toastify";
 
 function ListingComments({ place_id, rating_average }) {
-  const emptyImageSrc = "/assets/avatar.png";
   const [isLoading, setIsLoading] = useState(true);
   const [ratings, setRatings] = useState([]);
   const roomCommentsModal = useRoomCommentsModal();
@@ -86,7 +85,7 @@ function ListingComments({ place_id, rating_average }) {
                       <Image
                         width={40}
                         height={40}
-                        src={comment?.user?.avatar || emptyImageSrc}
+                        src={comment?.user?.avatar || emptyAvatar}
                         alt="Avatar"
                         className="rounded-full h-[40px] w-[40px]"
                         priority

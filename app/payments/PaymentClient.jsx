@@ -36,7 +36,6 @@ const columns = [
 function PaymentClient({ payments }) {
   const [isLoading, setIsLoading] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-  const emptyImageSrc = "/assets/avatar.png";
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
   const params = useSearchParams();
   const router = useRouter();

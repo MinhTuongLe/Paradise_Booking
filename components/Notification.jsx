@@ -1,15 +1,13 @@
 import Image from "next/image";
 import React from "react";
 import { IoMdClose } from "react-icons/io";
+import {emptyAvatar} from "../const"
 
 function Notification({ id, content, avatar, date, closeIcon }) {
-  const emptyImageSrc =
-    "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
-
   return (
     <div className="mb-6 relative w-full flex justify-start items-center space-x-6">
       <Image
-        src={avatar || emptyImageSrc}
+        src={avatar || emptyAvatar}
         alt="Avatar"
         className="rounded-full w-[56px] h-[56px]"
         width={56}

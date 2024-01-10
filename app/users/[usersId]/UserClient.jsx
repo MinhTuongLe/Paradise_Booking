@@ -20,7 +20,7 @@ import { AiOutlineMail, AiOutlinePhone, AiOutlineUser } from "react-icons/ai";
 import { FaCheck, FaFlag, FaRegAddressCard, FaStar } from "react-icons/fa";
 import { MdOutlineDateRange } from "react-icons/md";
 import "../../../styles/globals.css";
-import { API_URL } from "@/const";
+import { API_URL, emptyAvatar } from "@/const";
 import useCommentsModal from "@/hook/useCommentsModal";
 import useRoomsModal from "@/hook/useRoomsModal";
 import useReportModal from "@/hook/useReportModal";
@@ -92,7 +92,6 @@ function UserClient({ places, currentUser, role }) {
   const [bio, setBio] = useState(getValues("bio"));
 
   const avatar = watch("avatar");
-  const emptyImageSrc = "/assets/avatar.png";
 
   const setCustomValue = (id, value) => {
     setValue(id, value, {
@@ -233,7 +232,7 @@ function UserClient({ places, currentUser, role }) {
                   src={
                     verified
                       ? currentUser.avatar
-                      : loggedUser.avatar || emptyImageSrc
+                      : loggedUser.avatar || emptyAvatar
                   }
                   alt="Avatar"
                   className="rounded-full h-[200px] w-[200px]"
@@ -512,8 +511,7 @@ function UserClient({ places, currentUser, role }) {
                                             width={40}
                                             height={40}
                                             src={
-                                              rating.user?.avatar ||
-                                              emptyImageSrc
+                                              rating.user?.avatar || emptyAvatar
                                             }
                                             alt="Avatar"
                                             className="rounded-full h-[40px] w-[40px]"

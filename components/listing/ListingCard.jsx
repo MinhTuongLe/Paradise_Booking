@@ -9,6 +9,7 @@ import Button from "../Button";
 import HeartButton from "../HeartButton";
 import { FaStar } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { emptyImage } from "../../const";
 
 function ListingCard({
   data,
@@ -19,9 +20,6 @@ function ListingCard({
   actionId = "",
   shrink = false,
 }) {
-  const emptyImageSrc =
-    "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
-
   const pathName = usePathname();
   const router = useRouter();
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
@@ -77,7 +75,7 @@ function ListingCard({
           <Image
             fill
             className="object-cover aspect-square h-full w-full group-hover:scale-110 transition  rounded-xl"
-            src={data.cover || emptyImageSrc}
+            src={data.cover || emptyImage}
             alt="listing"
             priority
           />

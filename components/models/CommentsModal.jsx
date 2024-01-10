@@ -16,7 +16,7 @@ import Modal from "./Modal";
 // import { BiDollar } from "react-icons/bi";
 import Image from "next/image";
 import "../../styles/globals.css";
-import { API_URL } from "@/const";
+import { API_URL, emptyAvatar, emptyImage } from "@/const";
 import { useParams } from "next/navigation";
 import axios from "axios";
 import Loader from "../Loader";
@@ -36,11 +36,6 @@ function CommentsModal({}) {
   const [isLoading, setIsLoading] = useState(false);
   const [ratings, setRatings] = useState([]);
   const params = useParams();
-
-  const emptyImageSrc =
-    "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
-
-  const emptyAvatarSrc = "/assets/avatar.png";
 
   const {
     register,
@@ -138,7 +133,7 @@ function CommentsModal({}) {
                       <Image
                         width={80}
                         height={60}
-                        src={rating?.place.cover || emptyImageSrc}
+                        src={rating?.place.cover || emptyImage}
                         alt="Avatar"
                         className="rounded-xl h-[60px] w-[80px]"
                         priority
@@ -150,7 +145,7 @@ function CommentsModal({}) {
                       <Image
                         width={40}
                         height={40}
-                        src={rating?.user.avatar || emptyAvatarSrc}
+                        src={rating?.user.avatar || emptyAvatar}
                         priority
                         alt="Image"
                         className="rounded-full h-[40px] w-[40px]"

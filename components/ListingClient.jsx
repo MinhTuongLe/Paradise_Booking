@@ -24,16 +24,19 @@ import { FaBusinessTime, FaFlag, FaStar } from "react-icons/fa";
 import Button from "./Button";
 import { useForm } from "react-hook-form";
 import Input from "./inputs/Input";
-import { API_URL, classNames, payment_methods } from "@/const";
+import {
+  API_URL,
+  classNames,
+  payment_methods,
+  emptyImage,
+  emptyAvatar,
+} from "@/const";
 import { useSelector } from "react-redux";
 import { formatISO, addDays } from "date-fns";
 
 function ListingClient({ reservations = [], place, currentUser }) {
   const authState = useSelector((state) => state.authSlice.authState);
   const loggedUser = useSelector((state) => state.authSlice.loggedUser);
-
-  const emptyImageSrc =
-    "https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty.jpg";
 
   const location = {
     address: place.address,
@@ -317,7 +320,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
           <div className="flex flex-col">
             <ListingHead
               title={place.name}
-              imageSrc={place.cover || emptyImageSrc}
+              imageSrc={place.cover || emptyImage}
               locationValue={location}
               id={place.id}
               currentUser={currentUser}
@@ -654,7 +657,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
                   <Image
                     width={40}
                     height={40}
-                    src={currentUser?.avatar || emptyImageSrc}
+                    src={currentUser?.avatar || emptyAvatar}
                     alt="Avatar"
                     className="rounded-full h-[40px] w-[40px]"
                     priority
@@ -722,7 +725,7 @@ function ListingClient({ reservations = [], place, currentUser }) {
                     <Image
                       width={500}
                       height={500}
-                      src={place?.cover || emptyImageSrc}
+                      src={place?.cover || emptyImage}
                       alt="room image"
                       className="rounded-xl aspect-square"
                       priority
